@@ -50,6 +50,27 @@ try{
     const small=createEducationToolCatalog('规则',defs.slice(0,3));assert(!small.deferred);assert(small.exposed(defs[1].name));
     await assert.rejects(catalog.tool.execute('x',{query:'',extra:1}),/invalid_input/);
   });
+  await check('An explicitly declined file action does not preload Office writers; independent positive requests still do',async()=>{
+    const defs=[...Array.from({length:28},(_,i)=>definition(i)),{...definition(28),name:'office_deliver_files'}];
+    const catalog=createEducationToolCatalog('权限由宿主核验',defs);
+    for(const prompt of ['只在聊天里列重点，无需导出。','请口头说明，不需要保存为 PDF 文件。','Explain in chat. Do not export a Word document.']){
+      catalog.reset(prompt);assert(!catalog.exposed('office_deliver_files'),prompt);
+    }
+    const exporter={...definition(1),name:'education_export_teaching_handout'};
+    const chats=createEducationToolCatalog('权限由宿主核验',[...defs,exporter]);
+    chats.reset('在聊天中列要点，无需导出。');
+    assert(chats.deferForMemoryChat());
+    assert(!chats.exposed(exporter.name));
+    await chats.tool.execute('find',{query:exporter.name},new AbortController().signal);
+    assert(chats.exposed(exporter.name));assert(!chats.deferForMemoryChat());
+    const required=createEducationToolCatalog('宿主已批准专项流程',[...defs,exporter],[exporter.name]);
+    required.reset('在聊天中列要点，无需导出。');
+    required.deferForMemoryChat();assert(required.exposed(exporter.name));
+    chats.reset('把讲义导出成 Word 文件。');assert(!chats.deferForMemoryChat());assert(chats.exposed(exporter.name));
+    for(const prompt of ['无需导出 PDF，但请保存 Word 文档。','把这份学案导出成 PPT。','read_education_memory，然后用 office_deliver_files 交付。']){
+      catalog.reset(prompt);assert(catalog.exposed('office_deliver_files'),prompt);
+    }
+  });
   await check('repeated calls canonicalize arguments, distinguish changed results and reset on user input',()=>{
     const reminder=createRepeatToolReminder();
     assert(!reminder.observe('read',{a:1,b:2},'unchanged'));assert(!reminder.observe('read',{b:2,a:1},'unchanged'));

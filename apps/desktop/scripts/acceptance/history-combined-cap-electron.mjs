@@ -136,6 +136,7 @@ try{
         const rows=line?JSON.parse(line):[];
         const bytes=value=>new TextEncoder().encode(JSON.stringify(value)).length;
         const record={status:0,model:body.model,outputLimit:body.max_tokens,toolsCount:body.tools?.length??0,
+          largestTools:(body.tools??[]).map(tool=>({name:tool.function.name,bytes:bytes(tool)})).sort((a,b)=>b.bytes-a.bytes).slice(0,10),
           toolsBytes:bytes(body.tools??[]),systemBytes:bytes(body.messages.filter(m=>m.role==='system')),
           wireBytes:bytes(body),hasCurrent:current.includes(prompt),ids:rows.map(row=>row.sourceId),
           excerptFlags:rows.map(row=>row.excerptOnly),projectionBytes:new TextEncoder().encode(projection).length,

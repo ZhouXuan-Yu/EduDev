@@ -27,6 +27,9 @@ PINNED.add(READ_MOCK_EXAM_EDIT);
 PINNED.add(PROPOSE_MOCK_EXAM_EDIT);
 PINNED.add(READ_MOCK_EXAM_EXPORT);
 PINNED.add(EXPORT_MOCK_EXAM);
+const MEMORY_CHAT_TOOLS = new Set(['ask_teacher','read_education_memory','read_session_process','read_teacher_request',
+  'education_compute','search_teacher_knowledge','education_search_materials','office_read_material',
+  'education_search_questions','education_read_question','office_list_attachments','office_read_attachment']);
 const FILE_DELIVERY_TOOLS = ['education_check_delivery', 'education_create_report', 'office_create_text',
   'office_edit_text', 'office_create_document', 'office_deliver_files'];
 const FILE_DELIVERY_REQUEST = /pptx?|powerpoint|docx?|pdf|xlsx?|excel|html|svg|课件|讲义|教案|学案|备课包|演示|报告|文档|表格|导出|保存|写入|修改文件|创建文件|生成文件|制作文件|create.*file|write.*file|export|save/i;
@@ -44,10 +47,19 @@ export function createEducationToolCatalog(prompt:string,definitions:readonly To
   }
   for(const def of definitions)catalog.registerSource(def.name,[{name:def.name,description:def.description,serverId:'education',origin:'builtin',schemaRef:()=>def.parameters}]);
   const description=(def:ToolDefinition)=>[def.description,...(rules.get(def.name)||[])].join('\n');
+  let canDeferChat=false;
   function reset(query:string){
     loaded.clear();
-    for(const def of definitions)if(!deferred||PINNED.has(def.name)||required.includes(def.name))loaded.add(def.name);
-    const needsFiles = FILE_DELIVERY_REQUEST.test(query) || FILE_DELIVERY_TOOLS.some(name => query.includes(name));
+    // Ignore a declined delivery action when choosing schemas to preload. Other clauses
+    // can still request a file, and discovery remains available throughout the task.
+    const requested = query
+      .replace(/(?:无需|不需要|不必|不用|不要|不)(?:再|额外)?(?:导出|保存|写入|生成文件|创建文件)(?:为|成)?\s*(?:(?:word|docx?|pdf|pptx?|xlsx?|excel|html|svg)\s*)?(?:文件|文档|表格|课件)?/giu, '')
+      .replace(/\b(?:do not|don't|no need to)\s+(?:export|save|write|create)\b(?:\s+(?:a|an|the|as|to|word|pdf|docx|pptx|xlsx|html|file|document|spreadsheet)\b)*/giu, '');
+    const needsFiles = FILE_DELIVERY_REQUEST.test(requested) || FILE_DELIVERY_TOOLS.some(name => requested.includes(name));
+    canDeferChat = deferred && requested !== query && !needsFiles && /(?:聊天|对话)(?:中|里|内)|(?:仅|只)(?:在)?聊天|\bin (?:the )?chat\b/iu.test(requested);
+    for (const def of definitions) {
+      if (!deferred || required.includes(def.name) || PINNED.has(def.name)) loaded.add(def.name);
+    }
     // Office schemas are large. Load the complete existing delivery path when
     // the task needs it, while ordinary questions retain discovery and readers.
     if (deferred && needsFiles) {
@@ -68,11 +80,19 @@ export function createEducationToolCatalog(prompt:string,definitions:readonly To
       if(!args||typeof args!=='object'||Array.isArray(args)||Object.keys(args).join(',')!=='query'||typeof (args as {query?:unknown}).query!=='string')throw Error('invalid_input');
       const query=(args as {query:string}).query.trim();if(!query||query.length>160)throw Error('invalid_input');
       const hits=catalog.search(query,{limit:6});
+      canDeferChat=false; // A tool explicitly discovered in this turn must stay available.
       for(const hit of hits)loaded.add(hit.name);
       const resources=/资源|许可|仿真|科学|浮力|Anatomy|PhET|science|licen[cs]e|resource/i.test(query)?scienceResourceChoices(definitions.map(d=>d.name)):undefined;
       return {content:[{type:'text',text:JSON.stringify({tools:hits.map(hit=>{const def=definitions.find(d=>d.name===hit.name)!;return{name:def.name,description:description(def),parameters:def.parameters};}),...(resources?.length?{scienceResources:resources}:{}),note:'仅加载说明；执行仍须通过宿主授权与确认。资源条目不增加许可或文件权限。'})}],details:{success:true,data:{count:hits.length}}};
     }};
-  return {tool,reset,description,
+  function deferForMemoryChat() {
+    if (!canDeferChat) return false;
+    canDeferChat=false;
+    const previous=loaded.size;
+    for (const name of loaded) if (!MEMORY_CHAT_TOOLS.has(name) && !required.includes(name)) loaded.delete(name);
+    return loaded.size!==previous;
+  }
+  return {tool,reset,description,deferForMemoryChat,
     exposed:(name:string)=>name===TOOL_DISCOVERY_NAME||loaded.has(name),
     prompt:[...common,ANSWER_QUALITY_PROMPT,deferred?'可通过 find_education_tools 查找尚未加载的教育、文件制作及外部服务工具。目录摘要只是能力说明，不表示已执行或有资料。\n'+catalog.manifest(1800).text:''].filter(Boolean).join('\n'),
     deferred,

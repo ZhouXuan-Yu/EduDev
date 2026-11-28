@@ -1486,7 +1486,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     signal?.throwIfAborted();
     const available = await options.sourceAvailability?.();
     signal?.throwIfAborted();
-    const projected = estimateRequest(turn.context, policy.maxOutputTokens, available);
+    let projected = estimateRequest(turn.context, policy.maxOutputTokens, available);
+    // Before cutting conversation history, defer optional schemas for an explicitly chat-only
+    // memory turn. Host-required tools and authorized readback stay available.
+    if (projected > policy.window && (initialAuthority?.history || initialAuthority?.personal) && toolCatalog?.deferForMemoryChat()) {
+      projected = estimateRequest(turn.context, policy.maxOutputTokens, available);
+    }
     if (!contextBudget.observe(projected)) return false;
     const preparation = await prepareSafeNativeCompaction(manager.getBranch(), { enabled: true, keepRecentTokens: 2048, reserveTokens: NATIVE_COMPACTION_RESERVE_TOKENS });
     if (!preparation) {
