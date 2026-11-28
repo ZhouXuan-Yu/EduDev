@@ -11,7 +11,7 @@ const source=fs.realpathSync(process.argv[2]);
 assert(process.env.OMNI_EDU_ACCEPTANCE_ROOT);
 const sourceReport=process.argv[3]??path.join(source,'report.json');
 assert(fs.existsSync(sourceReport),'Identify the original synthetic acceptance report');
-const oldData=path.join(source,'data');
+const oldData=path.join(source,process.argv.includes('--legacy-import')?'legacy-import':'data');
 const root=fs.mkdtempSync(path.join(process.env.OMNI_EDU_ACCEPTANCE_ROOT,'legacy-resume-'));
 const data=path.join(root,'data'),profile=path.join(root,'profile'),main=testMain(desktop);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -55,8 +55,15 @@ async function launch(cold=false){
       const u=new URL(typeof input==='string'?input:input.url);
       if(u.origin!=='https://api.deepseek.com')throw Error('Unexpected remote path');
       if(u.pathname==='/v1/models')return Response.json({data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768}]});
-      if(cold||u.pathname!=='/v1/chat/completions')throw Error('Unexpected provider request');
+      if((cold&&!globalThis.legacySecondTask)||u.pathname!=='/v1/chat/completions')throw Error('Unexpected provider request');
       const body=JSON.parse(init.body),wire=globalThis.legacyWire;
+      if(globalThis.legacySecondTask){
+        wire.calls++;
+        if(wire.calls>2)throw Error('Unexpected extra Task model request');
+        if(body.messages.some(m=>JSON.stringify(m.content).includes('[宿主核验的本轮历史资料]')))throw Error('Unexpected Task history grant');
+        const chunk=(delta,finish_reason)=>'data: '+JSON.stringify({id:'legacy-task',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
+        return new Response(chunk({role:'assistant',content:'先观察，再记录，最后核对。'},null)+chunk({},'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
+      }
       const first=wire.calls++===0;
       if(first&&!body.tools.some(t=>t.function.name==='read_education_memory'))throw Error('Legacy memory tool missing');
       if(!first){
@@ -64,7 +71,7 @@ async function launch(cold=false){
         const item=typeof raw==='string'?raw:raw?.find(p=>p.type==='text')?.text;
         const result=JSON.parse(item.split('\n')[0]);
         if(!Array.isArray(result.memories))throw Error('Legacy tool returned no validated payload');
-        wire.memory=result.memories.map(m=>({layer:m.layer,id:m.history?.sourceId??m.personal?.sourceId,version:m.version}));
+        wire.memory=result.memories.map(m=>({layer:m.layer,id:m.history?.sourceId??m.personal?.sourceId,version:m.version,...(['L2','L3'].includes(m.layer)?{text:m.text}:{})}));
       }
       const delta=first?{tool_calls:[{index:0,id:'legacy-read',type:'function',function:{name:'read_education_memory',arguments:'{}'}}]}:
         {content:'请学生画图说明思路。'};
@@ -110,6 +117,25 @@ try{
   const wire=await app.evaluate(()=>globalThis.legacyWire);
   assert.equal(wire.calls,2);assert(Array.isArray(wire.memory));
   const eligible=choices.filter(q=>q.state==='ready');
+  for(const row of wire.memory.filter(item=>item.layer==='L2'||item.layer==='L3')){
+    const matching=[];
+    for(const pin of eligible.filter(pin=>pin.layer===row.layer&&pin.version===row.version)){
+      const original=await page.evaluate(async([sessionId,pin])=>{
+        let offset=0;
+        for(;;){
+          const result=await window.omniEdu.getXiaozhiMemoryCatalog({sessionId,layer:pin.layer,source:pin.source,offset});
+          if(!result.ok)return;
+          const entry=result.catalog.entries.find(entry=>entry.id===pin.id&&entry.version===pin.version);
+          if(entry)return entry.sanitizedText;
+          if(!result.catalog.hasMore||result.catalog.entries.length===0)return;
+          offset+=result.catalog.entries.length;
+        }
+      },[sessionId,pin]);
+      if(original===row.text)matching.push(pin);
+    }
+    assert.equal(matching.length,1,'Legacy filtered SDK body must match exactly one selected current source');
+    row.id=matching[0].id;row.contentSha256=sha(row.text);delete row.text;
+  }
   for(const row of wire.memory)assert(eligible.some(q=>q.layer===row.layer&&q.id===row.id&&q.version===row.version));
   assert.deepEqual(wire.memory.map(row=>row.id).sort(),eligible.map(row=>row.id).sort());
   report.returned=wire.memory;report.choices=choices.map(q=>({layer:q.layer,state:q.state,id:q.id,version:q.version}));
@@ -130,7 +156,37 @@ try{
   for(const {file,bytes} of olderJournals)assert(fs.readFileSync(path.join(oldData,'xiaozhi-pi',file)).equals(bytes));
   assert.equal(sha(fs.readFileSync(path.join(oldData,'app.db'))),sourceDbHash);
   report.afterLedger=ledger();report.turnId=turn.id;report.nativeAfterSha256=sha(continued);
-  report.checks.push('Cold restart retains the completed turn without replay and source fixtures remain unchanged');report.ok=true;
+  report.checks.push('Cold restart retains the completed turn without replay and source fixtures remain unchanged');
+  await app.evaluate(()=>{globalThis.legacySecondTask=true;});
+  const tasks=[];
+  for(const prompt of ['请整理三个显微镜课堂观察步骤，仅在聊天中交付。','请制作一份温度计实验检查清单，在对话中列三项即可。']){
+    const input=page.getByTestId('office-prompt-input');
+    await input.fill(prompt);await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    const deadline=Date.now()+45000;
+    let task;
+    while(Date.now()<deadline){
+      const state=await snapshot(),turn=state.projection.turns.at(-1);
+      if(!state.running&&turn?.status==='completed'&&state.task?.origin?.runId===turn.id&&
+        sql('SELECT prompt FROM ai_agent_runs WHERE session_id=? AND id=?',sessionId,turn.id)[0]?.prompt===prompt){task=state.task;break;}
+      await new Promise(resolve=>setTimeout(resolve,120));
+    }
+    assert(task,'New task must have a matching terminal Run and durable host identity');
+    assert(!tasks.includes(task.id));tasks.push(task.id);
+    assert.deepEqual(sql('SELECT key FROM app_settings WHERE key=?','xiaozhi.memory-use.task.v1:'+task.id),[]);
+    assert.deepEqual(scopes(),before);
+    if(tasks.length===1){
+      const review=page.getByTestId('pi-task-review');
+      await review.getByTestId('pi-task-review-toggle').click();
+      await review.getByTestId('pi-task-cancel').click();
+      await review.getByTestId('pi-task-confirm-cancel').click();
+      await page.waitForFunction(async id=>(await window.omniEdu.getXiaozhiSnapshot(id)).task?.state==='ended',sessionId);
+    }
+  }
+  assert.equal((await app.evaluate(()=>globalThis.legacyWire)).calls,2);
+  assert.equal(sha(fs.readFileSync(path.join(oldData,'app.db'))),sourceDbHash);
+  report.newTasks=tasks;
+  report.checks.push('Two distinct teacher tasks in the migrated conversation preserve the original Session pins without automatically creating Task grants');
+  report.ok=true;
 }catch(error){
   report.error=String(error?.stack||error);process.exitCode=1;
   if(app){
