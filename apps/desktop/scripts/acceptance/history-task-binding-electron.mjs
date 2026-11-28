@@ -1,3 +1,4 @@
+import {confirmTeachingTarget} from './confirm-teaching-target.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import fs from 'node:fs';
@@ -8,6 +9,8 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
+const amendClass=process.argv.includes('--change-class');
+const teachingScope={classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
 const exclusion=process.argv.includes('--task-exclusion');
 const suspendedTask=process.argv.includes('--paused-task')?'paused':process.argv.includes('--interrupted-task')?'interrupted':null;
 const recoveryIndex=process.argv.indexOf('--recover-from');
@@ -22,7 +25,7 @@ const vagueChoice=checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -308,7 +311,8 @@ async function runHistoryJourney(){
     await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
   }
-  if(checkPreference){
+  if(amendClass)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
+  if(checkPreference||amendClass){
     await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
     const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
     assert(saved.ok&&saved.value.preference.values.structure==='step_by_step');
@@ -328,6 +332,7 @@ async function runHistoryJourney(){
   }
   await page.getByTestId('pi-new-session').click();
   const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
+  if(amendClass)await confirmTeachingTarget(until,app,page,target,teachingScope);
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -622,15 +627,36 @@ async function runHistoryJourney(){
     assert.equal(binding.selections[0].version,allowed.generation);
     assert(task.sent.some(r=>r.status===200&&r.sourceRoles.includes('user')));
     const taskReceipt=read("SELECT reason,source_id,scope_version FROM xiaozhi_memory_reference_deliveries WHERE run_id=?",task.runId);
-    assert.deepEqual(taskReceipt.map(row=>[row.reason,row.source_id,row.scope_version]),[['task',allowed.source_id,0]]);
+    assert.deepEqual(taskReceipt.map(row=>[row.reason,row.source_id,row.scope_version]),[['task',allowed.source_id,initial.version]]);
     assert.deepEqual((await snapshot(target)).memoryScope,initial);
     pass('A new actual Task owns the binding and the source reached DeepSeek', {taskId:binding.taskId,runId:task.runId,sourceId:allowed.source_id,answerUsed:task.answerUsed});
     await page.getByTestId('history-task-selection').waitFor();
-    const followup=await send(target,'只改刚才清单的标题为《实验复核》，其他内容照旧。核对教师已授权的历史。');
+    const initialRequirements=(await snapshot(target)).task.requirementsVersion;
+    const titleAmendment=amendClass?'只改刚才讲解清单的标题为《实验复核》，讲解内容和适用班级照旧，请在聊天里展示改名后的讲解。':'只改刚才清单的标题为《实验复核》，其他内容照旧。核对教师已授权的历史。';
+    const followup=await send(target,titleAmendment);
     assert(followup.sent.some(r=>r.status===200&&r.sourceRoles.includes('user')));
     assert.equal((await snapshot(target)).task.id,binding.taskId);
     assert.equal(bindings(target).length,1);
     pass('A requirements amendment preserves the existing Task source',{runId:followup.runId,taskId:binding.taskId});
+    if(amendClass){
+      const editedTask=(await snapshot(target)).task;
+      assert(followup.sent.some(call=>call.stepPreference));
+      assert(editedTask.requirementsVersion>initialRequirements);
+      const changed=await confirmTeachingTarget(until,app,page,target,{...teachingScope,classRef:'A'});
+      assert.notEqual(changed.folder,initial.teachingTarget.folderId);
+      const next=await send(target,'只修改刚才讲解清单的受众，改为给 A 班使用。请在聊天中讲解温度计的读数方法，给出新版清单。');
+      assert(next.sent.some(call=>call.status===200&&call.stepPreference));
+      assert(next.sent.every(call=>!call.sourceRoles.length));
+      const nextTask=(await snapshot(target)).task;
+      assert.equal(nextTask.id,binding.taskId);
+      assert.deepEqual(read('SELECT source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=?',next.runId),[]);
+      pass('Changing only the title preserves B history and general structure; moving the same Task to A excludes all B source bytes and keeps the general structure',{
+        originalTask:editedTask.id,originalRequirements:initialRequirements,titleRequirements:editedTask.requirementsVersion,
+        changedTask:nextTask.id,changedRequirements:nextTask.requirementsVersion,originalClass:initial.teachingTarget,changedClass:changed.folder,
+        titleRun:followup.runId,classRun:next.runId,
+      });
+      return;
+    }
     const nextAmendment=await send(target,'继续修改刚才清单，只把第一个要点改为一句简短的提醒，保留老师的原话和其余要点。请直接在对话中给出修改后的清单。');
     assert(nextAmendment.sent.some(call=>call.status===200 && call.sourceRoles.includes('user')));
     assert.equal((await snapshot(target)).task.id,binding.taskId);

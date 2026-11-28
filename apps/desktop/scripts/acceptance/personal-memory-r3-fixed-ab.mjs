@@ -1,3 +1,4 @@
+import {confirmTeachingTarget} from './confirm-teaching-target.mjs';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {createHash,randomUUID} from 'node:crypto';
@@ -262,69 +263,6 @@ async function allowHistoryDiscovery(app,page,data,sessionId,text){
   return {...source,content:text};
 }
 
-async function seedClass(app,page,sessionId,scope,selectedPreference){
-  const folder=await page.evaluate(async name=>{
-    const hasFolder=workspace=>workspace.folders.find(folder=>folder.name===name)?.id;
-    return hasFolder(await window.omniEdu.listAiConversations())||
-      hasFolder(await window.omniEdu.createAiConversationFolder({name}));
-  },scope.classRef+' 班');
-  assert(folder);
-  await page.evaluate(([session,selector])=>window.omniEdu.moveAiConversationSession(session,selector),[sessionId,folder]);
-  await until(async()=>{
-    const {memoryScope}=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
-    return memoryScope?.currentFolderId===folder;
-  });
-  const opening=app.waitForEvent('window');
-  await page.getByRole('button',{name:'设置',exact:true}).click();
-  const settings=await opening;
-  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
-  const initial=await settings.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
-  assert(initial.ok);
-  const fields=[['subject',scope.subject],['grade',scope.grade]].filter(([field,value])=>initial.value.profile[field]!==value);
-  if(fields.length){
-    for(const [field,value] of fields){
-      await settings.getByTestId('teacher-memory-'+field).click();
-      await settings.getByRole('option',{name:value,exact:true}).click();
-    }
-    await settings.getByTestId('teacher-memory-save').click();
-  }
-  const profile=await until(async()=>{
-    const result=await settings.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
-    return result.ok&&result.value.profile.subject===scope.subject&&result.value.profile.grade===scope.grade
-      ? result.value.profile:null;
-  });
-  await settings.getByTestId('pi-settings-tab-permissions').click();
-  const memory=settings.getByTestId('pi-memory-scope');
-  const memoryTrigger=memory.locator('[data-slot="chat-tool-trigger"]');
-  await memoryTrigger.waitFor();
-  if(await memoryTrigger.getAttribute('aria-expanded')!=='true')await memoryTrigger.click();
-  await memory.getByTestId('pi-memory-enabled').waitFor();
-  await memory.getByRole('button',{name:'本会话的班级和学期'}).click();
-  const [,year,semester]=/^(20[0-9]{2})([FS])$/.exec(scope.termRef)||[];
-  assert(year);
-  const term=year+'-'+(semester==='F'?'fall':'spring');
-  await memory.getByLabel('学期年份',{exact:true}).fill(year);
-  await memory.getByLabel('学期',{exact:true}).selectOption(semester==='F'?'fall':'spring');
-  await memory.getByTestId('pi-memory-confirm-class').click();
-  await memory.getByText('已确认班级和学期，可重新选择本会话的记忆。',{exact:true}).waitFor();
-  if(selectedPreference){
-    await memory.getByTestId('pi-memory-source').selectOption({label:'教师确认的记忆'});
-    const choice=memory.getByTestId('pi-memory-select-'+selectedPreference.id);
-    if(folder===selectedPreference.folder&&term===selectedPreference.term){
-      await choice.check();
-      await memory.getByTestId('pi-memory-enabled').check();
-      await memory.getByTestId('pi-memory-save').click();
-      await until(async()=> (await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId))
-        .memoryScope.selections.some(s=>s.id===selectedPreference.id&&s.version===selectedPreference.revision&&s.state==='ready'));
-    }else{
-      await memory.getByText('暂无可选的教师记忆。',{exact:true}).waitFor();
-      assert.equal(await choice.count(),0);
-    }
-  }
-  await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
-  return {folder,term,profile};
-}
-
 async function attachClassroomSource(page,sessionId,file=attachment){
   await page.getByTestId('office-composer').locator('input[type=file]').setInputFiles([file]);
   const draft=await until(async()=>{
@@ -484,7 +422,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     if(ambiguousCase){
       result.sameTitleSources=[];
       for(const [i,cls] of ['A','B'].entries()){
-        await seedClass(app,page,sessionId,{...task.taskScope,classRef:cls});
+        await confirmTeachingTarget(until,app,page,sessionId,{...task.taskScope,classRef:cls});
         const record=classRecords[i]+' 本条只作课堂记录，请简单回复收到。';
         await seedPrompt(page,input,snapshot,record);
         const title='随堂讲义工作记录';
@@ -503,7 +441,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     }
     let semesterSource;
     if(semesterCase){
-      await seedClass(app,page,sessionId,{...task.taskScope,termRef:'2025F'});
+      await confirmTeachingTarget(until,app,page,sessionId,{...task.taskScope,termRef:'2025F'});
       await seedPrompt(page,input,snapshot,priorHandout,'本次只记录上述讲义的原话，留作历史比较。请确认收到即可。');
       semesterSource=await allowHistoryDiscovery(app,page,data,sessionId,priorHandout);
       result.previousSemester={sessionId,sourceId:semesterSource.source_id,generation:semesterSource.generation,term:'2025-fall'};
@@ -514,7 +452,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       });
     }
     if(courseCase){
-      await seedClass(app,page,sessionId,{...task.taskScope,grade:'高一'});
+      await confirmTeachingTarget(until,app,page,sessionId,{...task.taskScope,grade:'高一'});
       const otherDraft=await attachClassroomSource(page,sessionId,otherCourseFile);
       const other=await seedPrompt(page,input,snapshot,'请读取刚上传的高一数学备课流程，确认版本，仅在这次会话核对。');
       result.otherCourse={sessionId,runId:other.id,attachmentId:otherDraft.id,sha256:hash(otherCourseFile)};
@@ -539,7 +477,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     }
     const initialMessages=artifact?read(data,"SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",sessionId).map(row=>row.content):[];
     const classState=artifact?{folder:artifact.scope.teachingTarget.folderId,term:artifact.scope.teachingTarget.term,
-      profile:{grade:task.taskScope.grade,subject:task.taskScope.subject}}:ambiguousCase?{folder:undefined,term:undefined,profile:{grade:task.taskScope.grade,subject:task.taskScope.subject}}:await seedClass(app,page,sessionId,task.taskScope,classPreference);
+      profile:{grade:task.taskScope.grade,subject:task.taskScope.subject}}:ambiguousCase?{folder:undefined,term:undefined,profile:{grade:task.taskScope.grade,subject:task.taskScope.subject}}:await confirmTeachingTarget(until,app,page,sessionId,task.taskScope,classPreference);
     const now=await until(async()=>{
       const value=await snapshot();
       return value.memoryScope?.teachingTarget?.folderId===classState.folder&&
@@ -563,7 +501,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         const id=await composer.getAttribute('data-session-id');
         return id?.startsWith('aisession_')&&id!==seedSessionId?id:null;
       });
-      await seedClass(app,page,sessionId,task.taskScope);
+      await confirmTeachingTarget(until,app,page,sessionId,task.taskScope);
       const current=await snapshot();
       assert.equal(current.projection.turns.length,0);
       assert.deepEqual(current.memoryScope.selections,[]);
@@ -598,7 +536,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       assert(original.task?.id);
       await page.getByTestId('pi-new-session').click();
       sessionId=await until(async()=>{const id=await composer.getAttribute('data-session-id');return id!==originalSession&&id?.startsWith('aisession_')?id:null;});
-      await seedClass(app,page,sessionId,{...task.taskScope,classRef:'A'});
+      await confirmTeachingTarget(until,app,page,sessionId,{...task.taskScope,classRef:'A'});
       const other=await seedPrompt(page,input,snapshot,otherBrief);
       assert(other.task?.id&&other.task.id!==original.task.id);
       const setup=await app.evaluate(()=>globalThis.r3FixedABRequests);
@@ -805,7 +743,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
           const current=await composer.getAttribute('data-session-id');
           return current?.startsWith('aisession_')&&current!==seedSessionId?current:null;
         });
-        await seedClass(app,page,sessionId,task.taskScope);
+        await confirmTeachingTarget(until,app,page,sessionId,task.taskScope);
         const nextPrompt=sectionOrder?'请编写一份新的八年级一次函数讲义，含一道例题和一道练习，篇幅简短，只在聊天中交付。':'请编写一份新的八年级一次函数讲义，三道求值题，题目和答案都要。沿用我平常的结构，只在聊天里交付。';
         const next=await seedPrompt(page,input,snapshot,nextPrompt);
         followThrough.next={prompt:nextPrompt,runId:next.id,
@@ -834,7 +772,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         const next=await composer.getAttribute('data-session-id');
         return next?.startsWith('aisession_')&&next!==seedSessionId?next:null;
       });
-      await seedClass(app,page,sessionId,task.taskScope);
+      await confirmTeachingTarget(until,app,page,sessionId,task.taskScope);
       assert.deepEqual((await snapshot()).memoryScope.selections,[]);
       const next=await seedPrompt(page,input,snapshot,'为本学期的 B 班用两句话介绍一次函数。');
       const requests=await app.evaluate(()=>globalThis.r3FixedABRequests.filter(item=>item.phase==='subsequent'));
