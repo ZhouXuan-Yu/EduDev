@@ -3,11 +3,13 @@ import type {TaskView} from '../../../shared/xiaozhi-task';
 import type {MethodReviewEvidence} from '../../../shared/xiaozhi-personal-memory';
 import type {PermissionOwner} from '../../../shared/xiaozhi-permissions';
 import type {SkillGovernance} from './service';
+import {namedMethodReview} from './method-history-evidence';
 import {unwrapTaskArguments} from '../tasks/tool-envelope';
 import {SKILL_GOVERNANCE_ERRORS} from '../../../shared/xiaozhi-skill-governance';
 
 /** A teacher may inspect a workflow without publishing a personal Skill. This can only restrict tools. */
 export function methodReviewOnly(request:string) {
+  if (namedMethodReview(request)) return true;
   const text=request.normalize('NFKC');
   if (/(?:不要|不能|不得|别|禁止|不必|不需要|暂不|暂缓|不)(?:再|直接|自动|立即|马上|先|进行|将其|把它|把这个流程)*(?:发布|创建|安装|启用|激活|采用|晋升|保存为|转为|转成|建成)[^，。；！？\n]{0,12}(?:技能|流程|方法|skill)/iu.test(text)) return true;
   if (!/(?:技能|流程|方法|skill)/iu.test(text)) return false;

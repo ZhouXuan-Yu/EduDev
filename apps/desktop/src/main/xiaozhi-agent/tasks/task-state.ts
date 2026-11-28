@@ -205,6 +205,26 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
       checkpoint:record.doc.checkpoint?await readTaskCheckpoint(sql,id,record.doc.checkpoint):null});
   },
   async checkpoint(id:string){const record=await read(sql,id);if(!record)return null;return record.doc.checkpoint?readTaskCheckpoint(sql,id,record.doc.checkpoint):null;},
+  /** Only the reviewed Task created by the teacher's selected original request. */
+  async completedForOrigin(sessionId:string,messageId:string){
+    const rows=await sql.all(`SELECT key,value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'
+      AND key='xiaozhi.task.v1:' || json_extract(value_json,'$.view.id')
+      AND json_extract(value_json,'$.view.sessionId')=? AND json_extract(value_json,'$.view.origin.messageId')=? LIMIT 2`,[sessionId,messageId]);
+    if(rows.length!==1)return;
+    const id=String(rows[0].key).slice('xiaozhi.task.v1:'.length);
+    const {doc}=await recordFromRow(sql,id,rows[0]);
+    const view=doc.view;
+    if(view.state!=='completed'||view.sessionId!==sessionId||view.origin.messageId!==messageId)return;
+    const confirmation=view.checks.find(check=>check.authority==='teacher'&&check.state==='passed'&&check.candidate);
+    if(!confirmation?.candidate)return;
+    await sources(sql,doc);
+    const [result]=await sql.all("SELECT content FROM ai_conversation_messages WHERE id=? AND session_id=? AND role='assistant'",[confirmation.candidate.messageId,sessionId]);
+    if(!result||!taskText(result.content,32000))return;
+    // Unlike a receipt digest, this is independent of the Run/message IDs.
+    return {taskId:id,revision:view.revision,requirementsVersion:view.requirementsVersion,
+      runId:confirmation.runId,resultFingerprint:hash(String(result.content).trim().normalize('NFKC')),
+      confirmationId:confirmation.confirmationId!};
+  },
   async ownerForRun(sessionId:string,runId:string){
     const rows=await sql.all(`SELECT key,value_json FROM app_settings WHERE key LIKE 'xiaozhi.task.v1:xitask_%'
       AND key='xiaozhi.task.v1:' || json_extract(value_json,'$.view.id')

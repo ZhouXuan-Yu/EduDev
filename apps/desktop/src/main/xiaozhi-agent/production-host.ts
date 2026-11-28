@@ -182,6 +182,8 @@ import {createLegacySkillAdapter} from './skills/legacy';
 import {createGovernedSkillSource} from './skills/runtime';
 import {comparisonFor} from './history/teaching-target';
 import {createSkillCreatorTools,currentMethodEvidence,methodReviewOnly} from './skills/tools';
+import {namedMethodReview,readMethodHistoryEvidence} from './skills/method-history-evidence';
+import {currentTeachingTarget} from './memory-scope-state';
 import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
 import {captureRetiredPrivateHistory} from './skills/private-history';
 import {persistNativeSessionReplacement} from './tasks/native-session-replacement';
@@ -1095,6 +1097,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
     const reviewingMethod=Boolean(skillOwner && (methodReviewOnly(admittedPrompt??'') ||
       owner?.task?.criteria.some(criterion=>methodReviewOnly(criterion.text))));
+    const namedReview=reviewingMethod ? namedMethodReview(admittedPrompt??'') : undefined;
     await skillGovernance.activatePending(skillOwner);
     await approvals.migrateLegacy(id);
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
@@ -1178,6 +1181,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       return {...task,selections:combinedMemorySelections(task.selections,turn.selections)};
     };
     const memoryPolicy={loadHistory:loadRunHistory,omitHistory:owner?.omitHistory===true};
+    const methodTasks=namedReview ? createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}) : undefined;
+    const methodHistory=namedReview && methodTasks ? async()=>{
+      const admitted=memoryPolicy.omitHistory ? undefined : await loadRunHistory();
+      return readMethodHistoryEvidence({
+        method:namedReview,sessionId:id,selected:admitted?.selections??[],
+        targetFor:sessionId=>currentTeachingTarget(store.xiaozhiState.sql,sessionId),
+        source:pin=>history.selectedFor(id,pin),
+        reviewedTask:(sessionId,sourceId)=>methodTasks.completedForOrigin(sessionId,sourceId),
+      });
+    } : undefined;
     try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,thinkingBaseline,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       modelProviderHealth:{health:providerHealth,keyForModel:modelId=>'deepseek:'+createHmac('sha256',providerHealthSalt)
         .update(JSON.stringify([settings.providerConfigRevision,settings.apiKey,modelId])).digest('hex')},
@@ -1257,7 +1270,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         () => skillGovernance.isCurrent(skillOwner))
         : {resources: async signal => managedSkills.resourcesForItems((await governedLegacySkills.catalog()).skills.filter(item => item.enabled && !item.archived), signal),
           sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText},
-      methodReviewOnly:reviewingMethod,
+      methodReviewOnly:reviewingMethod,methodHistory,
       methodEvidence:reviewingMethod && skillOwner && owner?.task ? currentMethodEvidence(owner.task,skillOwner) : undefined,
       skillCreatorTools: skillOwner && !reviewingMethod ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),

@@ -32,3 +32,42 @@ test('Task instructions for a trial do not convert the trial into Skill publicat
     assert.equal(methods.methodReviewOnly(prompt),false);
   }
 });
+
+
+test('Independent sample and holdout count only checked, explicitly selected originals in the confirmed teaching scope',async()=>{
+  const {namedMethodReview,readMethodHistoryEvidence}=await import('../../src/main/xiaozhi-agent/skills/method-history-evidence.ts');
+  const method='题目与答案编号复核';
+  assert.equal(namedMethodReview('评估方法：'+method),method);
+  assert.equal(namedMethodReview('评估方法：甲\n评估方法：乙'),undefined);
+  assert(methods.methodReviewOnly('评估方法：'+method));
+  const scope={folderId:'current-class',term:'2026-fall'};
+  const pin=id=>({id,version:1});
+  const source=(id,purpose='发现样本',patch={})=>({
+    ref:{kind:'history_request',sessionId:'class-'+id,recordId:id},
+    text:'验证方法：'+method+'\n证据用途：'+purpose+'\n试验记录',fingerprint:'source-'+id,
+    temporal:{teachingTerm:scope.term},...patch,
+  });
+  const readings=new Map([
+    ['a',source('a')],['b',source('b','留出验证')],['copy',source('copy')],
+    ['prior',source('prior','留出验证',{temporal:{comparisonTargetTerm:'2026-fall'}})],
+    ['quote',source('quote','留出验证',{attributedContent:{}})],
+    ['unreviewed',source('unreviewed','留出验证')],
+    ['cross',source('cross','留出验证')],
+  ]);
+  const inspected=[];
+  const options={method,sessionId:'target',selected:['a','b','copy','prior','revoked','quote','unreviewed','cross'].map(pin),
+    targetFor:async id=>id==='class-cross'?{...scope,folderId:'other'}:scope,
+    source:async ({id})=>{if(!readings.has(id))throw Error('source_changed');return readings.get(id);},
+    reviewedTask:async (_session,id)=>{
+      inspected.push(id);
+      if(id==='unreviewed')return;
+      return {taskId:'task-'+id,runId:'run-'+id,resultFingerprint:id==='copy'?'a':id,confirmationId:'accepted-'+id,revision:2,requirementsVersion:1};
+    }};
+  const result=await readMethodHistoryEvidence(options);
+  assert.deepEqual(result.map(item=>[item.role,item.task.taskId]),[['sample','task-a'],['holdout','task-b']]);
+  assert.deepEqual(inspected,['a','b','copy','unreviewed']);
+  assert.deepEqual(await readMethodHistoryEvidence({...options,selected:[]}),[]);
+  assert.deepEqual(await readMethodHistoryEvidence({...options,method:'另一种方法'}),[]);
+  readings.delete('b');
+  assert.deepEqual((await readMethodHistoryEvidence(options)).map(item=>item.role),['sample']);
+});

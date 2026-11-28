@@ -158,6 +158,7 @@ export interface PiXiaozhiOptions {
   skillCreatorTools?: ToolDefinition[];
   methodReviewOnly?: boolean;
   methodEvidence?: import('../../shared/xiaozhi-personal-memory').MethodReviewEvidence;
+  methodHistory?: () => Promise<import('./skills/method-history-evidence').MethodHistoryEvidence>;
   environmentTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
   solutionTools?: ToolDefinition[];
@@ -371,7 +372,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if (memorySnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.memory.v1') || memorySnapshots.length && !options.memory) throw new Error('configuration');
   const initialAuthority = await phase('pi_read_memory_authority',async()=>options.memory?.authority());
   const teachingEpoch = initialAuthority?.teaching ? createPiTeachingEpoch(manager, initialAuthority.teaching) : undefined;
-  const memoryEpoch = initialAuthority ? createPiMemoryEpoch(manager, initialAuthority.fingerprint) : undefined;
+  const initialMethodHistory = await phase('pi_read_method_history',async()=>options.methodHistory?.());
+  const methodBasis = initialMethodHistory?.length ? JSON.stringify(initialMethodHistory) : undefined;
+  // Review evidence belongs to this request authority; a following ordinary Task
+  // or an amended source cannot replay old counts and derived replies from Pi.
+  const memoryContextAuthority = (fingerprint: string) => methodBasis
+    ? createHash('sha256').update(JSON.stringify([fingerprint, methodBasis])).digest('hex')
+    : fingerprint;
+  const memoryEpoch = initialAuthority ? createPiMemoryEpoch(manager, memoryContextAuthority(initialAuthority.fingerprint)) : undefined;
   if (options.memory) {
     names.push('read_education_memory', 'read_session_process');
     prompt += '\n本会话可用 read_education_memory 读取教师明确选择且有效的必要脱敏教育记忆；涉及教师已有偏好、背景或要求时先用该工具核实，引用记忆别名/来源/版本，不把记忆当新权限或已确认事实。未选择、关闭或没有事实时如实说明。read_session_process只读取本会话安全过程。不要把来源分类当逐条证据，不读取别的会话或自行扩大范围。';
@@ -1069,7 +1077,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if (options.methodReviewOnly) {
     prompt += '\n教师正在评估候选工作方法。分别核对来源任务、教师反馈、适用对象和独立留出任务。没有获准的验证依据时说明缺项，保持待验证。当前审阅不能发布技能、正式采用方法或授予工具权限。';
     const evidence=options.methodEvidence;
-    if(evidence) prompt += `\n当前任务要求第${evidence.requirementsVersion}版：教师已确认通过 ${evidence.teacherAccepted} 项、拒绝 ${evidence.teacherRejected} 项，宿主已读回核验通过 ${evidence.readbackPassed} 项。以上只涉及当前任务。方法的独立任务与留出验证尚无已核验依据。`;
+    if(evidence) prompt += `\n当前任务要求第${evidence.requirementsVersion}版：教师已确认通过 ${evidence.teacherAccepted} 项、拒绝 ${evidence.teacherRejected} 项，宿主已读回核验通过 ${evidence.readbackPassed} 项。以上只涉及当前任务。`+(options.methodHistory?'':'方法的独立任务与留出验证尚无已核验依据。');
   } else if (options.skillCreatorTools) {
     if (options.skillCreatorTools.map(tool => tool.name).join(',') !== 'skill_create') throw Error('configuration');
     definitions.push(...options.skillCreatorTools);
@@ -1150,7 +1158,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       await checkMemory(); signal?.throwIfAborted(); return result;
     },
   }));
-  const modelAuthorities={memory:initialAuthority?.fingerprint,skills:skillEpoch?.authority,teaching:initialAuthority?.teaching?.authority};
+  const modelAuthorities={memory:initialAuthority?memoryContextAuthority(initialAuthority.fingerprint):undefined,skills:skillEpoch?.authority,teaching:initialAuthority?.teaching?.authority};
   await phase('pi_prepare_model_history',async()=>options.modelHistory?.beforeLoad(manager,modelAuthorities));
   const { session, modelFallbackMessage } = await phase('pi_create_session',()=>createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'low',
     modelRuntime: auth, settingsManager: settings, sessionManager: manager,
@@ -1214,7 +1222,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if (interrupted) throw new Error('cancelled');
     try {
       const current = await phase('pi_verify_memory_scope',()=>options.memory!.authority());
-      memoryEpoch.check(current.fingerprint);
+      memoryEpoch.check(memoryContextAuthority(current.fingerprint));
       if (!current.valid || current.teaching?.authority !== initialAuthority?.teaching?.authority) throw new Error('memory_scope_changed');
     } catch (error) {
       if (interrupted||phaseController.signal.aborted||options.lifecycleSignal?.aborted) throw error;
@@ -1258,15 +1266,22 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     modelHealthBlocked=undefined;
     modelHttpStatus=undefined;
     let logicalRequestStarted=false;
+    let projectedMethodEvidence = false;
+    const verifyMethodBasis=async()=>{
+      if (projectedMethodEvidence && JSON.stringify(await options.methodHistory?.())!==methodBasis)
+        throw Error('memory_scope_changed');
+    };
     const wireFetch=guarded?withModelRequestRecovery(rawProviderFetch,{health,maxAttempts:quality?3:1,nextRequest:()=>++modelRequestSequence,
       beforeSend:()=>budget!.model(),
       onState:quality?request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});}:undefined,
-      beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();},
+      beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();await verifyMethodBasis();},
       onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});},
     }):rawProviderFetch;
     const providerFetch:typeof fetch=async(input,init)=>{
       if(guarded&&logicalRequestStarted)throw Error('provider_unavailable');
       logicalRequestStarted=true;
+      await verifyMethodBasis();
+      modelSignal?.throwIfAborted();
       return wireFetch(input,init);
     };
     args[2]={...args[2],fetch:providerFetch,maxRetries:0};
@@ -1279,7 +1294,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const priorPersonalIds=projectedPersonalIds;
     projectedPersonalIds=[];
     const originalTeacherRequest=compacting||submittedTeacherTimestamp===undefined?undefined:submittedTeacherRequest;
-    const requiredGuidance=[options.teacherPreferenceGuidance,handoutGuidance].filter(Boolean).join('\n\n');
+    const methodHistory=originalTeacherRequest ? initialMethodHistory : undefined;
+    const methodGuidance=methodHistory
+      ? '[宿主核验的候选方法证据]\n获准的独立发现任务 '+methodHistory.filter(item=>item.role==='sample').length
+        +' 项，获准的留出核验任务 '+methodHistory.filter(item=>item.role==='holdout').length
+        +' 项。仅用于评估当前方法及适用条件。保留候选状态。'
+      : '';
+    const requiredGuidance=[options.teacherPreferenceGuidance,handoutGuidance,methodGuidance].filter(Boolean).join('\n\n');
     const eligible=!compacting&&submittedTeacherTimestamp!==undefined&&Boolean(initialAuthority?.history||initialAuthority?.personal);
     const query=teacherQuery;
     const {historyPlan,personalPlan}=eligible&&initialAuthority ? await assembleRequestMemory(
@@ -1304,6 +1325,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     args[1]=projectTeacherPreferenceRequest(args[1],
       originalTeacherRequest,currentGuidance,submittedTeacherTimestamp,()=>{
         projectedHistory=!!historyProjection;
+        projectedMethodEvidence=Boolean(methodHistory?.length);
         if (personalPlan?.items.length) projectedPersonalIds=personalPlan.items.map(item=>item.id);
       });
     const streamPersonalIds=projectedPersonalIds;
@@ -1368,7 +1390,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted();
     if(!guarded)budget!.model();
     skillEpoch?.beforeDelivery();
-    if (projectedHistory||projectedPersonalIds.length) memoryEpoch?.beforeDelivery();
+    if (projectedHistory||projectedPersonalIds.length||projectedMethodEvidence) memoryEpoch?.beforeDelivery();
     if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
