@@ -9,6 +9,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
+const multiRevoke=process.argv.includes('--multi-revoke');
 const semesterRules=process.argv.includes('--semester-rules');
 const amendClass=process.argv.includes('--change-class');
 const teachingScope={classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
@@ -23,10 +24,10 @@ const compactionMemory=process.argv.includes('--compaction-memory');
 const unknownHistory=process.argv.includes('--unknown-history');
 const checkPreference=process.argv.includes('--preference-and-history');
 const vagueChoice=checkPreference||process.argv.includes('--vague-choice');
-const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
+const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -155,6 +156,76 @@ ${material}`);
   pass('Post-compaction cold startup and actual model continuation retain the revocation',{runId:resumed.runId});
 }
 
+async function revokeSharedSource(first, sourceSession, recordId, initialGrant, namedPrompt) {
+  await page.getByTestId('pi-new-session').click();
+  const second = await until(async () => {
+    const id = await session();
+    return id?.startsWith('aisession_') && id !== first ? id : null;
+  });
+  await composer().fill(namedPrompt);
+  await page.getByTestId('history-lookup-open').click();
+  await page.getByTestId('history-lookup-query').fill(declaredTitle);
+  await page.getByTestId('history-lookup-search').click();
+  await page.getByTestId('history-candidate-'+recordId).click();
+  await page.getByTestId('history-lookup-use-session').click();
+  await page.getByTestId('history-use-selection').waitFor();
+  const probe = async id => page.evaluate(async ({id,title,sourceId}) => {
+    const result = await window.omniEdu.discoverHistoryMemory(id,title,true);
+    if (!result.ok) throw Error(result.error);
+    const candidate=result.value.candidates.find(item=>item.sourceId===sourceId);
+    return candidate?{ref:candidate.ref,ticket:candidate.ticket}:undefined;
+  },{id,title:declaredTitle,sourceId:initialGrant.source_id});
+  const tickets=[];
+  for(const id of [first,second]) {
+    const ticket=await probe(id);
+    assert(ticket);
+    tickets.push(ticket);
+  }
+  await app.evaluate(()=>{globalThis.holdHistoryResponse=true;});
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  await until(async()=>(await provider()).some(call=>call.held));
+  const grants=[bindings(first)[0],bindings(second)[0]];
+  assert(grants.every(item=>item?.selections.some(pin=>pin.id===initialGrant.source_id)));
+  assert.notEqual(grants[0].taskId,grants[1].taskId);
+  const run=grants[1].admittedBy.runId;
+  pass('Two independently authorized Sessions and Tasks depend on one source; the second real response is in flight',{tasks:grants.map(item=>item.taskId),run});
+  const opening=app.waitForEvent('window');
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  const settings=await opening;
+  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+  await settings.getByTestId('history-settings-session').selectOption(sourceSession);
+  await settings.getByTestId('history-settings-source-'+recordId).getByRole('button',{name:'暂停参考',exact:true}).click();
+  const revoked=await until(()=>read("SELECT generation FROM memory_source_access WHERE record_id=? AND index_allowed=0 AND memory_state='disabled'",recordId)[0]);
+  assert(revoked.generation>initialGrant.generation);
+  async function denied(){
+    for(const [i,id] of [first,second].entries()){
+      assert.equal(await probe(id),undefined);
+      const result=await page.evaluate(({ref,ticket})=>window.omniEdu.previewHistoryMemory(ref,0,true,ticket),tickets[i]);
+      assert.equal(result.ok,false);
+      assert(['permission_denied','source_changed','command_conflict','source_unavailable'].includes(result.error),JSON.stringify(result));
+      assert(!JSON.stringify(result).includes(marker));
+    }
+  }
+  await denied();
+  await app.evaluate(()=>globalThis.releaseHistoryResponse());
+  await until(async()=>!(await snapshot(second)).running);
+  const final=read('SELECT status FROM ai_agent_runs WHERE id=?',run)[0];
+  assert(['failed','interrupted','blocked','cancelled'].includes(final?.status),JSON.stringify(final));
+  assert(read("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='assistant' AND json_extract(metadata_json,'$.agentRunId')=?",second,run).every(row=>!row.content.includes(marker)));
+  pass('Global pause rejects both previews before releasing the real late response; the affected Run cannot commit the source as a reply',{generation:revoked.generation,run,status:final.status});
+  await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
+  await close();await launch();await denied();
+  for(const id of [first,second]){
+    if(await session()!==id)await page.getByTestId('workbench-session-'+id).click();
+    await until(async()=>await session()===id);
+    const next=await send(id,'请用一句话说明摄氏度是什么。仅在聊天中回答。');
+    assert(next.sent.every(call=>call.status===200&&!call.sourceRoles.length));
+    assert(!next.answerUsed);
+    assert.equal(read('SELECT count(*) AS n FROM xiaozhi_memory_reference_deliveries WHERE source_id=? AND run_id=?',initialGrant.source_id,next.runId)[0].n,0);
+  }
+  pass('Cold startup keeps both previous grants unreadable and both genuine continuation requests free of revoked content');
+}
+
 async function launch(){
   const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),
     OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_MODEL:process.env.DEEPSEEK_MODEL||'deepseek-flash'};
@@ -183,6 +254,11 @@ async function launch(){
       const started=Date.now();
       const response=await actual(input,init);
       record.status=response.status;
+      if(globalThis.holdHistoryResponse&&response.ok&&record.sourceRoles.includes('user')){
+        globalThis.holdHistoryResponse=false;
+        record.held=true;
+        await new Promise(resolve=>{globalThis.releaseHistoryResponse=resolve;});
+      }
       if(globalThis.waitForHistoryPause&&record.sourceRoles.includes('user')){
         globalThis.waitForHistoryPause=false;
         record.delayedForPause=true;
@@ -560,7 +636,9 @@ async function runHistoryJourney(){
       await page.getByTestId('history-task-run-failed').waitFor();
       pass('A failed Run retains its specific provider delivery while exposing the durable failure state',{runId:task.runId});
     }
-    if(compactionMemory){
+    if(multiRevoke){
+      await revokeSharedSource(target,sourceSession,row.id,allowed,namedPrompt);
+    }else if(compactionMemory){
       assert.equal(task.answerUsed,true,'The first full Task must actually use the authorized source before testing revocation');
       await revokeThenCompact(target,sourceSession,row.id,allowed);
     }else{
