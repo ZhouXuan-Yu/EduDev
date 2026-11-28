@@ -83,7 +83,10 @@ async function confirmedIsolationBoundary(rows:Record<string,any>[],index:number
   const taintType=isolation.customType.replace('isolation.v1','taint.v1');
   if(teaching){
     const departure=old.at(-1);
-    if(!validTeachingIsolation(data)||data.safeLeaf!==isolation.parentId||safeIndex>=0
+    // The first pre-upgrade Run can have its event owner before the anchor.
+    // In that case the verified prefix may retain metadata, never model messages.
+    const retainedContext=old.slice(0,safeIndex+1).some(row=>['message','custom_message','compaction','branch_summary'].includes(row.type));
+    if(!validTeachingIsolation(data)||data.safeLeaf!==isolation.parentId||retainedContext
       ||departure?.type!=='custom'||departure.customType!==TEACHING_DEPARTURE||!validTeachingDeparture(departure.data)
       ||departure.data.safeLeaf!==data.safeLeaf||departure.data.authority!==data.authority||departure.data.scoped!==data.scoped)return false;
   }else if(safeIndex<0||begin?.type!=='custom'||begin.customType!=='xiaozhi.memory.run.v1'

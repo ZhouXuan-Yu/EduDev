@@ -362,10 +362,10 @@ async function verifyTwoClassTasks(){
   assert.deepEqual(await relation(before.id),bRelations);
   assert.deepEqual(await relation(aTask.id),aRelations);
   assert.equal((await snapshot()).task.id,aTask.id);
-  await page.getByTestId('pi-workbench-open').click();
-  await page.getByTestId('pi-task-filter').click();
-  await page.getByRole('option',{name:'全部',exact:true}).click();
-  const originalTask=page.getByTestId('pi-task-overview-row').and(page.locator('[data-task-id="'+before.id+'"]'));
+  await page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-my_tasks').click();
+  const tasks=page.getByTestId('my-tasks-workspace');
+  await tasks.getByTestId('pi-task-filter').selectOption('all');
+  const originalTask=tasks.locator('[data-testid="pi-task-overview-row"][data-task-id="'+before.id+'"]');
   await originalTask.getByTestId('task-artifact-relations').locator('summary').click();
   const linked=originalTask.getByTestId('task-related-artifact');
   await until(async()=>await linked.count()>=bRelations.length);

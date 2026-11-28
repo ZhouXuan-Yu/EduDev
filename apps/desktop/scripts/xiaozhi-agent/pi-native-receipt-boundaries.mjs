@@ -31,9 +31,9 @@ try{
    try{
      db.exec('CREATE TABLE xiaozhi_event_runs(run_id TEXT,session_id TEXT,generation INTEGER,status TEXT); CREATE TABLE xiaozhi_native_run_bindings(run_id TEXT,generation INTEGER,binding_json TEXT)');
      const sql={all:async(query,args)=>db.prepare(query).all(...args)};
-     for(const [teaching,withInterveningMessage] of [[false,false],[false,true],[true,false],[true,true]]){
+     for(const [teaching,withInterveningMessage,legacy] of [[false,false,false],[false,true,false],[true,false,false],[true,true,false],[true,false,true]]){
        const pi=SessionManager.create(root,root),sessionId='aisession_'+randomUUID();
-       if(teaching){
+       if(teaching&&!legacy){
          pi.appendCustomEntry('xiaozhi.education.snapshot.v1',{});
          createPiTeachingEpoch(pi,teachingAuthority('folder-old','2026-spring'));
        }
