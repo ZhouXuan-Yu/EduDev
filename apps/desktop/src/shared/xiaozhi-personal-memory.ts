@@ -12,6 +12,17 @@ export const teacherMemoryCategories = {
   reusable_method: {layer:'L4', family:'procedural', authority:'verified_method', label:'可复用工作方法'},
 } as const;
 
+/** Read-only evidence about the current task. A method requires independent validation. */
+export type MethodReviewEvidence = {
+  category:'reusable_method';
+  scope:'current_task';
+  requirementsVersion:number;
+  teacherAccepted:number;
+  teacherRejected:number;
+  readbackPassed:number;
+  independentValidation:'not_established';
+};
+
 export function isPersonalMemoryKind(value:unknown):value is PersonalMemoryKind {
   return value === 'preference' || value === 'teaching_context';
 }

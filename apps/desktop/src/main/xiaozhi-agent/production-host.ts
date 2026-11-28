@@ -180,7 +180,7 @@ import {createSkillGovernance} from './skills/service';
 import {createSkillTeamService} from './skills/teams';
 import {createLegacySkillAdapter} from './skills/legacy';
 import {createGovernedSkillSource} from './skills/runtime';
-import {createSkillCreatorTools,methodReviewOnly} from './skills/tools';
+import {createSkillCreatorTools,currentMethodEvidence,methodReviewOnly} from './skills/tools';
 import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
 import {captureRetiredPrivateHistory} from './skills/private-history';
 import {persistNativeSessionReplacement} from './tasks/native-session-replacement';
@@ -1254,6 +1254,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         : {resources: async signal => managedSkills.resourcesForItems((await governedLegacySkills.catalog()).skills.filter(item => item.enabled && !item.archived), signal),
           sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText},
       methodReviewOnly:reviewingMethod,
+      methodEvidence:reviewingMethod && skillOwner && owner?.task ? currentMethodEvidence(owner.task,skillOwner) : undefined,
       skillCreatorTools: skillOwner && !reviewingMethod ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
       boundMockExamBundleId:owner?.mockExamDeliveryResume?owner.resumeDeliveryId:undefined,

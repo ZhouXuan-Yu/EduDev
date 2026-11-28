@@ -155,6 +155,7 @@ export interface PiXiaozhiOptions {
   toolGovernance?: {register: (definitions: readonly ToolDefinition[], signal: AbortSignal) => Promise<RunToolGovernance>};
   skillCreatorTools?: ToolDefinition[];
   methodReviewOnly?: boolean;
+  methodEvidence?: import('../../shared/xiaozhi-personal-memory').MethodReviewEvidence;
   environmentTools?: ToolDefinition[];
   equationTools?: ToolDefinition[];
   solutionTools?: ToolDefinition[];
@@ -1063,7 +1064,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     prompt += '\n操作回执或远端响应不明确时用read_effect_receipt核对本Task已有事实。unknown先核对，不能重复HTTP写入或stdin。网络POST默认同Task/要求版本/目标/内容复用稳定幂等键；明确需要独立的重复操作时，Invoke-XiaozhiRequest可传不同IdempotencyKey，不能用新键绕过未知结果核对。';
   }
   if (options.methodReviewOnly) {
-    prompt += '\\n教师正在评估候选工作方法。分别核对来源任务、教师反馈、适用对象和独立留出任务。没有获准的验证依据时说明缺项，保持待验证。当前审阅不能发布技能、正式采用方法或授予工具权限。';
+    prompt += '\n教师正在评估候选工作方法。分别核对来源任务、教师反馈、适用对象和独立留出任务。没有获准的验证依据时说明缺项，保持待验证。当前审阅不能发布技能、正式采用方法或授予工具权限。';
+    const evidence=options.methodEvidence;
+    if(evidence) prompt += `\n当前任务要求第${evidence.requirementsVersion}版：教师已确认通过 ${evidence.teacherAccepted} 项、拒绝 ${evidence.teacherRejected} 项，宿主已读回核验通过 ${evidence.readbackPassed} 项。以上只涉及当前任务。方法的独立任务与留出验证尚无已核验依据。`;
   } else if (options.skillCreatorTools) {
     if (options.skillCreatorTools.map(tool => tool.name).join(',') !== 'skill_create') throw Error('configuration');
     definitions.push(...options.skillCreatorTools);
