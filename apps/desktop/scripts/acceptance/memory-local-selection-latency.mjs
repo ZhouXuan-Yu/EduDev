@@ -52,6 +52,7 @@ async function measure() {
       const query='温度计实验课堂清单';
       const pins=new Set(selections.map(pin=>pin.id));
       report.sessionId=sessionId;report.taskId=taskId;
+      let firstProjection;
       for(let i=0;i<50;i++){
         const started=performance.now();
         const authority=await scope.authority(sessionId,policy);
@@ -60,8 +61,31 @@ async function measure() {
           remaining=>scope.historyProjection(sessionId,authority.fingerprint,query,remaining,undefined,policy),
           remaining=>authority.personal?scope.personalReferences(sessionId,authority.fingerprint,'latency-'+i,query,remaining,undefined,policy):undefined);
         report.samplesMs.push(performance.now()-started);
+        if(i===0)firstProjection=historyPlan.projection;
+        assert.equal(historyPlan.projection,firstProjection);
+        if(historyPlan.readbacks.length>historyPlan.receipts.length)assert.match(historyPlan.projection,/未列出/u);
+        assert(Buffer.byteLength(historyPlan.projection)<=1400);
         assert(historyPlan.readbacks.length>0&&historyPlan.readbacks.every(item=>pins.has(item.id)));
       }
+      const authority=await scope.authority(sessionId,policy);
+      const references=projection=>JSON.parse(projection.split('\n')[1]);
+      const initialRows=references(firstProjection);
+      const sizes=[];
+      for(const available of [10000,11500,13000,14500]){
+        const plan=await scope.historyProjection(sessionId,authority.fingerprint,query,available,undefined,policy);
+        const rows=references(plan.projection);
+        assert(Buffer.byteLength(plan.projection)<=available/20);
+        for(const row of rows){
+          const original=initialRows.find(item=>item.sourceId===row.sourceId);
+          assert(original&&original.excerpt.startsWith(row.excerpt)&&row.excerpt.length);
+          assert.equal(row.sourceVersion,original.sourceVersion);
+          assert.deepEqual(row.temporal,original.temporal);
+          if(row.excerpt!==original.excerpt)assert.equal(row.excerptOnly,true);
+        }
+        sizes.push({available,rows:rows.length,shortened:rows.filter(row=>initialRows.find(item=>item.sourceId===row.sourceId)?.excerpt!==row.excerpt).length});
+      }
+      assert(sizes.some(item=>item.shortened>0),'A partial quote must fit without dropping its authoritative metadata');
+      report.budgetSweep=sizes;
       report.p95Ms=[...report.samplesMs].sort((a,b)=>a-b)[Math.ceil(report.samplesMs.length*.95)-1];
       assert(report.p95Ms<=250,'Local assembly P95 exceeds 250 ms');
       report.ok=true;

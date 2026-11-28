@@ -1,3 +1,4 @@
+import {normalizeContext, resolveTranscript} from '@earendil-works/pi-ai';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -29,10 +30,16 @@ export async function prepareSafeNativeCompaction(entries: ReturnType<SessionMan
 /** Includes prompt, all messages, thinking replay, tools, output and protocol headroom.
  * Bytes deliberately overestimate typical BPE text tokens; still an estimate, not billing.
  */
-export function estimateFullRequest(context: unknown, maxOutputTokens: number) {
+export function estimateFullRequest(context: unknown, maxOutputTokens: number, exposedTool?:(name:string)=>boolean) {
   const value = context as { systemPrompt?: string; messages?: Parameters<typeof convertToLlm>[0]; tools?: unknown[] };
   let imageTokens=0;
-  const messages = convertToLlm(value.messages || []).map(message => ({ role: message.role, content: typeof message.content==='string'?message.content:message.content.map(part=>{
+  const converted=convertToLlm(value.messages||[]);
+  // DeepSeek's OpenAI-completions adapter collapses system messages and obtains its tools
+  // from the transcript. AgentState.tools contains the same declarations plus local tools.
+  const canonical=exposedTool&&converted.some(message=>message.role==='system'&&message.toolsAdded!==undefined)
+    ?resolveTranscript(normalizeContext({messages:converted.map(message=>message.role==='system'&&message.toolsAdded
+      ?{...message,toolsAdded:message.toolsAdded.filter(tool=>exposedTool(tool.name))}:message)}),false):undefined;
+  const messages = (canonical?.messages??converted).map(message => ({ role: message.role, content: typeof message.content==='string'?message.content:message.content.map(part=>{
     if(part.type!=='image')return part;
     // Pi's native image estimate, never base64 transport characters as text tokens.
     imageTokens+=estimateTokens({role:'user',content:[part],timestamp:0});
@@ -41,5 +48,5 @@ export function estimateFullRequest(context: unknown, maxOutputTokens: number) {
     ...(message.role === 'system' ? {sections:message.sections,toolsAdded:message.toolsAdded,toolsRemoved:message.toolsRemoved} : {}),
     ...(message.role === 'toolResult' ? { toolCallId: message.toolCallId, toolName: message.toolName } : {}) }));
   // Agent tool details/usage are local audit data and are not provider-visible content.
-  return Buffer.byteLength(JSON.stringify({ systemPrompt: value.systemPrompt, messages, tools: value.tools }), 'utf8') + imageTokens + maxOutputTokens + 1024;
+  return Buffer.byteLength(JSON.stringify({ systemPrompt: value.systemPrompt, messages, tools:canonical?undefined:value.tools }), 'utf8') + imageTokens + maxOutputTokens + 1024;
 }

@@ -1165,6 +1165,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   }
   if (modelFallbackMessage || session.model?.provider !== PROVIDER || session.model?.id !== options.model
     || session.getActiveToolNames().some(name => !names.includes(name))) { session.dispose(); throw new Error('configuration'); }
+  // Match the normal provider-facing catalog; compaction and model switches keep their own toolsets.
+  const exposedRequestTool=options.answerOnly?()=>false:toolCatalog?(name:string)=>toolCatalog.exposed(name):undefined;
+  function estimateRequest(context: unknown, output: number, availability?: ChatSourceAvailability) {
+    if (compacting) return estimateFullRequest(context, output);
+    const visible = availability
+      ? (name: string) => availableChatTool(name, availability) && (exposedRequestTool?.(name) ?? true)
+      : exposedRequestTool;
+    return estimateFullRequest(context, output, visible);
+  }
   const previousTransform=session.agent.transformContext;
   session.agent.transformContext=async(messages,signal)=>{
     const transformed=await phase('pi_transform_history',async()=>previousTransform?.(messages,signal),signal)||messages;
@@ -1262,6 +1271,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const handoutGuidance=!compacting&&options.handoutBasis
       ? `[宿主已按完整名称找到指定资料]\n直接用 office_read_material 读取以下 resourceId，从 offset=0 开始，必要时按 nextOffset 续读：${options.handoutBasis.map(item=>item.resourceId).join('、')}。逐份实读，每份至少引用一段原文，只引用这些资料。无法实读时告知老师检查收录状态。`
       : '';
+    const availability = compacting ? undefined : await options.sourceAvailability?.();
+    modelSignal?.throwIfAborted();
     const priorPersonalIds=projectedPersonalIds;
     projectedPersonalIds=[];
     const originalTeacherRequest=compacting||submittedTeacherTimestamp===undefined?undefined:submittedTeacherRequest;
@@ -1269,9 +1280,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     const eligible=!compacting&&submittedTeacherTimestamp!==undefined&&Boolean(initialAuthority?.history||initialAuthority?.personal);
     const query=teacherQuery;
     const {historyPlan,personalPlan}=eligible&&initialAuthority ? await assembleRequestMemory(
-      Math.max(0,Math.min(policy.window,providerWindow)-estimateFullRequest(
+      Math.max(0,Math.min(policy.window,providerWindow)-estimateRequest(
         projectTeacherPreferenceRequest(args[1],originalTeacherRequest,requiredGuidance,submittedTeacherTimestamp),
-        thinkingPolicy.maxOutputTokens)),
+        thinkingPolicy.maxOutputTokens, availability)),
       remaining=>initialAuthority.history
         ? options.memory?.historyProjection?.(initialAuthority.fingerprint,query??'',remaining,args[2]?.signal)
         : undefined,
@@ -1321,8 +1332,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
-    if(!compacting&&options.sourceAvailability){
-      const availability=await options.sourceAvailability();
+    if(availability){
       args[2]?.signal?.throwIfAborted();
       args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'?{...message,
         content:quality?message.content:message.content+'\n'+sourceAvailabilityText(availability),
@@ -1350,7 +1360,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     // Final complete-request gate also applies to native summarization requests.
     args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
-    if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
+    if (estimateRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > Math.min(policy.window,providerWindow)) throw new Error('context_limit');
     await phase('pi_before_model_delivery',async()=>options.beforeModelDelivery?.(),args[2]?.signal);
     await phase('pi_commit_model_admission',async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted();
     if(!guarded)budget!.model();
@@ -1403,6 +1413,19 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const transformed=await previous?.(payload,model);
         imageBatch=await imageRuntime.payload(transformed===undefined?payload:transformed,args[2]?.signal);
         return transformed;
+      }};
+    }
+    if(!compacting&&exposedRequestTool){
+      const previous=args[2]?.onPayload;
+      args[2]={...args[2],onPayload:async(payload,model)=>{
+        const value=await previous?.(payload,model)??payload;
+        const chat=value as {messages?:{content?:unknown}[]};
+        // Image estimates above use Pi's image accounting, independent of transport base64.
+        const textOnly=Array.isArray(chat.messages)&&chat.messages.every(message=>
+          !Array.isArray(message.content)||message.content.every(part=>part?.type==='text'));
+        if(textOnly&&Buffer.byteLength(JSON.stringify(value))+thinkingPolicy.maxOutputTokens+1024>Math.min(policy.window,providerWindow))
+          throw Error('context_limit');
+        return value;
       }};
     }
     let stream: Awaited<ReturnType<typeof nativeStream>>;
@@ -1461,7 +1484,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   async function maybeCompactContext(turn: { context: unknown; message?: { role: string } }, signal?: AbortSignal) {
     if (!policy.auto || compacting || interrupted || budget?.snapshot().exhausted) return false;
     signal?.throwIfAborted();
-    const projected = estimateFullRequest(turn.context, policy.maxOutputTokens);
+    const available = await options.sourceAvailability?.();
+    signal?.throwIfAborted();
+    const projected = estimateRequest(turn.context, policy.maxOutputTokens, available);
     if (!contextBudget.observe(projected)) return false;
     const preparation = await prepareSafeNativeCompaction(manager.getBranch(), { enabled: true, keepRecentTokens: 2048, reserveTokens: NATIVE_COMPACTION_RESERVE_TOKENS });
     if (!preparation) {
@@ -1496,7 +1521,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         estimatedTokensAfter: session.agent.state.messages.reduce((sum, message) => sum + estimateTokens(message), 0) });
       await options.afterAutoCompactCommit?.();
       signal?.throwIfAborted();
-      if (estimateFullRequest({ ...(turn.context as object), messages: session.agent.state.messages }, policy.maxOutputTokens) > policy.window) throw new Error('context_limit');
+      if (estimateRequest({ ...(turn.context as object), messages: session.agent.state.messages }, policy.maxOutputTokens, available) > policy.window) throw new Error('context_limit');
       return true;
     } catch (error) {
       await Promise.allSettled([...compactionResponses]);

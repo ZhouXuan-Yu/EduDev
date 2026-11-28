@@ -24,6 +24,15 @@ const read=(query,...args)=>{
   try{return db.prepare(query).all(...args);}finally{db.close();}
 };
 const report={build:hash(main),original:before,root,checks:[],ok:false};
+const controlWindow=process.argv.includes('--measure-provider-envelope');
+const smallWindow=controlWindow||process.argv.includes('--small-window');
+const windowArg=process.argv.find(arg=>arg.startsWith('--window='));
+const contextWindow=Number(windowArg?.slice('--window='.length)??65536);
+assert([65536,131072].includes(contextWindow),'Use the fixed 64K and 128K sensitivity conditions');
+if(smallWindow){
+  assert(env.DEEPSEEK_API_KEY,'The small-window lane needs the actual provider');
+  if(!controlWindow)env.OMNI_EDU_E2E_PI_CONTEXT_WINDOW=String(contextWindow);
+}
 const interrupt=process.argv.includes('--interrupt-after-admission');
 let app,page;
 async function launch(){
@@ -90,6 +99,58 @@ try{
       };
     });
   }
+  if(smallWindow){
+    if(process.argv.includes('--measure-native-envelope')){
+      const artifacts=fs.readdirSync(path.dirname(main)).filter(name=>/^pi-session-.*\.js$/u.test(name));
+      assert.equal(artifacts.length,1);
+      const file=artifacts[0],line=fs.readFileSync(path.join(path.dirname(main),file),'utf8').split('\n')
+        .findIndex(text=>text.includes('contextBudget.observe(projected)'));
+      assert(line>=0);
+      await app.evaluate(async(_electron,{file,line})=>{
+        const inspector=process.getBuiltinModule('inspector'),session=new inspector.Session();
+        session.connect();
+        const post=(method,args={})=>new Promise((resolve,reject)=>session.post(method,args,(error,value)=>error?reject(error):resolve(value)));
+        await post('Debugger.enable');
+        globalThis.nativeEnvelope=[];
+        await post('Debugger.setBreakpointByUrl',{urlRegex:file.replaceAll('.','\\.')+'$',lineNumber:line,
+          condition:'(globalThis.nativeEnvelope.push({estimate:projected,window:policy.window,output:policy.maxOutputTokens,tools:turn.context.tools.length,toolBytes:Buffer.byteLength(JSON.stringify(turn.context.tools)),systemBytes:Buffer.byteLength(turn.context.systemPrompt||"")}),false)'});
+        globalThis.closeEnvelopeProbe=()=>session.disconnect();
+      },{file,line});
+    }
+    await app.evaluate(({net},prompt)=>{
+      const actual=net.fetch.bind(net);
+      const wire=globalThis.smallWindowWire=[];
+      net.fetch=async(input,init)=>{
+        const url=new URL(typeof input==='string'?input:input.url);
+        if(url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')return actual(input,init);
+        const body=JSON.parse(init.body);
+        const current=body.messages.filter(message=>message.role==='user').map(message=>
+          typeof message.content==='string'?message.content:message.content.map(part=>part.text??'').join('\n'))
+          .findLast(text=>text.includes(prompt))??'';
+        const prefix='[宿主核验的本轮历史资料]\n';
+        const end='需要完整内容时按来源读回。';
+        const tail=current.split(prefix)[1];
+        const block=tail?.includes(end)?tail.slice(0,tail.indexOf(end)+end.length):undefined;
+        const projection=block?prefix+block:'';
+        const line=block?.split('\n')[0];
+        const rows=line?JSON.parse(line):[];
+        const bytes=value=>new TextEncoder().encode(JSON.stringify(value)).length;
+        const record={status:0,model:body.model,outputLimit:body.max_tokens,toolsCount:body.tools?.length??0,
+          toolsBytes:bytes(body.tools??[]),systemBytes:bytes(body.messages.filter(m=>m.role==='system')),
+          wireBytes:bytes(body),hasCurrent:current.includes(prompt),ids:rows.map(row=>row.sourceId),
+          excerptFlags:rows.map(row=>row.excerptOnly),projectionBytes:new TextEncoder().encode(projection).length,
+          omission:!!block&&block.includes('未列出'),usage:null};
+        wire.push(record);
+        const response=await actual(input,init);record.status=response.status;
+        void response.clone().text().then(stream=>{
+          for(const line of stream.split('\n').filter(line=>line.startsWith('data: {'))){
+            const item=JSON.parse(line.slice(6));if(item.usage)record.usage=item.usage;
+          }
+        }).catch(()=>{});
+        return response;
+      };
+    },prompt);
+  }
   const competing=await Promise.all([start(authorized),start(authorized)]);
   assert.equal(competing.filter(result=>result.ok).length,1,JSON.stringify(competing));
   const rejection=competing.find(result=>!result.ok);
@@ -141,6 +202,20 @@ try{
   const [binding]=bindings().map(entry=>JSON.parse(entry.value_json));assert.equal(binding.selections.length,4);
   assert.equal(new Set([...ten,...binding.selections].map(item=>item.id)).size,12);
   report.checks.push('Two overlapping pins allow exactly twelve distinct Session and Task references');
+  if(smallWindow){
+    const wire=await app.evaluate(()=>globalThis.smallWindowWire);
+    const nativeEnvelope=await app.evaluate(()=>{globalThis.closeEnvelopeProbe?.();return globalThis.nativeEnvelope;});
+    report.smallWindow={nativeEnvelope,contextWindow:controlWindow?'provider_default':contextWindow,wire};
+    assert(wire.length&&wire.every(call=>call.status===200&&call.hasCurrent));
+    const [first]=wire;
+    assert(first.ids.length>0&&first.ids.length<=2);
+    assert(first.ids.every(id=>binding.selections.some(pin=>pin.id===id)));
+    assert(first.projectionBytes>0&&first.projectionBytes<=1400,JSON.stringify(first));
+    assert(first.excerptFlags.every(flag=>typeof flag==='boolean'));
+    assert(first.omission,'The teacher-approved eligible references omitted from the prompt must be distinguished from a complete history');
+    assert(wire.every(call=>call.usage&&call.usage.total_tokens<=contextWindow));
+    report.checks.push('The real provider received intact teacher instructions and a bounded, explicitly incomplete selection from the twelve approved references');
+  }
   const durable=bindings();
   const duplicate=await start(authorized);
   assert.equal(duplicate.ok,false);assert.deepEqual(bindings(),durable);assert.deepEqual(saved(),[row]);

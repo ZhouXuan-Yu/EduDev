@@ -16,8 +16,9 @@ const source = freshSeed ? null : fs.realpathSync(path.resolve(appRoot, process.
 if(source){const relative=path.relative(testRoot,source);assert(!relative.startsWith('..')&&!path.isAbsolute(relative)&&path.basename(source)==='data');}
 const output = fs.mkdtempSync(path.join(testRoot, 'pi-auto-ui-')), dataRoot = path.join(output, 'data');
 if(source)fs.cpSync(source,dataRoot,{recursive:true,errorOnExist:true,force:false});else fs.mkdirSync(dataRoot);
-const cfg = fs.readFileSync(path.join(appRoot, '.env.local'), 'utf8'), pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
-const key = pick('DEEPSEEK_API_KEY'), model = pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(key);
+const configPath = path.join(appRoot, '.env.local');
+const cfg = fs.existsSync(configPath) ? fs.readFileSync(configPath, 'utf8') : '', pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
+const key = process.env.DEEPSEEK_API_KEY || pick('DEEPSEEK_API_KEY'), model = process.env.DEEPSEEK_MODEL || pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(key);
 let binding,original,marker=randomUUID().slice(0,8);
 if(source){const db=new DatabaseSync(path.join(dataRoot,'app.db'),{readOnly:true});binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings').all().find(value=>{const file=path.join(dataRoot,'xiaozhi-pi',value.session_file);return fs.existsSync(file)&&fs.readFileSync(file,'utf8').includes('"type":"compaction"');});db.close();assert(binding);original=fs.readFileSync(path.join(source,'xiaozhi-pi',binding.session_file),'utf8');marker=original.match(/教育验收码([a-f0-9]{8})/)?.[1];assert(marker);}
 const checks = [], report = { suite: 'pi-auto-compaction-formal-ui', success: false, model, checks,

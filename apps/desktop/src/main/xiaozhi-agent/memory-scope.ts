@@ -174,15 +174,37 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         candidates.push({pin,score,row,receipt});
       }
       candidates.sort((a,b)=>b.score-a.score||a.pin.id.localeCompare(b.pin.id,'en'));
-      const output:typeof candidates=[];
-      for(const item of candidates){
-        if(output.length===2)break;
-        if(Buffer.byteLength(JSON.stringify([...output,item].map(candidate=>candidate.row)))<=budget)output.push(item);
-      }
+      const ranked = candidates;
+      const pack = (limit: number) => {
+        const selected: typeof ranked = [];
+        for (const candidate of ranked) {
+          if (selected.length === 2) break;
+          const rows = selected.map(item => item.row);
+          const fits = (row: typeof candidate.row) => Buffer.byteLength(JSON.stringify([...rows, row])) <= limit;
+          if (fits(candidate.row)) {
+            selected.push(candidate);
+            continue;
+          }
+          // Keep identity, version and temporal provenance intact. Trim only the quoted source text.
+          const points = Array.from(candidate.row.excerpt);
+          let low = 0, high = points.length;
+          const excerptRow = (length: number) => ({...candidate.row, excerpt: points.slice(0, length).join(''), excerptOnly: true});
+          while (low < high) {
+            const mid = Math.ceil((low + high) / 2);
+            if (fits(excerptRow(mid))) low = mid;
+            else high = mid - 1;
+          }
+          if (low > 0) selected.push({...candidate, row: excerptRow(low)});
+        }
+        return selected;
+      };
+      let output = pack(budget);
+      const omission = output.length < candidates.length ? '\n其余获准来源未列出。' : '';
+      if (omission) output = pack(budget - Buffer.byteLength(omission));
       const final=await authority(id,policy);
       signal?.throwIfAborted();
       if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
-      return {projection:output.length?historyProjectionPrefix+JSON.stringify(output.map(item=>item.row))+historyProjectionSuffix:'',
+      return {projection:candidates.length?historyProjectionPrefix+JSON.stringify(output.map(item=>item.row))+omission+historyProjectionSuffix:'',
         receipts:output.map(item=>item.receipt),readbacks:candidates.map(item=>item.receipt)};
     },
     async readHistoryPage(id:string,expectedAuthority:string,request:import('./memory-tools').HistoryPageRequest,signal?:AbortSignal,policy?:RunMemoryPolicy) {
