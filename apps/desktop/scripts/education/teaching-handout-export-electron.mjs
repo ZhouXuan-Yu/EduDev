@@ -19,7 +19,17 @@ const title=baseline.title??'等式变形分层学案';
 const physics=title===physicsHandout.title;
 const filePrefix=physics?'浮力与物体浮沉':'等式变形学案';
 const generatedFixture=process.argv.includes('--generated-fixture');
-const liveExport=process.argv.includes('--live-export');
+const stopBeforeExport=process.argv.includes('--frozen-stop-export');
+const liveExport=process.argv.includes('--live-export')||stopBeforeExport;
+const stopFixturePath=stopBeforeExport?process.argv[process.argv.indexOf('--frozen-stop-export')+1]:undefined;
+const stopFixtureBytes=stopFixturePath?fs.readFileSync(stopFixturePath):undefined;
+const stopFixtureHash=stopFixtureBytes?createHash('sha256').update(stopFixtureBytes).digest('hex'):undefined;
+const stopFixture=stopFixtureBytes?JSON.parse(stopFixtureBytes).cases.find(item=>item.id==='R3-FX-007'):undefined;
+if(stopBeforeExport){
+  assert.equal(stopFixtureHash,'53000255841392a5d3ef6cae264623d89e2326cfab6ac6fb114a19c28b4ade20');
+  assert.deepEqual([stopFixture?.condition,stopFixture?.expectedBehavior],['stop_effect','task_over_memory']);
+  assert.equal(stopFixture?.teacherRequest,'先不要导出，稍后再说。');
+}
 const partialEdit=process.argv.includes('--partial-then-edit');
 const sameSession=process.argv.includes('--two-class-tasks');
 const sameTitle=sameSession&&process.argv.includes('--same-title');
@@ -36,6 +46,12 @@ fs.cpSync(oldData,data,{recursive:true,filter:file=>!/app\.db-(wal|shm)$/u.test(
 const desktop=path.resolve(import.meta.dirname,'../..'),main=testMain(desktop);
 const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const report={ok:false,output,bookId,sessionId,main,sha256:sha(main),paidRequests:0,checks:[],errors:[]};
+if(stopBeforeExport){
+  assert.equal(report.sha256,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
+  assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/u);
+  report.fixture={id:stopFixture.id,sha256:stopFixtureHash,request:stopFixture.teacherRequest,scope:stopFixture.taskScope};
+  report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
+}
 const lanes={
   bundle:{user:`把已确认的《${title}》导出为学生版和教师版 Word 文件，两个文件一次确认保存。`,outputs:[
     {audience:'student',path:`${filePrefix}-学生版.docx`},{audience:'teacher',path:`${filePrefix}-教师版.docx`}]},
@@ -66,7 +82,7 @@ async function launch(cold=false,settleOnOriginal=true){
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{cold,liveExport,title,partialPath,classSwitch,protectedTerms,alternateRule})=>{
+  await app.evaluate(({net},{cold,liveExport,title,partialPath,classSwitch,protectedTerms,alternateRule,stopInstruction})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
     if(partialPath&&!cold){
       const disk=process.getBuiltinModule('node:fs'),link=disk.linkSync;
@@ -93,6 +109,7 @@ async function launch(cold=false,settleOnOriginal=true){
         if(liveExport||state.liveEdit){
           if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
           const request={phase,index,status:0,model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens};
+          if(stopInstruction)request.stopInstruction=JSON.stringify(body.messages).includes(stopInstruction);
           if(classSwitch && (phase==='alternate'||phase==='class-a-document')){
             const messages=JSON.stringify(body.messages);
             request.containsOriginal=protectedTerms.some(term=>messages.includes(term));
@@ -160,7 +177,7 @@ async function launch(cold=false,settleOnOriginal=true){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport,title,classSwitch,alternateRule,protectedTerms:classSwitch?[...(sameTitle?[]:[title]),baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
+  },{cold,liveExport,title,classSwitch,alternateRule,stopInstruction:stopFixture?.teacherRequest,protectedTerms:classSwitch?[...(sameTitle?[]:[title]),baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -538,8 +555,66 @@ async function runExport(){
   check('Cold data readback preserves file identities and the exact bytes without replay');
 }
 
+async function runStopExport(){
+  const sources=sql('SELECT id,local_path FROM teacher_resources');
+  for(const source of sources){
+    const location=path.relative(oldData,source.local_path);
+    assert(location&&!location.startsWith('..')&&!path.isAbsolute(location));
+    const local=path.join(data,location);
+    assert(fs.existsSync(local));
+    sql('UPDATE teacher_resources SET local_path=? WHERE id=?',[local,source.id],true);
+  }
+  const [version]=sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed' ORDER BY revision DESC LIMIT 1",[bookId]);
+  assert(version);
+  await launch();
+  await send('bundle');
+  const bundle=page.getByTestId('pi-delivery-bundle').last();
+  const approve=bundle.getByTestId('pi-delivery-approve');
+  await readyApproval(approve);
+  const before=(await snapshot()).task;
+  const prior=ledger();
+  assert(before?.id);
+  assert.equal(prior.length,2);
+  assert(prior.every(row=>row.state==='pending'&&JSON.parse(row.draft_json).handoutSource.versionId===version.id));
+  assert.deepEqual(facts(),[]);
+  const prepared=await app.evaluate(()=>globalThis.handoutExportTest);
+  assert(prepared.requests.some(call=>call.status===200));
+  const composer=page.getByTestId('office-prompt-input');
+  await composer.fill(stopFixture.teacherRequest);
+  await composer.press('Control+Enter');
+  const queued=page.getByTestId('pi-queued-instruction').filter({hasText:stopFixture.teacherRequest});
+  await queued.getByText('补充到本轮',{exact:true}).waitFor();
+  assert.deepEqual(facts(),[]);
+  await bundle.getByTestId('pi-delivery-reject').click();
+  const stopped=await settle();
+  const after=(await snapshot()).task;
+  report.stop={taskBefore:before,taskAfter:after,queuedInstruction:stopFixture.teacherRequest,
+    prepared:prepared.requests,stopped:stopped.requests,
+    ledgerBefore:prior.map(({draft_json,...row})=>row),ledgerAfter:ledger().map(({draft_json,...row})=>row)};
+  report.paidRequests=stopped.requests.length;
+  assert(stopped.requests.slice(prepared.requests.length).some(call=>call.status===200&&call.stopInstruction));
+  assert.equal(after?.id,before.id);
+  assert.deepEqual(facts(),[]);
+  assert(ledger().every(row=>row.state!=='saved'));
+  const oldApprovalStillAvailable=await approve.isVisible()&&await approve.isEnabled();
+  report.stop.oldApprovalStillAvailable=oldApprovalStillAvailable;
+  if(oldApprovalStillAvailable){
+    await approve.click();
+    await until(async()=>!(await snapshot()).running);
+  }
+  assert.deepEqual(facts(),[],'A pending export must not save files after the teacher says to stop');
+  assert(ledger().every(row=>row.state!=='saved'));
+  await app.close();app=undefined;
+  await launch(true);
+  assert.deepEqual(facts(),[]);
+  assert(ledger().every(row=>row.state!=='saved'));
+  check('The exact stop instruction prevents a prepared export, including an old approval and cold restart',
+    {taskId:before.id,oldApprovalStillAvailable});
+}
+
 try{
-  await runExport();
+  if(stopBeforeExport)await runStopExport();
+  else await runExport();
   if(sameSession)await verifyTwoClassTasks();
   report.ok=true;
 }catch(error){
