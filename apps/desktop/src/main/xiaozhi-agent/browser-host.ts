@@ -126,6 +126,25 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       throw new Error(teacherAddress?'protected_url':'permission_denied');
     return url;
   }
+  // Only the trusted address bar accepts search terms. Page links and Pi tools supply URLs.
+  async function teacherNavigationTarget(raw:string){
+    const input=raw.trim();
+    if(!input||input.length>2048||/[\u0000-\u001f\u007f]/.test(input))throw new Error('invalid_input');
+    if(/^(?:[a-z]:[\\/]|\\|\/(?!\/)|~[\\/]|\.{1,2}[\\/])/i.test(input))throw new Error('local_address');
+    if(input.startsWith('//'))return safeUrl('https:'+input,true);
+    // Check host:port before URI schemes so mi.com:443 and localhost:3000 stay addresses.
+    const authority=input.split(/[/?#]/,1)[0];
+    const hostWithPort=/^(?:[\w.-]+|\[[\da-f:]+\]):\d+$/i.test(authority);
+    if(!hostWithPort&&/^[a-z][a-z\d+.-]*:/i.test(input))return safeUrl(input,true);
+    const looksLikeHost=!/\s/.test(authority)&&(
+      /[.\u3002\uff0e\uff61@:\[\]]/.test(authority)||/^localhost$|^\d+$/i.test(authority)||authority!==input
+    );
+    if(looksLikeHost)return safeUrl('https://'+input,true);
+    if(sensitive.test(input)||await options.sanitize(input)!==input)throw new Error('protected_url');
+    const search=new URL('https://www.baidu.com/s');
+    search.searchParams.set('wd',input);
+    return safeUrl(search.href,true);
+  }
   function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});updateWindowTitle(g);}
   function showTab(g:Group,tab:Tab){if(g.active!==tab.id)clearPointer(g.tabs.get(g.active));for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready'||tab.state==='blank'&&g.layout.presentation!=='floating'){g.status.setVisible(false);updateWindowTitle(g);}else showStatus(g,tab.error||tab.state);}
   async function closeGroup(id:string){const group=groups.get(id);if(!group)return;
@@ -354,7 +373,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       if(g.owner!=='teacher'||g.busy)throw new Error(g.busy?'busy':'permission_denied');
       if(operation==='navigate'){
         if(!value)throw new Error('invalid_input');
-        const url=await safeUrl(value,true);
+        const url=await teacherNavigationTarget(value);
         if(g.closing||g.owner!=='teacher'||g.busy||groups.get(id)!==g)throw new Error('cancelled');
         retireExpiredScope(id);
         const tab=g.tabs.get(g.active);

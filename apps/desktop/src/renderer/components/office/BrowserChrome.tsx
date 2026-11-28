@@ -17,9 +17,8 @@ export function BrowserAddress({tab,run,starter=false}:{tab?:BrowserTab;run:RunB
     event.preventDefault();
     const input=value.trim();
     if(!input)return;
-    const url=/^[a-z][a-z0-9+.-]*:\/\//i.test(input)||/^(file|javascript|data|about|mailto|tel|blob):/i.test(input)?input:'https://'+input;
     if(!tab&&!(await run('new-tab')))return;
-    if(await run('navigate',url))field.current?.blur();
+    if(await run('navigate',input))field.current?.blur();
   }
   return <form className={starter?'browser-start-address':'browser-address'} onSubmit={event=>void submit(event)}>
     {!starter&&<>
@@ -27,7 +26,7 @@ export function BrowserAddress({tab,run,starter=false}:{tab?:BrowserTab;run:RunB
       <button type="button" aria-label="前进" title="前进" disabled={!tab?.canForward} onClick={()=>void run('forward')}><ArrowRight size={16}/></button>
       <button type="button" aria-label={tab?.state==='loading'?'停止加载':'刷新'} title={tab?.state==='loading'?'停止加载':'刷新'} disabled={!tab||tab.state==='blank'} onClick={()=>void run(tab?.state==='loading'?'stop':'reload')}>{tab?.state==='loading'?<Square size={15}/>:<RotateCw size={16}/>}</button>
     </>}
-    <label><Globe size={15} aria-hidden="true"/><input ref={field} aria-label="网页地址" data-testid="browser-address" type="text" spellCheck={false} autoComplete="off" value={value} placeholder="输入网址" onChange={event=>setValue(event.target.value)} onFocus={event=>event.currentTarget.select()} onKeyDown={event=>{if(event.key==='Enter'&&(event.nativeEvent.isComposing||event.nativeEvent.keyCode===229)){event.preventDefault();return;}if(event.key==='Escape'){setValue(tab?.url||'');event.currentTarget.blur();}}}/></label>
+    <label><Globe size={15} aria-hidden="true"/><input ref={field} aria-label="网页地址" data-testid="browser-address" type="text" spellCheck={false} autoComplete="off" value={value} placeholder="搜索或输入网址" onChange={event=>setValue(event.target.value)} onFocus={event=>event.currentTarget.select()} onKeyDown={event=>{if(event.key==='Enter'&&(event.nativeEvent.isComposing||event.nativeEvent.keyCode===229)){event.preventDefault();return;}if(event.key==='Escape'){setValue(tab?.url||'');event.currentTarget.blur();}}}/></label>
   </form>;
 }
 

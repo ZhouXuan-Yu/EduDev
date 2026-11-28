@@ -24,6 +24,8 @@ try {
     ['example.com/#lesson','example.com','#lesson'],
     ['https://www.moe.gov.cn/','www.moe.gov.cn',''],
     ['https://www.baidu.com/','www.baidu.com',''],
+    ['小米网站','www.baidu.com',''],
+    ['www.mi.com','www.mi.com',''],
   ]){
     if(results.length)await dock.getByRole('button',{name:'新建网页标签'}).click();
     const start=performance.now();
@@ -38,7 +40,12 @@ try {
     }while(Date.now()<finish);
     const url=tab?.url?new URL(tab.url):undefined;
     const pass=tab?.state==='ready'&&url?.hostname===hostname&&(!fragment||url.hash===fragment);
-    const result={input,pass,state:tab?.state,loaded:tab?.url,title:tab?.title,elapsedMs:Math.round(performance.now()-start)};
+    let contentVerified=true;
+    if(input==='小米网站'&&pass){
+      const guest=app.context().pages().find(candidate=>candidate.url()===tab.url);
+      contentVerified=!!guest&&url.searchParams.get('wd')===input&&await guest.getByRole('link',{name:/小米/}).first().isVisible();
+    }
+    const result={input,pass:pass&&contentVerified,state:tab?.state,loaded:tab?.url,title:tab?.title,elapsedMs:Math.round(performance.now()-start)};
     results.push(result);
     console.log(JSON.stringify(result));
   }
@@ -50,4 +57,4 @@ try {
   fs.rmSync(resolved,{recursive:true,force:false,maxRetries:2});
   console.log(JSON.stringify({passed:results.filter(result=>result.pass).length,total:results.length,released:true}));
 }
-assert.equal(results.filter(result=>result.pass).length,3);
+assert.equal(results.filter(result=>result.pass).length,5);

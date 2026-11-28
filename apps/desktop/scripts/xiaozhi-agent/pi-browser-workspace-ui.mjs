@@ -30,6 +30,11 @@ try{
       seen.add(partition);
       partition.protocol.handle('https',req=>{
         const url=new URL(req.url);
+        if(url.hostname==='www.baidu.com'&&url.searchParams.size===1&&url.searchParams.get('wd')==='小学 科学 A&B')
+          return new Response('<title>教研搜索</title>',{headers:{'Content-Type':'text/html;charset=utf-8'}});
+        if(url.hostname==='www.baidu.com'&&url.pathname==='/s'&&url.searchParams.get('wd')==='小米网站')
+          return new Response('<title>搜索结果</title><a href="https://www.mi.com/">小米官网</a>',{headers:{'Content-Type':'text/html;charset=utf-8'}});
+        if(url.hostname==='www.mi.com')return new Response('<title>小米官网</title><h1>小米官网</h1>',{headers:{'Content-Type':'text/html;charset=utf-8'}});
         if(url.hostname==='other-fixture.invalid')
           return new Response('<title>另一公开站资料</title><h1>另一公开站资料</h1>',{headers:{'Content-Type':'text/html;charset=utf-8'}});
         if(url.hostname!=='fixture.invalid')return new Response('',{status:403});
@@ -50,6 +55,17 @@ try{
   await page.getByTestId('pi-browser-toggle').click();
   await dock.getByRole('heading',{name:'打开网页'}).waitFor();
   await page.screenshot({path:path.join(evidence,'new-tab.png')});
+  await address.fill('小米网站');await address.press('Enter');
+  await tab('搜索结果').waitFor();
+  const results=instance.context().pages().find(candidate=>candidate.url().startsWith('https://www.baidu.com/s?'));
+  assert(results);
+  await address.fill('小学 科学 A&B');
+  assert.equal(new URL(results.url()).searchParams.get('wd'),'小米网站');
+  await address.press('Enter');await tab('教研搜索').waitFor();
+  await tab('后退').click();await tab('搜索结果').waitFor();
+  await results.getByRole('link',{name:'小米官网'}).click();await tab('小米官网').waitFor();
+  await tab('后退').click();await tab('搜索结果').waitFor();
+  checks.push('A Chinese search opens results, follows an official site link and goes back');
   await address.fill(origin+'/one');await address.press('Enter');
   await tab('教研一').waitFor();
   const guest=instance.context().pages().find(p=>p.url()===origin+'/one');
@@ -83,6 +99,16 @@ try{
     checks.push('The standalone window can hand back and retake control through the same status strip');
   }
 
+  await toolbar.getByRole('button',{name:'新建网页标签',exact:true}).click();
+  await toolbar.getByRole('button',{name:'新标签页',exact:true}).waitFor();
+  const floatingAddress=toolbar.getByTestId('browser-address');
+  await floatingAddress.fill('www.mi.com');await floatingAddress.press('Enter');
+  await toolbar.getByRole('button',{name:'小米官网',exact:true}).waitFor();
+  await floatingAddress.fill('小米网站');await floatingAddress.press('Enter');
+  await toolbar.getByRole('button',{name:'搜索结果',exact:true}).waitFor();
+  await toolbar.getByRole('button',{name:'关闭网页 搜索结果',exact:true}).click();
+  await toolbar.getByRole('button',{name:'教研二',exact:true}).waitFor();
+  checks.push('The detached address bar accepts both a bare domain and search words');
   await toolbar.getByRole('button',{name:'后退',exact:true}).click();
   await toolbar.getByRole('button',{name:'教研一',exact:true}).waitFor();
   await toolbar.getByRole('button',{name:'放回对话',exact:true}).click();
@@ -103,6 +129,10 @@ try{
   await tab('第一份讲义.txt').waitFor({state:'detached'});
   await tab('教研一').click();await dock.getByTestId('pi-browser-slot').waitFor();
   checks.push('Two authorized local documents share the tab strip and remain independently closable');
+  await address.fill('C:\\讲义目录\\第一份 教案.docx');await address.press('Enter');
+  await dock.getByText('这是本机或局域网地址。教学文件可从右栏的「对话文件」打开。').waitFor();
+  await address.fill('小米网站 token=synthetic');await address.press('Enter');
+  await dock.getByText('网址含登录凭据或敏感内容。请使用站点主页，再在网页中登录。').waitFor();
   await address.fill('http://127.0.0.1:15175/');await address.press('Enter');
   await dock.getByText('这是本机或局域网地址。教学文件可从右栏的「对话文件」打开。').waitFor();
   await address.fill('file:///C:/synthetic.html');await address.press('Enter');
