@@ -9,6 +9,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
+const semesterRules=process.argv.includes('--semester-rules');
 const amendClass=process.argv.includes('--change-class');
 const teachingScope={classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
 const exclusion=process.argv.includes('--task-exclusion');
@@ -25,16 +26,16 @@ const vagueChoice=checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle='温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
-const source='这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
+const source=semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
 const alternateMarker='冬砂比对先橙后红';
-const alternateSource='这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
+const alternateSource=semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
@@ -311,7 +312,7 @@ async function runHistoryJourney(){
     await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
   }
-  if(amendClass)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
+  if(amendClass||semesterRules)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
   if(checkPreference||amendClass){
     await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
     const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -322,9 +323,10 @@ async function runHistoryJourney(){
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
   assert(row?.id);
   let alternative;
-  if(vagueChoice){
+  if(vagueChoice||semesterRules){
     await page.getByTestId('pi-new-session').click();
     const id=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession?id:null;});
+    if(semesterRules)await confirmTeachingTarget(until,app,page,id,{...teachingScope,termRef:'2026S'});
     await send(id,alternateSource,{answer:'这是合成记录，请简单确认收到。'});
     const candidate=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",id,alternateSource)[0];
     assert(candidate?.id);
@@ -332,7 +334,7 @@ async function runHistoryJourney(){
   }
   await page.getByTestId('pi-new-session').click();
   const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
-  if(amendClass)await confirmTeachingTarget(until,app,page,target,teachingScope);
+  if(amendClass||semesterRules)await confirmTeachingTarget(until,app,page,target,teachingScope);
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -353,6 +355,31 @@ async function runHistoryJourney(){
   }
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
+  if(semesterRules){
+    const currentPrompt='当前是秋季，请根据本次选择的 B 班温度计实验记录，原样给出目前正在使用的完整复核口令。';
+    const oldPrompt='回顾 B 班春季的温度计实验，与当前秋季区分。当时使用的完整复核口令是什么？能否从原话确定具体启用日期？请只回答启用时间是否可确认，省略系统记录日期。';
+    for(const [prompt,ref,original,historical] of [[currentPrompt,row.id,source,false],[oldPrompt,alternative.recordId,alternateSource,true]]){
+      await composer().fill(prompt);
+      await page.getByTestId('history-lookup-open').click();
+      if(historical)await page.getByRole('checkbox',{name:'查找本班上学期的资料（仅本次比较）'}).check();
+      await page.getByTestId('history-lookup-search').click();
+      await page.getByTestId('history-candidate-'+ref).click();
+      await page.getByTestId('history-lookup-preview').getByText(original,{exact:true}).waitFor();
+      await page.getByTestId('history-lookup-use').click();
+      await page.getByTestId('history-intent-pending').waitFor();
+      const observed=await send(target,prompt);
+      const turn=(await snapshot(target)).projection.turns.find(item=>item.id===observed.runId);
+      const reply=turn.items.filter(item=>item.role==='assistant').map(item=>item.text).join('\n');
+      assert(observed.sent.some(call=>call.status===200&&(historical?call.alternateRoles:call.sourceRoles).includes('user')));
+      if(!historical)assert(observed.sent.every(call=>!call.alternateRoles.length));
+      assert(reply.includes(historical?alternateMarker:marker),reply);
+      assert(!/\d{4}[-/.年]\d{1,2}[-/.月]\d{1,2}/u.test(reply),reply);
+      if(historical)assert(/无法|不能|没有|未记|不详|未提供|不确定/u.test(reply),reply);
+      pass(historical?'Earlier spring rule is expressly previewed; actual response preserves the unknown effective date':'Current fall rule is read from the current class, with no spring text sent',{runId:observed.runId,reply});
+    }
+    assert(!(await snapshot(target)).memoryScope.selections.length);
+    return;
+  }
   if(unknownHistory){
     const before=(await snapshot(target)).memoryScope;
     assert.deepEqual(before.selections,[]);
