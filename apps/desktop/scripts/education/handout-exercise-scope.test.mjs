@@ -125,3 +125,21 @@ test('an unbound follow-up asks the teacher for the title without claiming the b
   assert.equal(reads[0].choices,undefined);
   assert(!JSON.stringify(reads[0]).includes('教学讲义'));
 });
+
+for(const prompt of ['这份讲义只改第三题。','请仅修改这份学案的第三题。','修改这份讲义的知识讲解。']){
+  test('unbound task requests a teacher designation for '+prompt,async()=>{
+    const {reads,queries,proposed,edit}=await exerciseTools(prompt,[3],async()=>undefined,false);
+    assert.equal(reads[0].error,'book_selection_required');
+    assert.equal(reads[0].chapter,undefined);
+    assert(queries.every(query=>query.taskOnly&&!query.title&&!query.bookId));
+    await edit(0);
+    assert.equal(proposed.length,0);
+  });
+}
+
+test('a quoted old request cannot designate an unbound handout for a new task',async()=>{
+  const {reads,queries}=await exerciseTools('上次的说明是“请修改《教学讲义》”。这次请修改这份讲义的知识讲解。',[3],undefined,false);
+  assert.equal(reads[0].error,'book_selection_required');
+  assert.equal(reads[0].chapter,undefined);
+  assert(queries.every(query=>query.taskOnly));
+});

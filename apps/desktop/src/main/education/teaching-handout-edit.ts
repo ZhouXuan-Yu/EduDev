@@ -109,13 +109,15 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
   function tools(run:{prompt:string;sessionId:string;runId:string;owner:()=>HandoutOwner;current:()=>boolean;teacherSelection?:()=>Promise<string|undefined>},wait:Wait):ToolDefinition[] {
     const numbers=requestedExerciseNumbers(run.prompt);
     const preserved=protectedExerciseNumbers(run.prompt);
-    const implicitBook=!/(?:讲义|学案|《)/u.test(run.prompt);
     const titles=[...run.prompt.matchAll(/《([^《》]+)》/gu)].map(match=>match[1]);
+    const titlePrefix=run.prompt.slice(0,run.prompt.indexOf('《')).trim();
+    const directTarget=titles.length===1&&/^(?:请(?:你|帮我)?|帮我)?(?:继续|再次|现在|本次|这次)?(?:修改|修订|调整|编辑|将|把|给|对)\s*(?:这份|讲义|学案)?$/u.test(titlePrefix);
+    const implicitBook=!directTarget;
     let observed:{clarification?:string;protectedBlocks:Set<string>;exerciseTargets?:Set<string>;bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
     const fence=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!run.current())throw Error('cancelled');};
     return [{
       name:READ_HANDOUT_EDIT,label:'读取讲义修改位置',
-      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。未提供标题时使用当前任务唯一讲义或会话唯一讲义。遇 book_selection_required 时用 ask_teacher 请老师回答“请修改《完整书名》”并说明本次改动，收到回答后重新读取。',
+      description:'按讲义标题或本轮已知 bookId 读取同会话的当前讲义。多章时先返回目录，再带 chapterId 读取指定章正文、公式与练习。章节长时可加 blockId 单独读取某一个块。老师未指明书名时只读当前任务绑定的讲义。遇 book_selection_required 时用 ask_teacher 请老师回答“请修改《完整书名》”并说明本次改动，收到回答后重新读取。',
       parameters:handoutEditReadParameters as ToolDefinition['parameters'],
       execute:async(_id,raw,signal)=>{
         try{
@@ -124,13 +126,14 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
             raw.title!==undefined&&(typeof raw.title!=='string'||!raw.title.trim()||raw.title.length>200||raw.bookId!==undefined)||
             raw.chapterId!==undefined&&!handoutChapterId(raw.chapterId)||
             raw.blockId!==undefined&&(!handoutBlockId(raw.blockId)||raw.chapterId===undefined))throw Error('invalid_input');
-          if(numbers && titles.length>1)throw Error('exercise_scope');
-          const answer=numbers&&implicitBook ? await run.teacherSelection?.() : undefined;
+          const answer=implicitBook ? await run.teacherSelection?.() : undefined;
           const selectedTitle=clarifiedBookTitle(answer);
           fence(signal);
-          const target=numbers ? {title:titles[0]??selectedTitle,taskOnly:implicitBook&&!selectedTitle} : {bookId:raw.bookId,title:raw.title};
+          if(titles.length&&!directTarget&&!selectedTitle)throw Error('book_selection_required');
+          const titleSelection=directTarget?titles[0]:selectedTitle;
+          const target={title:titleSelection,taskOnly:!titleSelection};
           const item=await options.versions.forEdit(run.sessionId,run.owner().taskId,target).catch(error=>{
-            if('taskOnly' in target&&target.taskOnly&&error instanceof Error&&error.message==='book_unavailable')
+            if(target.taskOnly&&error instanceof Error&&error.message==='book_unavailable')
               throw Error('book_selection_required');
             throw error;
           });
@@ -143,7 +146,8 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
             return receipt({error:'ambiguous',message:handoutEditErrors.ambiguous,choices},false);
           }
           const {content,digest}=item,bookId=content.book.id,title=await sanitize(content.book.title);
-          if(numbers&&(raw.bookId&&raw.bookId!==bookId||raw.title&&handoutTitleKey(raw.title)!==handoutTitleKey(content.book.title)))throw Error('exercise_scope');
+          if(raw.bookId&&raw.bookId!==bookId||raw.title&&handoutTitleKey(raw.title)!==handoutTitleKey(content.book.title))
+            throw Error(numbers?'exercise_scope':'book_selection_required');
           const chapters=await Promise.all(content.chapters.map(async chapter=>({id:chapter.id,title:await sanitize(chapter.title)})));
           const chapterId=raw.chapterId??(chapters.length===1?chapters[0].id:undefined);
           const clarifiedNumbers=selectedTitle&&answer?requestedExerciseNumbers(answer):undefined;
@@ -170,7 +174,7 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
         try{
           guard();
           if(!validHandoutEditInput(raw))throw Error('invalid_input');
-          if(numbers&&implicitBook&&run.teacherSelection){
+          if(implicitBook&&run.teacherSelection){
             const selection=await run.teacherSelection();
             guard();
             if(observed?.clarification!==selection)throw Error('source_required');
