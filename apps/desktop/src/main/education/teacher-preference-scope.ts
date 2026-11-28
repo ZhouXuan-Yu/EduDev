@@ -23,10 +23,9 @@ export function selectTeacherPreferenceValues(values:TeacherPreferenceValues,req
  if(!text)return selected;
  if(!exportAlreadyChosen&&fileIntent.test(text)&&!processQuestion.test(text)&&!explicitFile.test(text.toLowerCase())&&values.exportFormat)
   selected.exportFormat=values.exportFormat;
- const studentVersion=/学生(?:用)?版/.test(text)&&!/教师(?:用)?版|答案版|解析版/.test(text);
  if(values.handoutSectionOrder&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentSectionOrder.test(text))
   selected.handoutSectionOrder=values.handoutSectionOrder;
- if(values.handoutAnswerPlacement&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentHandoutAnswer.test(text)&&!studentVersion)
+ if(values.handoutAnswerPlacement&&handoutWork.test(text)&&!processQuestion.test(text)&&!currentHandoutAnswer.test(text))
   selected.handoutAnswerPlacement=values.handoutAnswerPlacement;
  if(!explanation.test(text)||artifactOnly.test(text)||processQuestion.test(text)||shortAnswer.test(text))return selected;
  if(values.length&&!length.test(text))selected.length=values.length;

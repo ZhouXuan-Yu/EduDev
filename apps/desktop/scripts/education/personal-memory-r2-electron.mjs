@@ -10,6 +10,7 @@ import { arch, cpus, release, totalmem } from 'node:os';
 import { setTimeout as wait } from 'node:timers/promises';
 import { _electron as electron } from 'playwright';
 import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
+import { confirmTeachingTarget } from '../acceptance/confirm-teaching-target.mjs';
 
 const baselineIndex=process.argv.indexOf('--baseline-desktop');
 const desktop=baselineIndex<0?path.resolve(import.meta.dirname,'../..'):fs.realpathSync(process.argv[baselineIndex+1]);
@@ -29,19 +30,23 @@ assert(!(rejection&&verifyPending),'The explicit rejection journey uses the exis
 const cancelJob=process.argv.includes('--cancel-job');
 const measureLatency=process.argv.includes('--latency');
 const workerUnavailable=process.argv.includes('--worker-unavailable');
-const handout=process.argv.includes('--handout');
+const frozenCurrentException=process.argv.includes('--frozen-current-exception');
+const handout=process.argv.includes('--handout')||frozenCurrentException;
 const profileUse=process.argv.includes('--profile-use');
 const localEdition='本机校对用青桐试教版';
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
 const root = fs.mkdtempSync(path.join(evidence,profileUse?'profile-use-pi-':workerUnavailable?'r2-worker-unavailable-electron-':cancelJob?'r2-cancel-electron-':
   measureLatency?'r2-latency-electron-':rejection?'r2-reject-electron-':adoption?'r2-adoption-electron-'
-  :handout?'r2-handout-electron-':'r2-fast-path-electron-'));
+  :frozenCurrentException?'r3-frozen-current-exception-':handout?'r2-handout-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
-const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root, sha256, sourceSha };
+const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root, sha256, sourceSha,
+  ...(frozenCurrentException?{fixture:'R3-FX-001',fixtureRequest:'学生版默认答案放最后，本次第三题后给解析。',
+    productSourceSha:process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??null}: {}) };
 const prefix = 'xiaozhi.teacher-preference.v1';
+const frozenScope={classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
 let app, page, settingsPage;
 
 async function until(read, timeout=90000, interval=140) {
@@ -245,6 +250,9 @@ function verifyHandoutLayout(text) {
 }
 
 async function handoutPreference(){
+  if(frozenCurrentException){
+    await confirmTeachingTarget(until,app,page,await active(),frozenScope);
+  }
   const requirement='以后我的讲义答案统一放最后。';
   const taught=await send(requirement);
   const head=currentHead();
@@ -263,6 +271,11 @@ async function handoutPreference(){
   } finally{db.close();}
   assert((await wire()).some(row=>row.preference.some(text=>text.includes('宿主已保存本次明确的长期表达偏好'))));
   check('the handout layout is saved immediately with the original teacher message and revision',{revision:head.revision,runId:taught.id});
+
+  if(frozenCurrentException){
+    await verifyFrozenCurrentException(head);
+    return;
+  }
 
   await fresh();
   let offset=(await wire()).length;
@@ -298,6 +311,63 @@ async function handoutPreference(){
     assert(replies.some(row=>row.content.trim()===nextText.trim()));
   }finally{readback.close();}
   check('A fresh task after cold restart applies the original answer layout and its persisted reply matches the actual output',
+    {sessionId:nextSession,runId:next.id,revision:head.revision,text:nextText});
+}
+
+async function verifyFrozenCurrentException(head){
+  await fresh();
+  const currentSession=await active();
+  const confirmed=await confirmTeachingTarget(until,app,page,currentSession,frozenScope);
+  assert.equal(confirmed.term,'2026-fall');
+  const initial=await send('请为B班八年级数学制作一份学生版“整式加减”小讲义，含四道编号练习题。先在对话中呈现，不导出。');
+  const exact=report.fixtureRequest;
+  const exception=await send(exact);
+  assert.deepEqual(currentHead(),head,'A current-task exception must not replace the long-term preference head');
+  const revised=await send('请按本次任务的最新要求，完整给出修订后的学生版讲义，保留四道编号练习题。只在对话里给出，不导出。');
+  const text=revised.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
+  assert(text.includes('整式')&&text.includes('3'),'The answer must refer to the current teaching task');
+  const lines=text.split(/\r?\n/);
+  const normalized=lines.map(line=>line.trim().replace(/^>\s*/, '').replace(/^#{1,6}\s+/, '').replace(/\*\*/g,''));
+  const headings=normalized.map(sectionTitle);
+  const exercises=headings.findIndex(title=>title.startsWith('练习'));
+  const third=normalized.findIndex((line,index)=>index>exercises&&/^3[.、．)）]\s*\S/.test(line));
+  const explanation=normalized.findIndex((line,index)=>index>third&&/^第(?:3|三)题解析/.test(line));
+  const fourth=normalized.findIndex((line,index)=>index>explanation&&/^4[.、．)）]\s*\S/.test(line));
+  const answers=headings.findIndex((title,index)=>index>fourth&&title.startsWith('参考答案'));
+  assert(exercises>=0&&third>exercises&&explanation>third&&fourth>explanation&&answers>fourth,
+    'The actual handout must place the third-question explanation before question four, with general answers at the end');
+  const turns=(await snapshot(currentSession)).projection.turns;
+  assert(turns.some(turn=>turn.id===exception.id));
+  const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+  try{
+    const replies=db.prepare("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='assistant' AND json_extract(metadata_json,'$.agentRunId')=?").all(currentSession,revised.id);
+    assert(replies.some(row=>row.content.trim()===text.trim()),'The displayed response must match persisted content');
+  }finally{db.close();}
+  check('the exact current exception stays in the B-class task and preserves the global preference',
+    {sessionId:currentSession,initialRunId:initial.id,exceptionRunId:exception.id,revisedRunId:revised.id,
+      savedHead:head,visibleText:text});
+  await close();
+  await launch();
+  assert.deepEqual(currentHead(),head,'The same long-term version must survive a cold restart');
+  await fresh();
+  const nextSession=await active();
+  await confirmTeachingTarget(until,app,page,nextSession,frozenScope);
+  const callsBefore=(await wire()).length;
+  const next=await send('请给B班八年级数学制作一份新的“平行线性质”学生版小讲义。练习小节列两道短题，答案小节标题为参考答案。只在对话里给出，不导出。');
+  const nextCalls=(await wire()).slice(callsBefore);
+  assert(nextCalls.some(row=>row.status===200&&row.preference.some(value=>value.includes('将答案集中放在讲义末尾'))),
+    'The saved long-term preference must be delivered to the new task after restart');
+  const nextText=next.items.filter(item=>item.role==='assistant').map(item=>item.text??'').join('\n');
+  const nextLines=nextText.split(/\r?\n/).map(line=>line.trim().replace(/^#{1,6}\s+/, '').replace(/\*\*/g,''));
+  const nextHeadings=nextLines.map(sectionTitle);
+  const nextExercises=nextHeadings.findIndex(title=>title.startsWith('练习'));
+  const nextAnswers=nextHeadings.findIndex((title,index)=>index>nextExercises&&title.startsWith('参考答案'));
+  const numbered=lines=>lines.filter(line=>/^\d+[.、．)）]\s*\S/.test(line));
+  assert(nextExercises>=0&&nextAnswers>nextExercises&&numbered(nextLines.slice(nextExercises+1,nextAnswers)).length===2
+    &&numbered(nextLines.slice(nextAnswers+1)).length===2,'The fresh handout must have two exercises followed by the two answers');
+  assert(!nextText.includes('第三题解析'),'The one-task exception must not enter the next task');
+  assert.deepEqual(currentHead(),head);
+  check('a new B-class task after restart applies the saved default without the former task exception',
     {sessionId:nextSession,runId:next.id,revision:head.revision,text:nextText});
 }
 
