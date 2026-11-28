@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import {HANDOUT_EDIT_SCHEMA,type HandoutEditDiff,type HandoutEditInput,type HandoutEditStatus,type HandoutEditSummary} from '../../shared/teaching-handout-edit';
 import type {TeachingBookVersion} from '../../shared/teaching-book-version';
 import {protocolHash} from '../xiaozhi-agent/capabilities/validation';
+import type {TaskView} from '../../shared/xiaozhi-task';
 import type {Sql} from '../xiaozhi-agent/session-state';
 import {createTaskState} from '../xiaozhi-agent/tasks/task-state';
 import type {createTeachingBookVersions} from './teaching-book-versions';
@@ -137,4 +138,25 @@ export async function readHandoutEditEffect(sql:Sql,owner:Pick<HandoutOwner,'ses
   const [version]=await sql.all("SELECT digest FROM teaching_book_versions WHERE id=? AND book_id=? AND kind='edited_draft'",
     [row.version.id,row.input.bookId]);
   return version?.digest===row.version.digest?'matched' as const:'uncertain' as const;
+}
+
+/** A settled, teacher-approved edit of this exact version in the current scope. */
+export async function confirmedHandoutEditPredecessor(sql:Sql,task:TaskView,version:TeachingBookVersion,scopeUpdatedAt:string) {
+  if(task.goal||task.binding||!['review_required','completed'].includes(task.state))return;
+  const runId=task.lastRunId??task.origin.runId;
+  const [record]=await sql.all(`SELECT review.*,r.created_at AS run_started,e.status AS event_status,e.generation AS event_generation
+    FROM teaching_handout_edit_reviews review JOIN ai_agent_runs r ON r.id=review.run_id AND r.session_id=review.session_id
+    JOIN xiaozhi_event_runs e ON e.run_id=r.id AND e.session_id=r.session_id
+    WHERE review.session_id=? AND review.run_id=? AND review.book_id=? AND review.state='applied'
+      AND r.status='succeeded'`,[task.sessionId,runId,version.bookId]);
+  if(!record||record.event_status!=='completed'||!(Date.parse(String(record.run_started))>=Date.parse(scopeUpdatedAt)))return;
+  const review=decode(record);
+  if(review.owner.taskId!==task.id||review.owner.requirementsVersion!==task.requirementsVersion||
+    review.owner.generation!==Number(record.event_generation)||review.version?.digest!==version.digest||
+    !(Date.parse(review.version.createdAt)<=Date.parse(version.createdAt)))return;
+  if(await readHandoutEditEffect(sql,review.owner,review.callId)!=='matched')return;
+  const [unsettled]=await sql.all("SELECT 1 FROM xiaozhi_effects_v1 WHERE task_id=? AND session_id=? AND state IN ('intent','executing','unknown','failed') LIMIT 1",
+    [task.id,task.sessionId]);
+  if(unsettled)return;
+  return {id:task.id,revision:task.revision};
 }

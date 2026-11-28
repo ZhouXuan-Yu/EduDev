@@ -50,7 +50,7 @@ test('confirmed handout teaching context cannot use a partial class code or a la
   try{
     const sql={all:async(q,args=[])=>db.prepare(q).all(...args)};
     const read=(name='B 班')=>resume.confirmedHandoutTeachingScope(sql,task.sessionId,name);
-    db.exec("UPDATE ai_conversation_folders SET name='八年级 B 班数学（合成）'");
+    db.exec("UPDATE ai_conversation_folders SET name='八年级 B 班数学（合成）', archived_at=NULL; UPDATE ai_conversation_sessions SET archived_at=NULL");
     assert.deepEqual(await read(),{folderId:'aifolder_22222222-2222-4222-8222-222222222222',term:'2026-fall',version:2,updatedAt:'2026-11-27T11:00:00.000Z'});
     for(const name of ['A 班','AB 班','八年级'])assert.equal(await read(name),undefined);
     db.exec("UPDATE ai_conversation_folders SET name='八年级 AB 班数学（合成）'");

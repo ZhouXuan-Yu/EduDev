@@ -143,6 +143,21 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
         return append(work,content,'confirmed',new Date().toISOString());
       });
     },
+    async forConfirmedResume(work:Sql,sessionId:string,target:{title:string}|{from:string;until:string}) {
+      const books=await sessionBooks(work,sessionId);
+      const matches=[];
+      for(const book of books){
+        if('title'in target&&handoutTitleKey(book.title)!==handoutTitleKey(target.title))continue;
+        const version=await latestConfirmation(work,book.bookId);
+        if(!version||'from'in target&&!(version.createdAt>=target.from&&version.createdAt<target.until))continue;
+        if(matches.length)return undefined;
+        matches.push({...book,version});
+      }
+      const candidate=matches[0];
+      if(!candidate)return;
+      const {version}=await confirmedContent(work,candidate.bookId,{bookId:candidate.bookId,versionId:candidate.version.id,digest:candidate.version.digest});
+      return {taskId:candidate.taskId,version};
+    },
     async forExport(sessionId:string,taskId:string,target:{title?:string;bookId?:string;taskOnly?:boolean}|TeachingHandoutVersionRef={}) {
       return read(async work=>{
         const selected=await chooseBook(work,sessionId,taskId,target);

@@ -345,14 +345,23 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    next.eventOwner=clone(owner);return save(work,before,next);
   });},
   async pause(sessionId:string,id:string,revision:number){return transaction(async work=>{const before=await load(work,id,revision);if(before.doc.view.sessionId!==sessionId||before.doc.view.state!=='active')throw Error('permission_denied');const next=clone(before.doc);next.view.state='paused';next.view.binding=null;return save(work,before,next);});},
-  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string,continuationMessageId?:string,continuationTarget?:TaskContinuation,revisionInstruction?:string){return transaction(async work=>{
+  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string,continuationMessageId?:string,continuationTarget?:TaskContinuation,revisionInstruction?:string,handoutPredecessor?:{id:string;revision:number}){return transaction(async work=>{
    await current(work,owner);await command(work,owner,commandId);const before=await load(work,id,revision),next=clone(before.doc);
    const continuation=continuationMessageId?await source(work,owner.sessionId,continuationMessageId):undefined;
    if(continuationTarget&&(!continuation||continuationTarget.taskId!==next.view.id||continuationTarget.requirementsVersion!==next.view.requirementsVersion))throw Error('task_resume_invalid');
    if(continuation&&next.view.sources.length>=32)throw Error('task_capacity');
    if(continuation&&(continuation.source.runId!==owner.runId||!continuationTarget&&!isTaskFollowUp(continuation.text)||next.view.goal||next.view.sources.some(s=>s.messageId===continuationMessageId)))throw Error('task_resume_invalid');
    if(revisionInstruction!==undefined&&(!continuation||!isBoundTaskAmendment(continuation.text)))throw Error('task_resume_invalid');
-   if(next.view.sessionId!==owner.sessionId||goalId&&next.view.goal?.id!==goalId||!(['paused','interrupted'].includes(next.view.state)||next.view.state==='review_required'&&(Boolean(goalId)||Boolean(continuation)||taskHasRemainingSteps(next.view)))||next.lineage.some(o=>o.runId===owner.runId)||await latestId(work,owner.sessionId)!==id)throw Error('task_resume_invalid');
+   const latest=await latestId(work,owner.sessionId);
+   if(next.view.sessionId!==owner.sessionId||goalId&&next.view.goal?.id!==goalId||!(['paused','interrupted'].includes(next.view.state)||next.view.state==='review_required'&&(Boolean(goalId)||Boolean(continuation)||taskHasRemainingSteps(next.view)))||next.lineage.some(o=>o.runId===owner.runId))throw Error('task_resume_invalid');
+   if(handoutPredecessor){
+     if(!continuationTarget||goalId||latest!==handoutPredecessor.id||latest===id||!work.change)throw Error('task_resume_invalid');
+     const prior=(await load(work,handoutPredecessor.id,handoutPredecessor.revision)).doc.view;
+     if(prior.sessionId!==owner.sessionId||prior.binding||prior.goal||!['review_required','completed'].includes(prior.state))throw Error('task_resume_invalid');
+     if(await work.change('UPDATE app_settings SET value_json=?,updated_at=? WHERE key=? AND value_json=?',
+       [JSON.stringify({schema:TASK_SCHEMA,taskId:id}),stamp(),latestKey(owner.sessionId),JSON.stringify({schema:TASK_SCHEMA,taskId:prior.id})])!==1)
+       throw Error('task_revision_conflict');
+   }else if(latest!==id)throw Error('task_resume_invalid');
    if(continuation){
     next.view.sources.push(continuation.source);
     if(revisionInstruction!==undefined)recordTaskAmendment(next.view,continuation.source,revisionInstruction);

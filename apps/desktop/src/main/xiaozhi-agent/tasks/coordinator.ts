@@ -13,6 +13,8 @@ import {createGoalState,publicGoal,type PrivateGoal} from '../goal-state';
 import {goalFromSource,goalCriterionId} from './goal-binding';
 import {isTaskContinuation,isBoundTaskAmendment} from './continuation';
 import {assertPaperTaskContinuation} from './paper-export-continuation';
+import {confirmedHandoutTeachingScope,type ConfirmedHandoutRequest} from './class-resume';
+import {confirmedHandoutEditPredecessor} from '../../education/teaching-handout-edit-state';
 import type {TaskRecoveryInspection} from '../../../shared/xiaozhi-task-recovery';
 import type {TaskControlAction,TaskControlInput} from '../../../shared/xiaozhi-task-control';
 
@@ -52,12 +54,36 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   const success=row.status==='completed';if(task.state==='review_required')try{await state().candidate(id,task.id);return;}catch{/* Interrupted/corrupt completion stays unaccepted. */}
   locked.add(id);try{await checkpoint(id,work=>state(work).settle(own,task.id,task.revision,!success));}finally{locked.delete(id);}
  }
- async function committedRecord(id:string){
-  const record=await state().latestSummary(id);if(!record)return null;
+ async function committedRecord(id:string,work=sql,taskId?:string){
+  const tasks=state(work);
+  const record=taskId?await tasks.summaryRecord(taskId):await tasks.latestSummary(id);if(!record)return null;
   const task=record.view;
-  const rows=await sql.all("SELECT e.event_json,e.event_hash FROM xiaozhi_event_journal e JOIN xiaozhi_event_runs r ON r.run_id=e.run_id AND r.generation=e.generation WHERE r.session_id=? AND json_extract(e.event_json,'$.kind')='task' AND json_extract(e.event_json,'$.task.id')=? ORDER BY e.rowid DESC LIMIT 1",[id,task.id]);
+  if(task.sessionId!==id)throw Error('permission_denied');
+  const rows=await work.all("SELECT e.event_json,e.event_hash FROM xiaozhi_event_journal e JOIN xiaozhi_event_runs r ON r.run_id=e.run_id AND r.generation=e.generation WHERE r.session_id=? AND json_extract(e.event_json,'$.kind')='task' AND json_extract(e.event_json,'$.task.id')=? ORDER BY e.rowid DESC LIMIT 1",[id,task.id]);
   if(!rows.length)throw Error('task_record_uncommitted');const raw=String(rows[0].event_json);if(digest(raw)!==rows[0].event_hash)throw Error('task_record_uncommitted');const event=JSON.parse(raw) as XiaozhiAgentEvent;
   if(event.kind!=='task'||event.durability!=='committed'||event.sessionId!==id||!validTaskView(event.task)||JSON.stringify(event.task)!==JSON.stringify(task))throw Error('task_record_uncommitted');return record;
+ }
+ async function readConfirmedHandoutResume(work:Sql,sessionId:string,request:ConfirmedHandoutRequest){
+  const scope=await confirmedHandoutTeachingScope(work,sessionId,'className'in request?request.className:undefined);
+  if(!scope)return;
+  const candidate=await options.store.teachingBookVersions.forConfirmedResume(work,sessionId,request);
+  if(!candidate||!(Date.parse(scope.updatedAt)<=Date.parse(candidate.version.createdAt)))return;
+  const [origin,head]=await Promise.all([committedRecord(sessionId,work,candidate.taskId),committedRecord(sessionId,work)]);
+  const task=origin?.view,current=head?.view;
+  if(!task||task.goal||task.binding||!['paused','interrupted','review_required'].includes(task.state)||!current)return;
+  const predecessor=current.id===task.id?undefined:await confirmedHandoutEditPredecessor(work,current,candidate.version,scope.updatedAt);
+  if(current.id!==task.id&&!predecessor)return;
+  if(!predecessor&&!(Date.parse(scope.updatedAt)<=Date.parse(task.createdAt)))return;
+  return {request,scope,version:candidate.version,task,predecessor};
+ }
+ async function prepareConfirmedHandoutResume(sessionId:string,request:ConfirmedHandoutRequest){
+  await allowed(sessionId);
+  const read=(work:Sql)=>readConfirmedHandoutResume(work,sessionId,request);
+  try{return await (sql.readTransaction?sql.readTransaction(read):read(sql));}
+  catch(error){
+   if(error instanceof Error&&['book_unavailable','not_confirmed','version_conflict','source_changed','version_unavailable'].includes(error.message))return;
+   throw error;
+  }
  }
  async function committed(id:string):Promise<TaskView|null>{return (await committedRecord(id))?.view??null;}
  async function details(id:string):Promise<TaskSnapshot>{
@@ -85,9 +111,11 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
  }
  return{
   assertContinuationAllowed,
+  prepareConfirmedHandoutResume,
   async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation,allowNaturalAmendment=true,
    admission?:{onAdmitted?:(work:Sql,task:TaskView,owner:TaskOwner)=>Promise<void>;
-    recoveryBase?:{taskId:string;requirementsVersion:number}}){
+    recoveryBase?:{taskId:string;requirementsVersion:number};
+    confirmedHandout?:NonNullable<Awaited<ReturnType<typeof prepareConfirmedHandoutResume>>>}){
    const checkpointAdmission=(admit:(work:Sql)=>Promise<TaskView>)=>publisher.checkpointTask(async work=>{
     const base=admission?.recoveryBase;
     if(base){
@@ -101,6 +129,19 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
     return task;
    });
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
+   const confirmedHandout=admission?.confirmedHandout;
+   if(confirmedHandout){
+    assertPaperTaskContinuation(confirmedHandout.task,detail.messages);
+    return checkpointAdmission(async work=>{
+     const current=await readConfirmedHandoutResume(work,sessionId,confirmedHandout.request);
+     if(!current||current.task.id!==confirmedHandout.task.id||current.task.revision!==confirmedHandout.task.revision||
+      JSON.stringify(current.scope)!==JSON.stringify(confirmedHandout.scope)||
+      current.version.id!==confirmedHandout.version.id||current.version.digest!==confirmedHandout.version.digest||
+      JSON.stringify(current.predecessor)!==JSON.stringify(confirmedHandout.predecessor))throw Error('task_context_changed');
+     const target={taskId:current.task.id,requirementsVersion:current.task.requirementsVersion};
+     return state(inline(work)).resume(publisher.owner,current.task.id,current.task.revision,commandId,undefined,message.id,target,undefined,current.predecessor);
+    });
+   }
    if(continuation){
     const current=await committed(sessionId);
     if(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion||current.goal||!['paused','interrupted','review_required'].includes(current.state))throw Error('task_resume_invalid');

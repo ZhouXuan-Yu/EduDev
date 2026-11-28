@@ -62,6 +62,7 @@ const result=(data:object,ok:boolean)=>({content:[{type:'text' as const,text:JSO
 export function createConfirmedHandoutContinuationTool(options:{
   sessionId:string;taskId:string;prompt:string;state:ReturnType<typeof createTeachingBookVersions>;
   current:()=>boolean;sanitize:(text:string)=>Promise<string>;teacherSelection:()=>Promise<string|undefined>;
+  pinned?:TeachingHandoutVersionRef&{assertScope:()=>Promise<void>;onRead:()=>void};
 }):ToolDefinition {
   const check=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw Error('cancelled');};
   return {
@@ -74,10 +75,12 @@ export function createConfirmedHandoutContinuationTool(options:{
         if(!plainStudentInput(raw,['bookId','title'])||Object.keys(raw).length>1||
           raw.bookId!==undefined&&!handoutBookId(raw.bookId)||
           raw.title!==undefined&&(typeof raw.title!=='string'||!raw.title.trim()||raw.title.length>200))throw Error('invalid_input');
-        const answer=await options.teacherSelection();
+        const pinned=options.pinned;
+        await pinned?.assertScope();
+        const answer=pinned?undefined:await options.teacherSelection();
         const title=continuationTitle(answer??options.prompt);
         if(answer!==undefined&&!title)throw Error('book_selection_required');
-        const target=title?{title}:{taskOnly:true};
+        const target=pinned?{bookId:pinned.bookId,versionId:pinned.versionId,digest:pinned.digest}:title?{title}:{taskOnly:true};
         const item=await options.state.forExport(options.sessionId,options.taskId,target);
         if(item.kind!=='found')throw Error('book_selection_required');
         if(raw.bookId!==undefined&&raw.bookId!==item.version.bookId||
@@ -88,8 +91,10 @@ export function createConfirmedHandoutContinuationTool(options:{
         const latest=await options.state.forExport(options.sessionId,options.taskId,target);
         if(latest.kind!=='found'||latest.version.bookId!==ref.bookId||latest.version.id!==ref.versionId||
           latest.version.digest!==ref.digest)throw Error('version_conflict');
-        if(answer!==await options.teacherSelection())throw Error('book_selection_required');
+        await pinned?.assertScope();
+        if(!pinned&&answer!==await options.teacherSelection())throw Error('book_selection_required');
         check(signal);
+        pinned?.onRead();
         return result({...ref,category:'artifact_reference' satisfies TeacherMemoryCategory,title:safeTitle,revision:item.version.revision,confirmedAt:item.version.createdAt,
           chapterCount:item.content.chapters.length,teacherConfirmed:true,location:'讲义 → 确认与版本'},true);
       }catch(error){

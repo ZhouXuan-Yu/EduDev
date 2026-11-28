@@ -24,7 +24,7 @@ import {preparePaperAdaptationContext} from '../education/paper-basket-adaptatio
 import {createScienceLessonSource,prepareScienceLessonRefresh} from '../education/science-lesson-source';
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
-import {currentClassTask,requestedResumeClass} from './tasks/class-resume';
+import {confirmedHandoutTeachingScope,currentClassTask,requestedHandoutResume,requestedResumeClass} from './tasks/class-resume';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {lessonRevisionRequest,matchesLessonRevision,type LessonRevisionRequest} from '../education/lesson-revision-request';
@@ -70,7 +70,7 @@ import {createTeachingLessonExportTools} from '../education/teaching-lesson-expo
 import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
 import {namedTeachingMaterialMatches,namedTeachingMaterialTitles,resolveNamedHandoutSources,type NamedHandoutSource} from '../education/named-teaching-materials';
 import {createConfirmedHandoutContinuationTool,handoutContinuationRequest,assertTeachingHandoutExportProposal,createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
-import {EXPORT_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
+import {READ_TEACHING_HANDOUT,EXPORT_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teaching-handout-edit';
 import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
 import {createMockExamCatalog,mockExamRequest} from '../education/mock-exam-catalog';
@@ -308,6 +308,8 @@ type Active = {
   taskControl?: TaskControlAction;
   finalizing?: boolean;
   recoveryInspection?: TaskRecoveryInspection;
+  confirmedHandoutResume?:NonNullable<Awaited<ReturnType<ReturnType<typeof createTaskCoordinator>['prepareConfirmedHandoutResume']>>>;
+  confirmedHandoutRead?:boolean;
   rebuildFile?: string;
   dynamicCapabilities?: ReturnType<typeof createManagedMcpProviderRuntime>;
   toolGovernance?: RunToolGovernance;
@@ -351,6 +353,17 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const family=row&&'artifactId'in row&&row.artifactId?officeVersionFamilies(await store.xiaozhiState.officeArtifacts.versionRecords(id) as OfficeFamilyRecord[]).get(row.artifactId):undefined;
       return{current:!!row&&(!family||family.currentArtifactId===('artifactId'in row?row.artifactId:null))&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
+  async function assertHandoutResumeScope(id:string,proof:NonNullable<Active['confirmedHandoutResume']>){
+    const latest=await confirmedHandoutTeachingScope(store.xiaozhiState.sql,id,'className'in proof.request?proof.request.className:undefined);
+    if(JSON.stringify(latest)!==JSON.stringify(proof.scope))throw Error('task_context_changed');
+  }
+  async function assertHandoutResumeVersion(id:string,proof:NonNullable<Active['confirmedHandoutResume']>){
+    await assertHandoutResumeScope(id,proof);
+    const read=await store.teachingBookVersions.forExport(id,proof.task.id,
+      {bookId:proof.version.bookId,versionId:proof.version.id,digest:proof.version.digest});
+    if(read.kind!=='found')throw Error('task_context_changed');
+    await assertHandoutResumeScope(id,proof);
+  }
   const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
     emit:options.emit,inspect:inspectRecoveryCard,beforeCompletion:async task=>{
       await effectReconciler.recheck(task.sessionId,task.id);
@@ -1299,9 +1312,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const {fileId:_fileId,kind:_kind,...proposal}=files[0];
           return officeArtifacts.tools(id,runId,wait)[0].execute(args[0],proposal,args[2],args[3],args[4]);
         }}),
-      ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutContinuationRequest(cleanPrompt)&&!handoutExportRequest(cleanPrompt)&&!handoutEditRequest(cleanPrompt)?{
+      ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&
+        (owner.confirmedHandoutResume||handoutContinuationRequest(cleanPrompt)&&!handoutExportRequest(cleanPrompt)&&!handoutEditRequest(cleanPrompt))?{
         handoutContinuationTool:createConfirmedHandoutContinuationTool({sessionId:id,taskId:owner.task.id,prompt:cleanPrompt,state:store.teachingBookVersions,
-          current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:currentQuestionAnswer}),
+          current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:currentQuestionAnswer,
+          ...(owner.confirmedHandoutResume?{pinned:{
+            bookId:owner.confirmedHandoutResume.version.bookId,versionId:owner.confirmedHandoutResume.version.id,digest:owner.confirmedHandoutResume.version.digest,
+            assertScope:()=>assertHandoutResumeScope(id,owner.confirmedHandoutResume!),
+            onRead:()=>{owner.confirmedHandoutRead=true;},
+          }}:{})}),
+        ...(owner.confirmedHandoutResume?{confirmedHandoutResume:true}:{}),
       }:{}),
       ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
         handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,prompt:cleanPrompt,state:store.teachingBookVersions,
@@ -1625,6 +1645,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         if(!run.publisher)throw Error('event_journal_unavailable');
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
         if(run.stopped||active.get(id)!==run)throw Error('cancelled');
+        if(run.confirmedHandoutResume){
+          if(delivery.kind==='tool'&&delivery.tool!==READ_TEACHING_HANDOUT)throw Error('permission_denied');
+          await assertHandoutResumeVersion(id,run.confirmedHandoutResume);
+        }
         if(delivery.kind==='tool'){
           if(run.answerOnly)throw Error('permission_denied');
           if(delivery.tool===PAPER_TOOLS[0]){
@@ -1751,6 +1775,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           failure=run.lessonRevision?'lesson_revision_missing':'lesson_draft_missing';
         else if(run.handoutBasis&&!await store.xiaozhiState.teachingHandouts.hasDraft(id,run.runId))
           failure='handout_basis_unread';
+        else if(run.confirmedHandoutResume&&!run.confirmedHandoutRead)failure='task_context_changed';
         else {text = result.text;answerTruncated=result.truncated;}
       } else failure = result.error;
     } catch (error) {
@@ -2535,6 +2560,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       // A continuation inherits its authority from the original task source, not this new prompt.
       // Refuse before task recovery can append an event, or admission reserves an Active/run.
+      const handoutResumeRequest=canInferTeachingRequest&&!input.historyIntents?requestedHandoutResume(input.prompt):undefined;
+      const handoutProof=handoutResumeRequest?await phase(()=>tasks.prepareConfirmedHandoutResume(id,handoutResumeRequest)):undefined;
+      if(handoutResumeRequest&&'className'in handoutResumeRequest&&!handoutProof)return {ok:false,error:'task_context_changed'};
       const className=canInferTeachingRequest&&!input.historyIntents?requestedResumeClass(input.prompt):undefined;
       const oldClassTask=className?await phase(()=>tasks.committed(id)):null;
       const classProof=className?await phase(()=>currentClassTask(store.xiaozhiState.sql,id,oldClassTask,className)):undefined;
@@ -2571,9 +2599,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id)||configuring.has(id))return{ok:false,error:'busy'};
-      const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&!requestedLessonRevision&&isStandaloneAnswer(input);
+      const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&!handoutProof&&!requestedLessonRevision&&isStandaloneAnswer(input);
       const run: Active = { ...(omitHistory?{omitHistory}:{}),...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials,requestedAgenda:inferredLesson.requestedAgenda}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),...(requestedLessonRevision?{lessonRevision:requestedLessonRevision}:{}),
+        ...(handoutProof?{confirmedHandoutResume:handoutProof}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),
         ...(legacyApprovalId ? {legacyApprovalId} : {}),
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
@@ -2665,7 +2694,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         await phase(()=>run.publisher!.flush());
         run.teachingTaskReference=teachingReference(input.prompt,detail.messages);
         const priorThinkingTask=await phase(()=>tasks.committed(id));
-        if(priorThinkingTask&&!['completed','ended'].includes(priorThinkingTask.state)){
+        if(!handoutProof&&priorThinkingTask&&!['completed','ended'].includes(priorThinkingTask.state)){
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
@@ -2676,6 +2705,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
                 checked.term!==classProof.term||task.id!==classProof.taskId)throw Error('task_context_changed');
             }}:omission==='task'?{onAdmitted:taskHistory.excludeForTask}:
             historyProof?{onAdmitted:(work,task,owner)=>taskHistory.attachTask(work,task,owner,historyProof!)}:{}),
+            ...(handoutProof?{confirmedHandout:handoutProof}:{}),
             ...(recoveryInspection?.canRebuildSession?{recoveryBase:{taskId:recoveryInspection.taskId,requirementsVersion:recoveryInspection.requirementsVersion}}:{})}));
         else {
           await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));
@@ -2700,7 +2730,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}
         const code=error instanceof Error?error.message:'';
-        if(!run.stopped&&!closing&&!controller.signal.aborted&&(code==='handout_basis_unavailable'||code==='handout_basis_ambiguous'))return {ok:false,error:code};
+        if(!run.stopped&&!closing&&!controller.signal.aborted&&(code==='task_context_changed'||code==='handout_basis_unavailable'||code==='handout_basis_ambiguous'))return {ok:false,error:code};
         return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'||code==='memory_scope_changed'||code==='lesson_basis_ambiguous'||code==='lesson_basis_unavailable'?code:code===PAPER_EXPORT_RESTART_REQUIRED?PAPER_EXPORT_RESTART_REQUIRED:code===PAPER_EXPORT_SOURCE_CHANGED?PAPER_EXPORT_SOURCE_CHANGED:code==='not_confirmed'||code==='version_conflict'||code==='conflict'||code==='source_changed'||code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
       })().catch((error): XiaozhiStartResult => {
