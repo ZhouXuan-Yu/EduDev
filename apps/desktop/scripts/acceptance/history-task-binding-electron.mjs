@@ -10,7 +10,16 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
-const textbookVersions=process.argv.includes('--textbook-versions');
+const frozenAmbiguityIndex=process.argv.indexOf('--frozen-ambiguity');
+const frozenAmbiguityBytes=frozenAmbiguityIndex>=0?fs.readFileSync(process.argv[frozenAmbiguityIndex+1]):undefined;
+const frozenAmbiguityHash=frozenAmbiguityBytes&&createHash('sha256').update(frozenAmbiguityBytes).digest('hex');
+const frozenAmbiguity=frozenAmbiguityBytes&&JSON.parse(frozenAmbiguityBytes).cases.find(row=>row.id==='SCP-08');
+if(frozenAmbiguityBytes){
+  assert.equal(frozenAmbiguityHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
+  assert.equal(frozenAmbiguity?.kind,'ambiguous_history');
+  assert.equal(frozenAmbiguity.expectedRule,'Clarification');
+}
+const textbookVersions=Boolean(frozenAmbiguity)||process.argv.includes('--textbook-versions');
 const reportedQuote=process.argv.includes('--reported-quote');
 const multiRevoke=process.argv.includes('--multi-revoke');
 const semesterRules=process.argv.includes('--semester-rules');
@@ -37,23 +46,24 @@ const unknownHistory=process.argv.includes('--unknown-history');
 const checkPreference=process.argv.includes('--preference-and-history');
 const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
-const declaredTitle=textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
+const declaredTitle=frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenResume?'r3-frozen-task-resume-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenResume?'r3-frozen-task-resume-':frozenAmbiguity?'r3-frozen-ambiguity-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
-const source=textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
+const source=frozenAmbiguity?declaredTitle+'。讲义修订版，复核口令：'+marker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
 const alternateMarker='冬砂比对先橙后红';
-const alternateSource=textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
+const alternateSource=frozenAmbiguity?declaredTitle+'。讲义初版，复核口令：'+alternateMarker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
-if(frozenResume){
-  report.fixture={id:frozenResume.id,sha256:frozenResumeHash,request:frozenResume.teacherRequest,scope:teachingScope};
+if(frozenResume||frozenAmbiguity){
+  report.fixture=frozenResume?{id:frozenResume.id,sha256:frozenResumeHash,request:frozenResume.teacherRequest,scope:teachingScope}
+    :{id:frozenAmbiguity.id,sha256:frozenAmbiguityHash,scenario:frozenAmbiguity.teacherUtterance,scope:teachingScope};
   assert.equal(report.buildHash,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
   assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/);
   report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
@@ -516,7 +526,7 @@ async function runHistoryJourney(){
     assert.equal(bindings(target).length,0);
     pass('A discoverable but unrelated source with no usage grant cannot supply a claimed past date',{runId:answer.runId,reply:text});
   }else if(vagueChoice){
-    const vague=textbookVersions?'照上次那份教材继续。请在聊天中引用我确认的八年级温度计实验教材记录，给出固定复核口令。':checkPreference?'照上次那份继续。请解释为什么记录温度计读数时要复核，保留这份记录中完整的复核口令，只在聊天中答复。'
+    const vague=frozenAmbiguity?frozenAmbiguity.teacherUtterance.split('；',1)[0]:textbookVersions?'照上次那份教材继续。请在聊天中引用我确认的八年级温度计实验教材记录，给出固定复核口令。':checkPreference?'照上次那份继续。请解释为什么记录温度计读数时要复核，保留这份记录中完整的复核口令，只在聊天中答复。'
       :'照上次那份继续。请在聊天里给出温度计实验记录里的复核口令。';
     const requests=(await provider()).length;
     await composer().fill(vague);
@@ -550,10 +560,15 @@ async function runHistoryJourney(){
     assert.equal(await composer().inputValue(),vague);
     await until(()=>composer().evaluate(element=>document.activeElement===element));
     assert.equal((await provider()).length,requests);
-    const accepted=await send(target,vague,{answer:'继续温度计实验，使用我刚确认的课程记录，仅在聊天回复复核口令。'});
+    const accepted=await send(target,vague,frozenAmbiguity?{}:{answer:'继续温度计实验，使用我刚确认的课程记录，仅在聊天回复复核口令。'});
     assert(accepted.sent.some(item=>item.status===200&&item.sourceRoles.includes('user')));
     assert(accepted.sent.every(item=>!item.alternateRoles.length));
-    assert(accepted.answerUsed);
+    if(frozenAmbiguity){
+      const saved=read("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid",target);
+      assert.deepEqual(saved.map(row=>row.content),[vague]);
+      assert.equal(await page.getByTestId('pi-composer-pending-panel').getByTestId('pi-question-answer').count(),0);
+      report.ambiguity={initialRequest:vague,sameTitle:declaredTitle,candidates:[allowed.source_id,alternative.recordId],approvedSource:allowed.source_id};
+    }else assert(accepted.answerUsed);
     if(checkPreference){
       assert(accepted.sent.some(call=>call.status===200&&call.stepPreference&&call.sourceRoles.includes('user')));
       const settings=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -627,14 +642,25 @@ async function runHistoryJourney(){
       assert.equal(fileCount(),beforeFiles);
       assert(resumed.sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
       pass('The original teacher words resume the same Task and use its valid source after restart');
-      const runsBefore=read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',separate)[0].n;
-      assert(!(await snapshot(separate)).task,'Use the ordinary question session as the no-Task control');
+      await page.getByTestId('pi-new-session').click();
+      const empty=await until(async()=>{
+        const id=await session();
+        return id?.startsWith('aisession_')&&![target,separate,sourceSession].includes(id)?id:null;
+      });
+      const counts=()=>({
+        runs:read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',empty)[0].n,
+        pointers:read('SELECT count(*) AS n FROM app_settings WHERE key=?','xiaozhi.task.v1:session:'+empty)[0].n,
+      });
+      assert(!(await snapshot(empty)).task,'The new control session has no current Task');
+      assert.deepEqual(counts(),{runs:0,pointers:0});
+      const providerCount=(await provider()).length;
       const rejected=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{
-        sessionId:separate,commandId:'xicmd_'+randomUUID(),prompt:frozenResume.teacherRequest,
+        sessionId:empty,commandId:'xicmd_'+randomUUID(),prompt:frozenResume.teacherRequest,
       });
       assert.deepEqual(rejected,{ok:false,error:'task_context_changed'});
-      assert.equal(read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',separate)[0].n,runsBefore);
-      pass('An explicit continuation without a current Task opens no new Run or Task');
+      assert.deepEqual(counts(),{runs:0,pointers:0});
+      assert.equal((await provider()).length,providerCount);
+      pass('An explicit continuation without a current Task opens no new Run or Task',{sessionId:empty,rejected});
     }
   }else if(terminalTask){
     await stage(row.id,taskRequest);
