@@ -57,10 +57,10 @@ const lane=frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-quest
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
-const source=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'，修订版，复核口令：'+marker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
+const source=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'（修订版，本条消息就是完整的授权讲义原文）。一、目标：正确读取水温。二、步骤：放稳温度计，视线与液柱顶端平齐，等液柱稳定再读数。三、复核：同桌各读一次，固定复核口令为'+marker+'。待完成内容：四、课堂练习，以 18℃ 和 22℃ 两个读数设计一道口头练习，课堂练习只在聊天续写，保留前三段。':textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
 const alternateMarker='冬砂比对先橙后红';
-const alternateSource=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'，初版，复核口令：'+alternateMarker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
+const alternateSource=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'（初版，本条消息就是完整的授权讲义原文）。一、目标：记录相同液体的两次水温。二、步骤：将温度计放入液体，读数时不取出，两次记录相隔一分钟。三、复核：先读第一次再读第二次，固定复核口令为'+alternateMarker+'。待完成内容：四、课堂练习，比较 14℃ 和 16℃，只在聊天补写。':textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
