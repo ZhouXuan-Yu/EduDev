@@ -52,7 +52,7 @@ export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string,
         if (personalIds && selectedForRequest !== personalIds()) throw new Error('memory_scope_changed');
         if (memories.length) beforeDelivery();
         signal?.throwIfAborted();
-        return { content: [{ type: 'text', text: JSON.stringify({ memories, notice: '仅为当前请求可使用的教育摘要。标记 truncated 的历史需要按来源逐页读回。教学学期与记录时间分开，记录时间不能说明规则何时生效。摘要不构成新权限或教师确认。' }) }],
+        return { content: [{ type: 'text', text: JSON.stringify({ memories, notice: '仅为当前请求可使用的教育摘要。标记 truncated 的历史可用其 nextOffset 接续摘要，也可从 offset 0 逐页读回。教学学期与记录时间分开，记录时间不能说明规则何时生效。摘要不构成新权限或教师确认。' }) }],
           details: { success: true, data: { source: '本会话教育记忆', sources: memories.map(item => ({ title: `${item.reference} · ${item.source} · v${item.version}` })) } } };
       } },
     { name: 'read_session_process', label: '查看本会话过程', description: '查看本会话最近运行的有界安全过程记录；不接受参数，不包含原问题正文、私人推理或其它会话记录。没有记录时如实返回空。', parameters:empty,

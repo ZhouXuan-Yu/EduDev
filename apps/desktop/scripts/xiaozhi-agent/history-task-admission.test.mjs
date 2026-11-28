@@ -28,7 +28,7 @@ const {createPiMemoryTools}=await import('../../src/main/xiaozhi-agent/memory-to
 
 const {invalidateTeachingHistoryForSession}=await import('../../src/main/xiaozhi-agent/history/invalidate-teaching-history.ts');
 
-async function fixture(t){
+async function fixture(t,text='春秋🌱'.repeat(611)+'只有末尾有这个验证标记'){
   const db=new DatabaseSync(':memory:');
   t.after(()=>db.close());
   db.exec('CREATE TABLE ai_conversation_folders(id TEXT PRIMARY KEY,archived_at TEXT);'+
@@ -57,7 +57,6 @@ async function fixture(t){
   const access=createHistoryState(sql),ref={kind:'history_request',sessionId:source,recordId:'message_1',sourceVersion:sortKey()};
   const sourceGrant=await access.change(ref,0,'allow');
   const pin={layer:'history',source:'history',id:sourceGrant.sourceId,version:1,sourceVersion:ref.sourceVersion};
-  const text='春秋🌱'.repeat(611)+'只有末尾有这个验证标记';
   const original={text,fingerprint:historyHash(text),label:'教师原话',title:'合成教研记录'};
   const history={
     candidate:(sessionId,version,ticket)=>sessionId===target&&version===0&&ticket==='signed-ticket'?pin:undefined,
@@ -289,6 +288,34 @@ test('Long source reads require the active version and return all authoritative 
   await assert.rejects(read({...selected,offset:0}),/memory_scope_changed/);
   assert.equal(delivered,3);
 });
+
+for(const [name,text] of [
+  ['split supplementary character','甲'.repeat(1599)+'𠮷尾'],
+  ['supplementary character inside excerpt','🌱'+'乙'.repeat(1599)],
+  ['exact fit','乙'.repeat(1598)+'𠮷'],
+]){
+  test('Authorized summary joins its continuation without losing source text: '+name,async t=>{
+    const f=await fixture(t,text);
+    const {token}=await f.binding.stage(f.target,0,'signed-ticket');
+    const proof=await f.binding.prepare(f.target,[token]);
+    const turn=await f.binding.turn(f.owner.runId,f.target,proof);
+    const policy={loadHistory:()=>f.binding.eligibleTurn(turn,f.target),omitHistory:false};
+    const scope=createPiMemoryScope({xiaozhiState:f.state,getAiConversationSession:async()=>({session:{}})},{history:f.history});
+    const authority=(await scope.authority(f.target,policy)).fingerprint;
+    const [summary]=await scope.readSelected(f.target,authority,undefined,undefined,policy);
+    assert.ok(summary.text.isWellFormed());
+    assert.ok(summary.text.length<=1600);
+    const incomplete=summary.text!==text;
+    assert.equal(summary.history.truncated,incomplete);
+    assert.equal(summary.history.nextOffset,incomplete?Array.from(summary.text).length:null);
+    if(incomplete){
+      const rest=await scope.readHistoryPage(f.target,authority,{sourceId:f.pin.id,sourceVersion:f.pin.sourceVersion,
+        offset:summary.history.nextOffset},undefined,policy);
+      assert.equal(summary.text+rest.text,text);
+      assert.equal(rest.nextOffset,null);
+    }
+  });
+}
 
 test('Temporary history opt-out changes only current request authority',async t=>{
   const f=await fixture(t);

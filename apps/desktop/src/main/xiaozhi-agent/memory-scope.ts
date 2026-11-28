@@ -211,7 +211,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
-        history?: {sourceId:string; sourceVersion:string; truncated:boolean; temporal:{teachingTerm:string|null;recordedAt:string|null}};
+        history?: {sourceId:string; sourceVersion:string; truncated:boolean; nextOffset:number|null; temporal:{teachingTerm:string|null;recordedAt:string|null}};
         personal?:{sourceId:string; sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
       if (saved.enabled) for (const item of inRequestOrder(saved.selections,personalIds)) {
         signal?.throwIfAborted();
@@ -226,9 +226,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         if (item.layer==='history') {
           const source = await selectedHistory(id,item).catch(()=>null);
           if (!source || source.fingerprint!==item.fingerprint) continue;
+          // A history page offset counts code points; keep the existing UTF-16 size limit.
+          const text=source.text.slice(0,1600).replace(/[\uD800-\uDBFF]$/u,'');
+          const truncated=text.length<source.text.length;
           payload.push({reference:`记忆${payload.length+1}`,layer:'history',source:source.label,version:item.version,
-            text:source.text.slice(0,1600),provenance:'teacher_history',sourceDocuments:[],refs:[],
-            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated:source.text.length>1600,temporal:source.temporal}});
+            text,provenance:'teacher_history',sourceDocuments:[],refs:[],
+            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated,nextOffset:truncated?Array.from(text).length:null,temporal:source.temporal}});
           continue;
         }
         const fact = (await facts(item)).find(entry => entry.id === item.id);
