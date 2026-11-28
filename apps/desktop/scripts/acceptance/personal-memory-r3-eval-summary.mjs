@@ -8,7 +8,9 @@ import {DatabaseSync} from 'node:sqlite';
 const [fixturePath,...roots]=process.argv.slice(2);
 assert(fixturePath && roots.length,'Pass the frozen teacher task list and one or more archived evidence roots');
 const read=file=>JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/u,''));
-const cases=read(fixturePath).tasks.map(item=>item.caseId);
+const fixture=read(fixturePath);
+const cases=fixture.tasks.map(item=>item.caseId);
+const contentHash=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 assert.equal(new Set(cases).size,24);
 function duration(intervals) {
   if (!intervals.length) return 0;
@@ -106,6 +108,11 @@ for(const root of roots){
       attempts.push({case:report.caseId,arm:row.arm,source:row.source,build:row.buildSha256,
         targetConfiguration: [...new Set(target.map(item=>JSON.stringify([item.model??null,item.reasoning??null,item.maxTokens??null])))].sort().map(value=>JSON.parse(value)),
         report:file,status:row.status,targetDelivered:delivered.length>0,run:row.terminal?.runId??null,
+        fixtureHash:report.fixtureHash??null,
+        teacherInputHash:Array.isArray(row.teacherPrompts)?contentHash(row.teacherPrompts):null,
+        recordedScope:row.scope?{classRef:row.scope.classRef??null,term:row.scope.term??null,
+          subject:row.scope.subject??null,grade:row.scope.grade??null,textbook:row.scope.textbook??null,
+          selections:row.scope.selections??null}:null,
         targetRequests:target.length,meteredRequests:metered.length,
         tokens:target.length&&metered.length===target.length?metered.reduce((sum,item)=>sum+item.usage.total_tokens,0):null,
         elapsedMs:row.elapsedMs??null,clarifications:row.clarifications??null,restatements:row.teacherRestatements??null,
@@ -152,12 +159,32 @@ const byBuild=[...cohorts.entries()].map(([key,rows])=>{
     }))
   };
 });
-console.log(JSON.stringify({coverage,byBuild,measurement:{
+const invocations=new Map();
+for(const attempt of attempts){
+  if(!invocations.has(attempt.report))invocations.set(attempt.report,[]);
+  invocations.get(attempt.report).push(attempt);
+}
+// Compare contemporaneous arms within their own source invocation. A delivery
+// count or a matching model name alone cannot establish a comparable quality pair.
+const pairInputs=[...invocations].flatMap(([report,rows])=>{
+  const first=rows.find(row=>row.arm==='A'),second=rows.find(row=>row.arm==='B');
+  if(!first||!second)return [];
+  const check=(left,right)=>left===null||right===null?'UNVERIFIED':JSON.stringify(left)===JSON.stringify(right)?'MATCH':'DIFFERENT';
+  const compare={
+    teacherInput:check(first.teacherInputHash,second.teacherInputHash),
+    scopeSummary:check(first.recordedScope,second.recordedScope),
+    effectiveParameters:check(first.targetDelivered?first.targetConfiguration:null,second.targetDelivered?second.targetConfiguration:null),
+  };
+  const arms=[first,second].map(row=>({source:row.source,build:row.build,run:row.run,status:row.status,fixtureHash:row.fixtureHash}));
+  return [{case:first.case,report,arms,compare,usableForManualReview:Object.values(compare).every(value=>value==='MATCH')}];
+});
+console.log(JSON.stringify({coverage,byBuild,pairInputs,measurement:{
   denominator:'Every recorded case-arm attempt in this build cohort, including incomplete attempts.',
   restatements:'An observed teacher follow-up indicator from the frozen scenario; this is not measured human editing time.',
   clarifications:'Counts the recorded clarification event and the final pending question indicator. These are harness observations.',
   elapsedMs:'Recorded target elapsed time only. Setup, unknown measurements and actual billing are not imputed.',
   timing:'Provider request admitted to recorded HTTP outcome, teacher pending decision to settled event, tool start to end, and assistant presentation start to end. Durations are per-category interval unions; categories can overlap. Uses committed events and their capture timestamps, with journal write time for events without capture times. Missing endpoints stay null; a quiet category is zero only within an available journal. Presentation is the host display phase, not measured renderer paint. Evidence points to the original database, run and event sequences.',
   humanRework:'Unknown unless independently observed. No inference from a lack of complaints or clicks.',
+  pairInputs:'Checks whether both arms in one invocation recorded the same teacher text, effective model settings and scope summary. A scope summary is not a full authorization/readback audit. A matching pair is eligible for manual evidence review, not evidence of a product gain.',
   effect:'No aggregate A/B gain is claimed across different builds or unmatched input and authorization.'
 },attempts},null,2));
