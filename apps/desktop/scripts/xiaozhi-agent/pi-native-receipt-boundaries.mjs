@@ -1,5 +1,6 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import {DatabaseSync} from 'node:sqlite';
 import {SessionManager} from '@earendil-works/pi-coding-agent';
 const {captureNativeTail,readNativeTail,readNativeToolEntries,toolResultDigest}=await import('../../src/main/xiaozhi-agent/events/native-tail.ts');
 const root=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-native-receipt-')),checks=[],report={success:false,checks,scope:'Actual Pi SessionManager persistence plus bounded native file negatives; not provider/UI or crash acceptance'};
@@ -21,5 +22,42 @@ try{
  await check('Captured prior tail anchor rejects rewritten/truncated prefix',async()=>{const prior=captureNativeTail(file,root);await changed(Buffer.from('x'.repeat(original.length)+'\n'),async()=>assert.rejects(readNativeTail(prior,root),/evidence_missing/));});
  await check('Traversal, external native file, hardlink and excessive tail/line counts are refused',async()=>{await assert.rejects(readNativeTail({...binding,file:'../outside.jsonl'},root),/permission_denied/);const link=path.join(root,'hardlink.jsonl');fs.linkSync(file,link);try{await assert.rejects(readNativeTail({...binding,file:nativePath},root),/evidence_missing/);}finally{fs.unlinkSync(link);}await changed(Buffer.alloc(32*1048576+1),async()=>assert.rejects(readNativeTail(binding,root),/evidence_missing/));await changed(Buffer.from('{}\n'.repeat(4097)),async()=>assert.rejects(readNativeTail(binding,root),/evidence_missing/));});
  await check('Result digest is bounded and distinguishes failure/body/tool without retaining raw body',async()=>{assert.notEqual(toolResultDigest('office_read_attachment',content,false),toolResultDigest('office_read_attachment',content,true));assert.notEqual(toolResultDigest('office_read_attachment',content,false),toolResultDigest('office_web_fetch',content,false));assert.throws(()=>toolResultDigest('office_read_attachment',undefined,false),/invalid_input/);assert.throws(()=>toolResultDigest('office_read_attachment',[{type:'text',text:'a'.repeat(17*1048576)}],false),/evidence_missing/);});
+
+ await check('A terminal Run retains all receipts across a separately bound Pi authority isolation',async()=>{
+   const db=new DatabaseSync(':memory:');
+   try{
+     db.exec('CREATE TABLE xiaozhi_event_runs(run_id TEXT,session_id TEXT,generation INTEGER,status TEXT); CREATE TABLE xiaozhi_native_run_bindings(run_id TEXT,generation INTEGER,binding_json TEXT)');
+     const sql={all:async(query,args)=>db.prepare(query).all(...args)};
+     for(const withInterveningMessage of [false,true]){
+       const pi=SessionManager.create(root,root),sessionId='aisession_'+randomUUID();
+       const previous={sessionId,runId:'run_'+randomUUID(),generation:1};
+       const bound={...previous,...captureNativeTail(pi.getSessionFile(),root),
+         markerId:pi.appendCustomEntry('xiaozhi.event-owner.v1',{schemaVersion:1,...previous})};
+       const safe=pi.appendCustomEntry('xiaozhi.answer-policy.v1',{});
+       pi.appendCustomEntry('xiaozhi.memory.run.v1',{runId:previous.runId});
+       pi.appendCustomEntry('xiaozhi.skills.taint.v1',{authority:'a'.repeat(64),safeLeaf:safe,runId:previous.runId});
+       pi.appendMessage({role:'user',content:'合成原任务',timestamp:Date.now()});
+       pi.appendMessage(assistant);
+       const resultId=pi.appendMessage({role:'toolResult',toolCallId:'call_owned',toolName:'office_read_attachment',content,isError:false,timestamp:Date.now()});
+       pi.branch(safe);
+       pi.appendCustomEntry('xiaozhi.skills.isolation.v1',{authority:'b'.repeat(64),fromLeaf:resultId,blockedRunIds:[previous.runId]});
+       if(withInterveningMessage)pi.appendMessage({role:'user',content:'尚未绑定的新任务',timestamp:Date.now()});
+       const next={sessionId,runId:'run_'+randomUUID(),generation:2};
+       const following={...next,...captureNativeTail(pi.getSessionFile(),root),
+         markerId:pi.appendCustomEntry('xiaozhi.event-owner.v1',{schemaVersion:1,...next})};
+       db.prepare('INSERT INTO xiaozhi_event_runs VALUES(?,?,?,?)').run(previous.runId,sessionId,1,'running');
+       db.prepare('INSERT INTO xiaozhi_event_runs VALUES(?,?,?,?)').run(next.runId,sessionId,2,'running');
+       await assert.rejects(readNativeToolEntries(bound,root,sql),/evidence_missing/);
+       db.prepare('INSERT INTO xiaozhi_native_run_bindings VALUES(?,?,?)').run(next.runId,2,JSON.stringify(following));
+       await assert.rejects(readNativeToolEntries(bound,root,sql),/evidence_missing/);
+       db.prepare("UPDATE xiaozhi_event_runs SET status='completed' WHERE run_id=?").run(previous.runId);
+       if(withInterveningMessage)await assert.rejects(readNativeToolEntries(bound,root,sql),/evidence_missing/);
+       else{
+         const entries=await readNativeToolEntries(bound,root,sql);
+         assert.deepEqual(entries.map(r=>[r.id,r.digest]),[[resultId,toolResultDigest('office_read_attachment',content,false)]]);
+       }
+     }
+   }finally{db.close();}
+ });
  report.success=true;
 }catch(e){report.error=String(e.stack);process.exitCode=1;}finally{fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output:root,error:report.error}));}

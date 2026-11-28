@@ -69,7 +69,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const attachmentSends=createAttachmentSendState(sql);
   const attachmentOcr=createAttachmentOcrState(sql);
   const goals=createGoalState(sql);
-  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot,sql})});
+  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot(),sql)}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot,sql})});
   const classrooms=createClassroomState(sql);
   const classroomPlans=createClassroomPlanState(sql);
   const teachingHandouts=createTeachingHandoutState(sql);

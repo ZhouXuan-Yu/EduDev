@@ -154,7 +154,7 @@ async function nativeInspection(sql: Sql, tables: Set<string>, root: string, ses
         if (owner.runId === bindings.at(-1)!.owner.runId || ![...retired].some(old => sameFile(old, file))) return result('changed');
         continue;
       }
-      const entries = await readNativeToolEntries(binding, root);
+      const entries = await readNativeToolEntries(binding, root,sql);
       const receipts = tables.has('xiaozhi_tool_receipts')
         ? await sql.all('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=? ORDER BY start_sequence,call_id', [owner.runId]) : [];
       if (receipts.length > 1024 || receipts.some(receipt => Number(receipt.generation) !== owner.generation)) return result('changed');

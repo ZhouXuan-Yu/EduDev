@@ -1,3 +1,4 @@
+import type {Sql} from '../session-state';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -66,14 +67,57 @@ export function toolResultDigest(tool:string,content:unknown,failed:boolean){
  if(!identity(tool)||!Array.isArray(content))throw Error('invalid_input');
  const encoded=JSON.stringify([tool,content,failed]);if(Buffer.byteLength(encoded)>16*1048576)throw Error('evidence_missing');return sha(encoded);
 }
-export async function readNativeToolEntries(binding:NativeRunBinding,root:string):Promise<NativeToolEntry[]>{
+/** Only an independently bound next Run can end tool accounting across a Pi authority branch. */
+async function confirmedIsolationBoundary(rows:Record<string,any>[],index:number,start:number,
+  binding:NativeRunBinding,root:string,sql:Sql,previous:string) {
+  const isolation=rows[index],data=isolation.data;
+  if(isolation.type!=='custom'||!['xiaozhi.skills.isolation.v1','xiaozhi.memory.isolation.v1'].includes(isolation.customType)
+    ||!data||Object.keys(data).length!==3||data.fromLeaf!==previous||!/^[a-f0-9]{64}$/.test(data.authority)
+    ||!Array.isArray(data.blockedRunIds)||data.blockedRunIds.length>4096||!data.blockedRunIds.every(identity)
+    ||new Set(data.blockedRunIds).size!==data.blockedRunIds.length||!data.blockedRunIds.includes(binding.runId))return false;
+  const old=rows.slice(start,index);
+  const safeIndex=old.findIndex(entry=>entry.id===isolation.parentId);
+  const begin=old[safeIndex+1];
+  const taintType=isolation.customType.replace('isolation.v1','taint.v1');
+  if(safeIndex<0||begin?.type!=='custom'||begin.customType!=='xiaozhi.memory.run.v1'
+    ||begin.data?.runId!==binding.runId||Object.keys(begin.data).length!==1
+    ||!old.slice(safeIndex+2).some(entry=>entry.type==='custom'&&entry.customType===taintType
+      &&entry.data?.safeLeaf===isolation.parentId&&entry.data?.runId===binding.runId&&Object.keys(entry.data).length===3
+      &&/^[a-f0-9]{64}$/.test(entry.data?.authority)&&entry.data.authority!==data.authority))return false;
+  const [next]=await sql.all(`SELECT b.binding_json,r.run_id AS next_id FROM xiaozhi_event_runs prior
+    JOIN xiaozhi_event_runs r ON r.session_id=prior.session_id AND r.generation=prior.generation+1
+    JOIN xiaozhi_native_run_bindings b ON b.run_id=r.run_id AND b.generation=r.generation
+    WHERE prior.session_id=? AND prior.run_id=? AND prior.generation=?
+      AND prior.status IN ('completed','failed','interrupted','cancelled')`,[binding.sessionId,binding.runId,binding.generation]);
+  if(!next)return false;
+  const following=JSON.parse(String(next.binding_json)) as NativeRunBinding;
+  if(following.runId!==next.next_id||following.file!==binding.file||following.offset<=binding.offset||following.generation!==binding.generation+1
+    ||following.sessionId!==binding.sessionId||!identity(following.markerId))return false;
+  const [marker]=await readNativeTail(following,root);
+  if(marker?.type!=='custom'||marker.customType!=='xiaozhi.event-owner.v1'||marker.id!==following.markerId
+    ||marker.data?.schemaVersion!==1||marker.data.runId!==following.runId||marker.data.sessionId!==following.sessionId
+    ||marker.data.generation!==following.generation)return false;
+  const seen=new Set(old.map(entry=>entry.id));
+  let parent=isolation.parentId;
+  for(const entry of rows.slice(index)){
+    if(!identity(entry.id)||seen.has(entry.id)||entry.parentId!==parent)return false;
+    if(entry.customType==='xiaozhi.event-owner.v1')return JSON.stringify(entry)===JSON.stringify(marker);
+    if(!['custom','model_change','thinking_level_change'].includes(entry.type))return false;
+    seen.add(entry.id);parent=entry.id;
+  }
+  return false;
+}
+
+export async function readNativeToolEntries(binding:NativeRunBinding,root:string,sql?:Sql):Promise<NativeToolEntry[]>{
  if(!identity(binding.markerId)||!identity(binding.runId)||!/^aisession_[a-f0-9-]{36}$/i.test(binding.sessionId)||!Number.isSafeInteger(binding.generation)||binding.generation<1)throw Error('invalid_input');
  const rows=await readNativeTail(binding,root),index=rows.findIndex(row=>row.id===binding.markerId);
  const marker=rows[index];
  if(!marker||marker.type!=='custom'||marker.customType!=='xiaozhi.event-owner.v1'||marker.data?.schemaVersion!==1||marker.data.runId!==binding.runId||marker.data.sessionId!==binding.sessionId||marker.data.generation!==binding.generation)throw Error('evidence_missing');
  const results:NativeToolEntry[]=[],calls=new Set<string>(),declarations=new Map<string,string>(),ids=new Set<string>([binding.markerId]);let parent=binding.markerId;
- for(const row of rows.slice(index+1)){
+ for(let i=index+1;i<rows.length;i++){
+  const row=rows[i];
   if(row.type==='custom'&&row.customType==='xiaozhi.event-owner.v1')break;
+  if(row.parentId!==parent&&sql&&await confirmedIsolationBoundary(rows,i,index,binding,root,sql,parent))break;
   if(!identity(row.id)||ids.has(row.id)||row.parentId!==parent)throw Error('evidence_missing');ids.add(row.id);parent=row.id;
   if(row.type==='message'&&row.message?.role==='assistant'&&Array.isArray(row.message.content))for(const call of row.message.content.filter((item:any)=>item?.type==='toolCall')){if(!identity(call.id)||!identity(call.name)||declarations.has(call.id))throw Error('evidence_missing');declarations.set(call.id,call.name);}
   if(row.type!=='message'||row.message?.role!=='toolResult')continue;

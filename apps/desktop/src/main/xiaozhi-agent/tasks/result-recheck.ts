@@ -39,7 +39,7 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const bindingRow=(await sql.all('SELECT binding_json FROM xiaozhi_native_run_bindings WHERE run_id=?',[candidate.runId]))[0];if(!bindingRow)throw Error('task_result_unverified');
   const binding=JSON.parse(String(bindingRow.binding_json)) as NativeRunBinding;if(binding.sessionId!==id||binding.runId!==candidate.runId)throw Error('task_result_unverified');
   if(!strict){const runs=await createTaskState(sql,{sanitize:async()=>{throw Error('invalid_input');}}).admittedRuns(id,task.id);if(!runs.some(r=>r.runId===candidate.runId&&r.generation===binding.generation))throw Error('task_result_unverified');}
-  const entries=await readNativeToolEntries(binding,options.nativeRoot);fence();
+  const entries=await readNativeToolEntries(binding,options.nativeRoot,sql);fence();
   const receipts=await sql.all('SELECT call_id,tool,phase,admitted,success,result_digest FROM xiaozhi_tool_receipts WHERE run_id=? AND generation=? LIMIT 257',[candidate.runId,binding.generation]);if(receipts.length>256)throw Error('task_result_unverified');
   if(!strict)base.operations={succeeded:receipts.filter(r=>r.phase==='settled'&&r.admitted===1&&r.success===1).length,failed:receipts.filter(r=>r.admitted===1&&(r.phase!=='settled'||r.success!==1)).length};
   const sanitize=await createStudentContextSanitizer(store),importer=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,isCurrent:current});

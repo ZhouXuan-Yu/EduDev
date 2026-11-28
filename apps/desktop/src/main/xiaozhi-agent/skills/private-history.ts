@@ -28,7 +28,7 @@ export async function captureRetiredPrivateHistory(sql: Sql, root: string, sessi
         if (typeof binding.file !== 'string' || binding.file.replaceAll('\\', '/') !== file) continue;
         found = true;
         if (binding.sessionId !== sessionId || binding.runId !== row.run_id || binding.generation !== Number(row.generation)) throw Error('evidence_missing');
-        const entries = await readNativeToolEntries(binding, root);
+        const entries = await readNativeToolEntries(binding, root,sql);
         const receipts = await sql.all('SELECT * FROM xiaozhi_tool_receipts WHERE run_id=?', [binding.runId]);
         for (const entry of entries.filter(value => !value.failed)) {
           const receipt = receipts.find(value => value.call_id === entry.callId);
