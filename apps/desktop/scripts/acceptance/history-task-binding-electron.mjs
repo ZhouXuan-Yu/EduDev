@@ -10,6 +10,7 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
+const textbookVersions=process.argv.includes('--textbook-versions');
 const reportedQuote=process.argv.includes('--reported-quote');
 const multiRevoke=process.argv.includes('--multi-revoke');
 const semesterRules=process.argv.includes('--semester-rules');
@@ -25,20 +26,20 @@ const keyboardHistory=process.argv.includes('--keyboard-history');
 const compactionMemory=process.argv.includes('--compaction-memory');
 const unknownHistory=process.argv.includes('--unknown-history');
 const checkPreference=process.argv.includes('--preference-and-history');
-const vagueChoice=checkPreference||process.argv.includes('--vague-choice');
+const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
-const declaredTitle='温度计实验观察档案';
+const declaredTitle=textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
-const source=reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
+const source=textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
 const alternateMarker='冬砂比对先橙后红';
-const alternateSource=semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
+const alternateSource=textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
@@ -381,18 +382,19 @@ async function runHistoryJourney(){
     assert.equal(await composer().inputValue(),saved);
     pass('Keyboard opening and cancellation restore lookup focus and preserve the draft');
   }
-  if(namedHistory){
+  const renameSource=async id=>{
     await page.getByTestId('workbench-manage-history').click();
     const manage=page.getByTestId('workbench-history-dialog');
-    await manage.getByTestId('ai-conversation-session-'+sourceSession).click({button:'right'});
+    await manage.getByTestId('ai-conversation-session-'+id).click({button:'right'});
     await page.getByTestId('ai-conversation-context-rename').click();
-    const name=manage.getByTestId('ai-conversation-rename-session-'+sourceSession);
+    const name=manage.getByTestId('ai-conversation-rename-session-'+id);
     await name.fill(declaredTitle);
     await name.press('Enter');
-    await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0]?.title===declaredTitle);
+    await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',id)[0]?.title===declaredTitle);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
-  }
-  if(amendClass||semesterRules)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
+  };
+  if(namedHistory||textbookVersions)await renameSource(sourceSession);
+  if(amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
   if(checkPreference||amendClass){
     await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
     const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -406,6 +408,10 @@ async function runHistoryJourney(){
   if(vagueChoice||semesterRules){
     await page.getByTestId('pi-new-session').click();
     const id=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession?id:null;});
+    if(textbookVersions){
+      await renameSource(id);
+      await confirmTeachingTarget(until,app,page,id,teachingScope);
+    }
     if(semesterRules)await confirmTeachingTarget(until,app,page,id,{...teachingScope,termRef:'2026S'});
     await send(id,alternateSource,{answer:'这是合成记录，请简单确认收到。'});
     const candidate=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",id,alternateSource)[0];
@@ -414,7 +420,7 @@ async function runHistoryJourney(){
   }
   await page.getByTestId('pi-new-session').click();
   const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
-  if(amendClass||semesterRules)await confirmTeachingTarget(until,app,page,target,teachingScope);
+  if(amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,target,teachingScope);
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -495,7 +501,7 @@ async function runHistoryJourney(){
     assert.equal(bindings(target).length,0);
     pass('A discoverable but unrelated source with no usage grant cannot supply a claimed past date',{runId:answer.runId,reply:text});
   }else if(vagueChoice){
-    const vague=checkPreference?'照上次那份继续。请解释为什么记录温度计读数时要复核，保留这份记录中完整的复核口令，只在聊天中答复。'
+    const vague=textbookVersions?'照上次那份教材继续。请在聊天中引用我确认的八年级温度计实验教材记录，给出固定复核口令。':checkPreference?'照上次那份继续。请解释为什么记录温度计读数时要复核，保留这份记录中完整的复核口令，只在聊天中答复。'
       :'照上次那份继续。请在聊天里给出温度计实验记录里的复核口令。';
     const requests=(await provider()).length;
     await composer().fill(vague);
@@ -513,6 +519,15 @@ async function runHistoryJourney(){
     await pending.getByTestId('history-candidate-'+row.id).waitFor();
     await pending.getByTestId('history-candidate-'+alternative.recordId).waitFor();
     pass('One local confirmation focuses the query and preserves the original draft with two legitimate candidates');
+    if(textbookVersions){
+      assert.equal(read('SELECT title FROM ai_conversation_sessions WHERE id=?',sourceSession)[0].title,declaredTitle);
+      assert.equal(read('SELECT title FROM ai_conversation_sessions WHERE id=?',alternative.sessionId)[0].title,declaredTitle);
+      await pending.getByTestId('history-candidate-'+alternative.recordId).click();
+      await pending.getByTestId('history-lookup-preview').getByText(alternateSource,{exact:true}).waitFor();
+      assert.equal((await provider()).length,requests);
+      assert.deepEqual((await snapshot(target)).memoryScope.selections,[]);
+      pass('Two identically titled textbook sources have distinct edition text; previewing the first edition alone grants no use');
+    }
     await pending.getByTestId('history-candidate-'+row.id).click();
     await pending.getByTestId('history-lookup-preview').getByText(source,{exact:true}).waitFor();
     await pending.getByTestId('history-lookup-use').click();

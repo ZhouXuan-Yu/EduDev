@@ -30,9 +30,11 @@ const cancelJob=process.argv.includes('--cancel-job');
 const measureLatency=process.argv.includes('--latency');
 const workerUnavailable=process.argv.includes('--worker-unavailable');
 const handout=process.argv.includes('--handout');
+const profileUse=process.argv.includes('--profile-use');
+const localEdition='本机校对用青桐试教版';
 if(adoption)assert(process.env.OMNI_EDU_R2_PYTHON,'The installed local memory worker interpreter is required');
 const main = testMain(desktop);
-const root = fs.mkdtempSync(path.join(evidence,workerUnavailable?'r2-worker-unavailable-electron-':cancelJob?'r2-cancel-electron-':
+const root = fs.mkdtempSync(path.join(evidence,profileUse?'profile-use-pi-':workerUnavailable?'r2-worker-unavailable-electron-':cancelJob?'r2-cancel-electron-':
   measureLatency?'r2-latency-electron-':rejection?'r2-reject-electron-':adoption?'r2-adoption-electron-'
   :handout?'r2-handout-electron-':'r2-fast-path-electron-'));
 const data = path.join(root,'data');
@@ -62,7 +64,7 @@ async function launch() {
   const launchExit={exited:false};
   (report.launches??=[]).push(launchExit);
   app.process().once('exit',(code,signal)=>Object.assign(launchExit,{exited:true,code,signal}));
-  await app.evaluate(({net})=>{
+  await app.evaluate(({net},edition)=>{
     const fetch=net.fetch.bind(net);
     globalThis.r2Wire=[];
     net.fetch=async (input,init)=>{
@@ -77,6 +79,7 @@ async function launch() {
         ? [...text.matchAll(/\{"layer":"personal","source":"personal","id":"([a-f0-9]{64})","version":(\d+)\}/g)]
           .map(match=>({id:match[1],version:Number(match[2])})) : []);
       const row={model:body.model,status:0,preference,personalItems,projectedPersonal,startedAt:new Date().toISOString()};
+      if(edition)row.localEditionSent=strings.some(text=>text.includes(edition));
       globalThis.r2Wire.push(row);
       const started=performance.now();
       const response=await fetch(input,init);
@@ -90,7 +93,7 @@ async function launch() {
       }).catch(()=>{});
       return response;
     };
-  });
+  },profileUse?localEdition:null);
   page=await app.firstWindow();
   await sizeTeacherJourney(page);
   await page.getByTestId('office-prompt-input').waitFor();
@@ -160,6 +163,40 @@ async function close(){
   app=undefined;
   settingsPage=undefined;
 }
+async function verifyProfileUse(){
+  await send('请记住，以后讲解先提示再给答案。请简单确认。');
+  const head=currentHead();assert(head);
+  const settings=await openSettings();
+  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+  for(const [field,value] of [['subject','物理'],['grade','八年级'],['use-answerOrder','仅匹配教学画像']]){
+    await settings.getByTestId('teacher-memory-'+field).click();
+    await settings.getByRole('option',{name:value,exact:true}).click();
+  }
+  await settings.getByTestId('teacher-memory-textbook').fill(localEdition);
+  await settings.getByTestId('teacher-memory-save').click();
+  const policy=await until(async()=>{
+    const result=await settings.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
+    return result.ok && result.value.profile.textbook===localEdition && result.value.use.answerOrder==='profile' && result.value;
+  });
+  await returnToConversation();
+  for(const [condition,prompt,expected] of [
+    ['匹配','请解释八年级物理中的浮力。',true],
+    ['年级不符','请解释九年级物理中的浮力。',false],
+    ['学科不符','请解释八年级生物中的蒸腾作用。',false],
+    ['年级未知','请解释物理中的浮力。',false],
+    ['学科不明','请解释八年级的浮力。',false],
+  ]){
+    await fresh();const offset=(await wire()).length;
+    const turn=await send(prompt);
+    const requests=(await wire()).slice(offset);
+    assert(requests.length && requests.every(r=>r.status===200 && r.localEditionSent===false));
+    const observed=requests.some(r=>r.preference.some(text=>text.includes('先给提示，再给答案')));
+    assert.equal(observed,expected,condition);
+    assert.deepEqual(currentHead(),head);
+    check('实际 Pi 教学画像门禁：'+condition,{run:turn.id,requestCount:requests.length,observed,policyRevision:policy.revision});
+  }
+}
+
 async function fastPath(){
   assert.equal(currentHead(),null);
   const explicit='请记住，以后讲解先提示再给答案。请简单确认。';
@@ -663,6 +700,7 @@ try{
   if(workerUnavailable)await verifyUnavailableWorker();
   else if(adoption)await candidateAdoption();
   else if(handout)await handoutPreference();
+  else if(profileUse)await verifyProfileUse();
   else await fastPath();
   await page.screenshot({path:path.join(root,'restart.png')});
   report.ok=true;
