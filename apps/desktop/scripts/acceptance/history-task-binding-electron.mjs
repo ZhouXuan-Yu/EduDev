@@ -19,6 +19,7 @@ const frozenScopeModes={
   '--frozen-class-edit':['SCP-17','requirements_rename','Selective recheck'],
   '--frozen-semester':['SCP-20','as_of_history','Historical not current'],
   '--frozen-revocation':['SCP-18','revoked_race','Fail closed'],
+  '--frozen-unknown':['SCP-26','unknown_history','Abstain'],
 };
 const pairedScopeModes={
   'SCP-09':['SCP-10','unique_explicit','Conditional auto use'],
@@ -41,6 +42,7 @@ const frozenTerminal=scopeCase?.id==='SCP-15';
 const frozenClassEdit=scopeCase?.id==='SCP-17';
 const frozenSemester=scopeCase?.id==='SCP-20';
 const frozenRevocation=scopeCase?.id==='SCP-18';
+const frozenUnknown=scopeCase?.id==='SCP-26';
 if(frozenScopeBytes){
   assert.equal(frozenScopeHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
   assert.deepEqual([scopeCase?.id,scopeCase?.kind,scopeCase?.expectedRule],scopeMode);
@@ -78,7 +80,7 @@ const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--va
 const namedHistory=Boolean(frozenNamed)||multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle=frozenExclusion?'上一节课的总结':frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenRevocation?'r3-frozen-revocation-':frozenExclusion?'r3-frozen-exclusion-':frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':frozenLifecycle?'r3-frozen-lifecycle-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenUnknown?'r3-frozen-unknown-':frozenRevocation?'r3-frozen-revocation-':frozenExclusion?'r3-frozen-exclusion-':frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':frozenLifecycle?'r3-frozen-lifecycle-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -449,6 +451,28 @@ async function runDefinitionJourney(){
   assert.deepEqual(readTaskPointers(),[]);
   assert.deepEqual(readHistoryBindings(),[]);
   pass('The exact classroom definition question completes a real tool-free Run without creating or restoring a Task');
+}
+
+async function runUnknownJourney(){
+  await launch();
+  const id=await until(async()=>{const selected=await session();return selected?.startsWith('aisession_')?selected:null;});
+  const before=await snapshot(id);
+  assert.deepEqual(before.memoryScope.selections,[]);
+  assert.deepEqual(bindings(id),[]);
+  assert.equal(read('SELECT COUNT(*) n FROM memory_source_access')[0].n,0);
+  const question='上次我说过什么？';
+  const observed=await send(id,question);
+  const after=await snapshot(id);
+  const turn=after.projection.turns.find(item=>item.id===observed.runId);
+  const reply=turn?.items.filter(item=>item.role==='assistant'&&item.status!=='inProgress').map(item=>item.text).join('\n')??'';
+  report.unknown={question,reply,runId:observed.runId,provider:observed.sent};
+  assert(observed.sent.some(call=>call.status===200));
+  assert(observed.sent.every(call=>!call.sourceRoles.length&&!call.alternateRoles.length));
+  assert.match(reply,/不知道|无法(?:确认|知道|回忆|核实|查看)|没有.{0,20}(?:记录|历史|对话|信息)|未(?:看到|提供|记录|找到)/u);
+  assert.deepEqual(bindings(id),[]);
+  assert.deepEqual(after.memoryScope.selections,[]);
+  assert.equal(read('SELECT COUNT(*) n FROM memory_source_access')[0].n,0);
+  pass('With no verifiable history source, the real model abstains from inventing a previous teacher statement',{runId:observed.runId,reply});
 }
 
 async function runHistoryJourney(){
@@ -1147,6 +1171,7 @@ async function runHistoryJourney(){
 try{
   if(recoveryIndex>=0)await recoverBoundTask();
   else if(frozenQuestion)await runDefinitionJourney();
+  else if(frozenUnknown)await runUnknownJourney();
   else await runHistoryJourney();
   report.ok=true;
 }catch(error){
