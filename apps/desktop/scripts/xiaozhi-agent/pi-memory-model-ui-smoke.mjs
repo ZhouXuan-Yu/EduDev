@@ -84,7 +84,11 @@ try {
   // An empty library permits a truthful zero-tool answer. The trace check needs an actual retrieval target.
   const knowledgeFile=path.join(output,'三年级分数课导入.md');
   fs.writeFileSync(knowledgeFile,'# 三年级分数课导入\n给每组两条等长纸条，将第一条对折，第二条三等分。分别涂一份并比较。','utf8');
-  const imported=await page.evaluate(file=>window.omniEdu.importKnowledgeResourcePaths([file]),knowledgeFile);
+  await app.evaluate(({dialog},file)=>{
+    const original=dialog.showOpenDialog;
+    dialog.showOpenDialog=async()=>{dialog.showOpenDialog=original;return {canceled:false,filePaths:[file]};};
+  },knowledgeFile);
+  const imported=await page.evaluate(()=>window.omniEdu.importKnowledgeResources());
   assert.equal(imported.status,'succeeded');
   assert(imported.overview.counts.resources>=1);
   await send('请检索老师知识库有没有三年级分数课导入资料；没有资料就说明没有资料并给一句纸条比较分数的建议。'); state = await terminal(session);
