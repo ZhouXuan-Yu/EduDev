@@ -46,15 +46,20 @@ try{
   assert((await page.evaluate(()=>window.omniEdu.getXiaozhiSkillGovernance())).ok);
   const before=skills();
   await input.fill(prompt);await page.getByRole('button',{name:'发送消息',exact:true}).click();
-  await page.waitForFunction(async()=>{
-    const id=document.querySelector('.office-composer-container')?.getAttribute('data-session-id');
-    if(!id)return false;
-    const state=await window.omniEdu.getXiaozhiSnapshot(id);
-    return !state.running&&state.projection.turns.some(turn=>['completed','failed','interrupted'].includes(turn.status));
-  },undefined,{timeout:120000});
-  const sessionId=await page.locator('.office-composer-container').getAttribute('data-session-id');
-  const state=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
-  const turn=state.projection.turns.at(-1);report.runId=turn.id;report.status=turn.status;
+  const deadline=Date.now()+120000;
+  let owner,state,turn;
+  while(Date.now()<deadline){
+    [owner]=read("SELECT session_id,metadata_json->>'$.agentRunId' AS run_id FROM ai_conversation_messages WHERE role='user' AND content=? AND json_valid(metadata_json)",prompt);
+    if(owner?.run_id){
+      state=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),owner.session_id);
+      turn=state.projection.turns.find(item=>item.id===owner.run_id);
+      if(!state.running && turn && ['completed','failed','interrupted'].includes(turn.status))break;
+    }
+    await new Promise(resolve=>setTimeout(resolve,200));
+  }
+  assert(turn && owner?.run_id && state && !state.running,'The submitted teacher turn did not settle');
+  const sessionId=owner.session_id;
+  report.runId=owner.run_id;report.status=turn.status;
   report.requests=await app.evaluate(()=>globalThis.methodReviewRequests);
   report.usage=state.usage.find(row=>row.runId===turn.id);
   assert.equal(turn.status,'completed');assert(report.requests.some(row=>row.status===200&&row.hasPrompt&&row.hasTaskEvidence));
