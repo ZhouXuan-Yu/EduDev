@@ -24,6 +24,7 @@ import {preparePaperAdaptationContext} from '../education/paper-basket-adaptatio
 import {createScienceLessonSource,prepareScienceLessonRefresh} from '../education/science-lesson-source';
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
+import {currentClassTask,requestedResumeClass} from './tasks/class-resume';
 import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {lessonRevisionRequest,matchesLessonRevision,type LessonRevisionRequest} from '../education/lesson-revision-request';
@@ -2513,7 +2514,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       // A continuation inherits its authority from the original task source, not this new prompt.
       // Refuse before task recovery can append an event, or admission reserves an Active/run.
-      if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,input.continueTask,taskResume,allowNaturalAmendment));
+      const className=canInferTeachingRequest&&!input.historyIntents?requestedResumeClass(input.prompt):undefined;
+      const oldClassTask=className?await phase(()=>tasks.committed(id)):null;
+      const classProof=className?await phase(()=>currentClassTask(store.xiaozhiState.sql,id,oldClassTask,className)):undefined;
+      if(className&&!classProof)return {ok:false,error:'task_context_changed'};
+      const continuation=input.continueTask??(classProof?{taskId:classProof.taskId,requirementsVersion:classProof.requirementsVersion}:undefined);
+      if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,continuation,taskResume,allowNaturalAmendment));
+      if(classProof){
+        await phase(()=>effectReconciler.recheck(id,classProof.taskId));
+        recoveryInspection=await phase(()=>inspectTaskRecovery({sql:store.xiaozhiState.sql,nativeRoot:root,sessionId:id,taskId:classProof.taskId}));
+      }
       if(recoveredQuestionRunId){
         const current=await phase(()=>tasks.committed(id));
         if(!current||(current.lastRunId??current.origin.runId)!==recoveredQuestionRunId)return{ok:false,error:'task_context_changed'};
@@ -2638,8 +2648,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
-        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,deliveryContinuation??input.continueTask,allowNaturalAmendment,
-          {...(omission==='task'?{onAdmitted:taskHistory.excludeForTask}:
+        if(operation==='prompt'&&!answerOnly)run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,deliveryContinuation??continuation,allowNaturalAmendment,
+          {...(className&&classProof?{onAdmitted:async(work,task)=>{
+              const checked=await currentClassTask(work,id,oldClassTask,className);
+              if(!checked||checked.scopeVersion!==classProof.scopeVersion||checked.folderId!==classProof.folderId||
+                checked.term!==classProof.term||task.id!==classProof.taskId)throw Error('task_context_changed');
+            }}:omission==='task'?{onAdmitted:taskHistory.excludeForTask}:
             historyProof?{onAdmitted:(work,task,owner)=>taskHistory.attachTask(work,task,owner,historyProof!)}:{}),
             ...(recoveryInspection?.canRebuildSession?{recoveryBase:{taskId:recoveryInspection.taskId,requirementsVersion:recoveryInspection.requirementsVersion}}:{})}));
         else {
