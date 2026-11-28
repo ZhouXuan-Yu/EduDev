@@ -10,11 +10,13 @@ import {physicsHandout,assertPhysicsHandout} from './live-physics-handout-fixtur
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 assert(acceptance);
 const wordRequest=process.argv.includes('--word-request');
+const sameTitle=process.argv.includes('--same-title');
 const confirmFixture=process.argv.includes('--confirm-fixture');
 const live=process.argv.includes('--live');
 const namedBasis=process.argv.includes('--named-basis');
 const physics=process.argv.includes('--physics');
 assert(physics ? live&&namedBasis : !(live&&namedBasis));
+assert(!sameTitle||!live&&!namedBasis);
 const apiKey=live?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout';
 assert(apiKey,'Missing DeepSeek test credential');
 const output=fs.mkdtempSync(path.join(acceptance,'teaching-handout-'));
@@ -111,7 +113,15 @@ async function launch(cold=false){
             {prompt:'解 $5x-2=2x+7$ 并代回。',difficulty:'巩固',answer:'$x=3$',explanation:'两边减去 $2x$ 并加 2，得到 $3x=9$。'}],
           citations:[source(wire.resourceId,citation),...extras]}],sourceGaps:[]});
       let offer;
-      if(namedBasis){
+      if(wire.planning){
+        expect(!wire.probe,'The new task may not read any handout');
+      }else if(wire.probe){
+        if(!wire.probeResult&&wire.requests.length===wire.probeStart){
+          offer={name:'education_read_handout_for_edit',args:{}};
+        }else{
+          wire.probeResult=latest();
+        }
+      }else if(namedBasis){
         const read=resourceId=>({name:'office_read_material',args:{resourceId,offset:0}});
         const save=args=>({name:modelTool,args});
         const withRootCitations=draft=>{
@@ -198,7 +208,7 @@ async function launch(cold=false){
       const event=(delta,finish_reason=null)=>'data: '+JSON.stringify({id:'teaching-handout',object:'chat.completion.chunk',
         created:0,model:body.model,choices:[{index:0,delta,finish_reason}]})+'\n\n';
       const delta=offer?{tool_calls:[{index:0,id:'handout-call-'+phase,type:'function',
-        function:{name:offer.name,arguments:JSON.stringify(offer.args)}}]}:{content:'已保存可编辑学案草稿，请打开讲义核对。'};
+        function:{name:offer.name,arguments:JSON.stringify(offer.args)}}]}:{content:wire.planning?'课堂检查清单：读题、列式、验算。':wire.probe?'请确认要修改的原讲义。':'已保存可编辑学案草稿，请打开讲义核对。'};
       return new Response(event({role:'assistant'})+event(delta)+event({},offer?'tool_calls':'stop')+'data: [DONE]\n\n',
         {headers:{'content-type':'text/event-stream'}});
     };
@@ -376,6 +386,66 @@ async function verifyControlled(state,wire,oldBook){
   await until(async()=> (await getBook(handout.bookId)).health.status==='healthy');
 }
 
+async function verifySameTitleTasks(first){
+  // Restore the original conversation after closing the editor. Each new task is created by the teacher UI.
+  await app.close();app=undefined;
+  await launch();
+  await until(async()=>await page.locator('.office-composer-container').getAttribute('data-session-id')===sessionId);
+  const endCurrent=async()=>{
+    const review=page.getByTestId('pi-task-review').last();
+    const toggle=review.getByTestId('pi-task-review-toggle');
+    if(await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();
+    await review.getByTestId('pi-task-cancel').click();
+    await review.getByTestId('pi-task-confirm-cancel').click();
+    await until(async()=>(await snapshot()).task?.state==='ended');
+  };
+  const send=async(prompt)=>{
+    const old=(await snapshot()).projection.turns.at(-1)?.id;
+    await page.getByTestId('office-prompt-input').fill(prompt);
+    await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    return until(async()=>{
+      const state=await snapshot(),turn=state.projection.turns.at(-1);
+      if(!turn||turn.id===old||state.running)return;
+      assert.equal(turn.status,'completed',JSON.stringify({turn:turn.status,wire:await app.evaluate(()=>globalThis.handoutWire.error)}));
+      return state;
+    });
+  };
+  const origins=()=>sql('SELECT book_id,task_id FROM teaching_handout_origins WHERE session_id=? ORDER BY created_at,book_id',[sessionId]);
+  const initial=await getBook(first.bookId);
+  await endCurrent();
+  const secondState=await send('请参考相关本地资料制作一份七年级新学案，标题是《'+title+'》，包含例题和分层练习。');
+  const second=origins().find(row=>row.book_id!==first.bookId);
+  assert.equal(origins().length,2);
+  assert(second&&second.task_id!==first.taskId&&second.task_id===secondState.task.id);
+  assert.equal((await getBook(second.book_id)).book.title,initial.book.title);
+  const secondBefore=await getBook(second.book_id);
+  await endCurrent();
+  await app.evaluate(()=>{globalThis.handoutWire.planning=true;});
+  const unrelated=await send('请整理三条课堂检查要点，仅在聊天中给出清单。');
+  assert(unrelated.task?.id&&!origins().some(row=>row.task_id===unrelated.task.id));
+  await app.evaluate(()=>{globalThis.handoutWire.planning=false;});
+  const probes=[];
+  for(const [prompt,expected] of [['修改这份讲义，只改第一题。','book_selection_required'],['请修改《'+title+'》，只改第一题。','ambiguous']]){
+    await app.evaluate(()=>{const w=globalThis.handoutWire;w.probe=true;w.probeStart=w.requests.length;w.probeResult=null;});
+    const state=await send(prompt);
+    assert(!origins().some(row=>row.task_id===state.task?.id));
+    const result=await app.evaluate(()=>globalThis.handoutWire.probeResult);
+    assert.equal(result?.error,expected,JSON.stringify(result));
+    assert(!result.chapter&&!result.digest);
+    if(expected==='ambiguous')assert.deepEqual(result.choices.map(choice=>choice.bookId).sort(),[first.bookId,second.book_id].sort());
+    else assert(!result.choices&&!JSON.stringify(result).includes(title));
+    probes.push({prompt,taskId:state.task?.id,result});
+    if(expected==='book_selection_required')assert.equal(state.task.id,unrelated.task.id);
+    else if(state.task.id!==unrelated.task.id)assert.equal(state.task.origin.runId,state.projection.turns.at(-1).id);
+    assert.deepEqual(sql('SELECT key FROM app_settings WHERE key=?',['xiaozhi.memory-use.task.v1:'+state.task.id]),[]);
+  }
+  assert.deepEqual((await getBook(first.bookId)).blocks,initial.blocks);
+  assert.deepEqual((await getBook(second.book_id)).blocks,secondBefore.blocks);
+  assert.equal(sql('SELECT id FROM teaching_handout_edit_reviews').length,0);
+  report.sameTitle={origins:origins(),probes};
+  check('Two genuine same-title handouts from separate tasks remain untouched; an unbound task must get a teacher selection before reading either.');
+}
+
 try{
   await launch();
   const oldBook=await page.evaluate(()=>window.omniEdu.createTeachingBook({title:'此前的独立讲义'}));
@@ -425,6 +495,7 @@ try{
     await verifyLive(state,wire);
   }else{
     await verifyControlled(state,wire,oldBook);
+    if(sameTitle)await verifySameTitleTasks(state.teachingHandouts[0]);
     if(confirmFixture){
       await page.getByTestId('teaching-book-review-current').click();
       await page.getByTestId('teaching-book-version-confirm').click();
