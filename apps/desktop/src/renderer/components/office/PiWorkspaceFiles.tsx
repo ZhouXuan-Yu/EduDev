@@ -8,7 +8,7 @@ import {ScienceDemoFrame} from './ScienceDemoFrame';
 import { Button, Tabs } from '@heroui/react';
 import { FileText, Folder, RefreshCw, X, PanelRight } from 'lucide-react';
 import { FileTree } from '../../heroui-pro/components/file-tree';
-import { Markdown } from '../../heroui-pro/components/markdown';
+import {LocalFileContent} from './LocalFileContent';
 import { XIAOZHI_FILES_SCHEMA, XIAOZHI_FILE_ERRORS, type XiaozhiFileEntry, type XiaozhiFilePreview } from '../../../shared/xiaozhi-files';
 import type { XiaozhiChangeSummary } from '../../../shared/xiaozhi-changes';
 import type {OfficeArtifactSummary} from '../../../shared/xiaozhi-office-artifacts';
@@ -184,10 +184,10 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         </DisclosureCard>}
         {preview&&<PiDeliveryCheck key={sessionId+preview.path} sessionId={sessionId} path={preview.path} version={preview.version} workspaceVersion={authority.current}/>}
         <div ref={previewRoot} className="pi-file-preview" data-testid="pi-file-preview" aria-busy={reading}>
-          {savedSelection?<>{previewError&&<p role="alert">{previewError}</p>}<ConversationSavedPreview artifact={savedSelection} onClose={closeSaved} onOpenPath={path=>void openSavedPath(path)}/></>:reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>{reveal?.version?'此处核对引用时的版本；刷新仍保留版本检查。请回来源对话重新读取当前资料。':'刷新目录后，选择最新文件继续预览。'}</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
-            preview?.format==='html'?<ScienceDemoFrame html={preview.html||''}/>:preview?.format==='science_demo'?<><ScienceClassroomExport key={preview.path+preview.version} sessionId={sessionId} workspaceVersion={authority.current} preview={preview}/><ScienceDemoFrame html={preview.html||''}/></>:preview?.format==='office'?<div data-testid="pi-file-document"><p role="status" data-testid="pi-file-document-info">{preview.document?.format.toUpperCase()} · 本地提取正文，版式以原文件为准</p><Markdown components={{img:({alt})=><span>［图片：{alt||'文档图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown></div>:
-            preview?.format==='markdown'?<Markdown components={{img:({alt})=><span>［图片：{alt||'引用图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown>:
-            preview?.format==='text'?<pre data-testid="pi-file-text">{preview.text}</pre>:preview?<div><h3>{preview.name}</h3><p>{preview.size} 字节</p><p>暂不支持此格式的内容预览。</p></div>:<p className="pi-file-empty">从右侧选择教学文件进行本地预览。</p>}
+          {savedSelection?<>{previewError&&<p role="alert">{previewError}</p>}<ConversationSavedPreview artifact={savedSelection} onClose={closeSaved} onOpenPath={path=>void openSavedPath(path)}/></>:reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>{reveal?.version?'此处核对引用时的版本；刷新仍保留版本检查。请回来源对话重新读取当前资料。':'刷新目录后，选择最新文件继续预览。'}</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='science_demo'?<>
+            <ScienceClassroomExport key={preview.path+preview.version} sessionId={sessionId} workspaceVersion={authority.current} preview={preview}/>
+            <ScienceDemoFrame html={preview.html||''}/>
+          </>:preview?<LocalFileContent file={preview} imageTestId="pi-file-image" textTestId="pi-file-text" documentTestId={preview.format==='office'?'pi-file-document':undefined} documentInfoTestId="pi-file-document-info" />:<p className="pi-file-empty">从右侧选择教学文件进行本地预览。</p>}
         </div>
       </div>
       <aside className="pi-file-explorer" hidden={!explorerOpen}>

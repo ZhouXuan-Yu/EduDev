@@ -1,5 +1,7 @@
 # 当前状态与恢复入口
 
+已发送的对话附件可以在问小智右侧打开。Word、Markdown、Excel 和图片可与网页同栏切换。见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
 浏览器新增页内操作指针和统一控制条。接管、交还和操作提示的验证见[浏览器专项](BROWSER_CONTROL_R2.md)。
 
 右侧工作区新增网页和对话文件标签，验收构建见[浏览器专项](BROWSER_CONTROL_R2.md)。

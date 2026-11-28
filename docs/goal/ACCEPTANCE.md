@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+右栏文件预览从真实 Electron 对话验收发送、打开、查看和关闭，覆盖 Word、Markdown、双工作表 Excel、图片缩放和网页标签。见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
 浏览器控制权专项覆盖待批准坐标、原生人工输入、Agent 授权按键和右栏独立窗。同一套确认面板用于提交教师决策。[浏览器专项](BROWSER_CONTROL_R2.md)
 
 问小智右侧工作区按手动浏览、文件版本、独立窗与 Pi 授权实际路径验收。见[浏览器专项](BROWSER_CONTROL_R2.md)。

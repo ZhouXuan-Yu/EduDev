@@ -1,14 +1,15 @@
 import {useEffect,useRef,useState,type CSSProperties,type ReactNode} from 'react';
 import {Button} from '@heroui/react';
 import {ExternalLink,FileText,FolderOpen,Globe,PanelRightClose,Plus,X} from 'lucide-react';
+import type {XiaozhiAttachment} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiBrowserStatus} from '../../../shared/xiaozhi-agent';
 import type {BrowserControlCommand} from '../../../shared/xiaozhi-browser';
 import '../../ui-system/browser-workspace.css';
 import {BrowserAddress,BrowserControlBanner,browserTabLabel} from './BrowserChrome';
 
-export type FileTabRequest={id:string;requestId?:string;path?:string;artifactId?:string;title?:string;version?:string;workspaceVersion?:string};
+export type FileTabRequest={id:string;requestId?:string;path?:string;artifactId?:string;attachment?:XiaozhiAttachment;title?:string;version?:string;workspaceVersion?:string};
 const folderTab={id:'directory',title:'对话文件'};
-const fileKey=(request:FileTabRequest)=>request.artifactId?'saved:'+request.artifactId:request.path?'file:'+request.path:'directory';
+const fileKey=(request:FileTabRequest)=>request.attachment?'attachment:'+request.attachment.id+':'+request.attachment.revision:request.artifactId?'saved:'+request.artifactId:request.path?'file:'+request.path:'directory';
 const browserError:Record<string,string>={
   invalid_input:'无法识别此地址或标签页。',permission_denied:'请使用公开 HTTP(S) 地址。去对话文件打开本地资料。',
   busy:'正在处理浏览器操作，请稍后重试。',network:'网页连接失败，请检查网络后重试。'

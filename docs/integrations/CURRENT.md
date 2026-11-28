@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+对话附件进入右栏后，通过现有本机附件版本校验读取。工作目录与对话附件复用文件内容组件。[浏览器专项](../goal/BROWSER_CONTROL_R2.md)
+
 小智浏览器通过现有 Electron 原生输入分派和宿主审批完成接管交还。[浏览器专项](../goal/BROWSER_CONTROL_R2.md)
 
 问小智右侧工作区复用 Electron 原生导航历史及既有文件读取合同，独立窗与右栏共享网页。见[浏览器专项](../goal/BROWSER_CONTROL_R2.md)。
