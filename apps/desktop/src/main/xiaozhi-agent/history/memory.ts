@@ -6,7 +6,7 @@ import { validMemorySession } from '../memory-selection';
 import { createHistoryState, historyHash, historyId, type Access } from './state';
 import { createHistoryIndexWorker } from './index-worker';
 import { configuredHistoryIndex } from './hindsight';
-import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext} from './teaching-target';
+import {eligibleHistorySessions,historyTeachingContext,priorTeachingTarget,pinTargetApplies,markComparison,comparisonFor} from './teaching-target';
 import { historyRecordId, readHistorySource, validHistoryRef } from './source';
 
 export { validHistoryRef } from './source';
@@ -25,25 +25,30 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
   const sql=store.xiaozhiState.sql;
   const access = createHistoryState(sql);
   const engine = dataRoot ? configuredHistoryIndex(dataRoot) : undefined;
-  const tickets = new Map<string,{sessionId:string;scopeVersion:number;selection:HistorySelection;expires:number}>();
-  function issue(sessionId:string,scopeVersion:number,source:HistorySource) {
+  const tickets = new Map<string,{sessionId:string;scopeVersion:number;selection:HistorySelection;expires:number;previewed?:true}>();
+  function issue(sessionId:string,scopeVersion:number,source:HistorySource,comparison?:NonNullable<ReturnType<typeof comparisonFor>>) {
     for (const [key,value] of tickets) if (value.expires<=Date.now()) tickets.delete(key);
     if(tickets.size>=192)tickets.delete(tickets.keys().next().value!);
     const ticket=randomUUID();
-    tickets.set(ticket,{sessionId,scopeVersion,expires:Date.now()+300000,
-      selection:{layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion}});
-    return {...source,ticket};
+    const selection:HistorySelection={layer:'history',source:'history',id:source.sourceId,version:source.generation,sourceVersion:source.ref.sourceVersion};
+    if(comparison)markComparison(selection,comparison);
+    tickets.set(ticket,{sessionId,scopeVersion,expires:Date.now()+300000,selection});
+    return {...source,ticket,...(comparison?{comparisonTerm:comparison.term}:{})};
   }
-  async function eligibleTarget(sessionId:string,ref:HistorySourceRef) {
+  async function eligibleTarget(sessionId:string,ref:HistorySourceRef,pin:HistorySelection) {
     const source=(await historyTeachingContext(sql,ref.sessionId).catch(()=>null))?.target;
-    return source&&historyTargetApplies(source,(await historyTeachingContext(sql,sessionId)).target)?source:null;
+    const {saved,target}=await historyTeachingContext(sql,sessionId);
+    return source&&pinTargetApplies(pin,source,target,sessionId,saved.version)?source:null;
   }
   // Check all returned titles against one SQLite snapshot, after asynchronous source reads.
-  async function publish(sessionId: string, scopeVersion: number, sources: HistorySource[], signal?: AbortSignal) {
+  async function publish(sessionId: string, scopeVersion: number, sources: HistorySource[], signal?: AbortSignal,priorTerm=false) {
     signal?.throwIfAborted();
     const {saved,target}=await historyTeachingContext(sql,sessionId);
     if(saved.version!==scopeVersion)return [];
-    const permittedSessions=await eligibleHistorySessions(sql,sources.map(source=>source.ref.sessionId),target);
+    const lookup=priorTerm?priorTeachingTarget(target):target;
+    if(!lookup)return [];
+    const comparison=priorTerm&&lookup.folderId&&lookup.term&&target.term?{sessionId,scopeVersion,folderId:lookup.folderId,term:lookup.term,destinationTerm:target.term}:undefined;
+    const permittedSessions=await eligibleHistorySessions(sql,sources.map(source=>source.ref.sessionId),lookup,priorTerm);
     const limited=sources.filter(source=>permittedSessions.has(source.ref.sessionId)).slice(0,12);
     if (!limited.length) return [];
     const ids = limited.map(source => source.sourceId);
@@ -59,6 +64,10 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
         AND (target.folder_id IS NULL OR EXISTS(SELECT 1 FROM ai_conversation_folders f
           WHERE f.id=target.folder_id AND COALESCE(f.archived_at,'')=''))
         AND (owner.folder_id IS NULL OR owner.folder_id=target.folder_id)
+        AND (?=0 OR (owner.folder_id=target.folder_id AND EXISTS(
+          SELECT 1 FROM xiaozhi_pi_memory_scopes sc WHERE sc.conversation_id=owner.id AND sc.schema_version=4 AND
+          CASE WHEN json_valid(sc.payload_json) THEN (sc.payload_json->>'$.teachingTarget.folderId')=owner.folder_id
+            AND (sc.payload_json->>'$.teachingTarget.term')=? ELSE 0 END)))
         AND NOT EXISTS(SELECT 1 FROM xiaozhi_pi_memory_scopes source_scope WHERE source_scope.conversation_id=owner.id AND
           CASE WHEN json_valid(source_scope.payload_json) THEN
             json_type(source_scope.payload_json,'$.teachingTarget') IS NOT NULL AND
@@ -66,13 +75,13 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
                (source_scope.payload_json->>'$.teachingTarget.folderId') IS NOT owner.folder_id)
             ELSE 1 END)
         AND COALESCE((SELECT version FROM xiaozhi_pi_memory_scopes WHERE conversation_id=target.id),0)=?`,
-      [sessionId,...ids,target.folderId,target.term,scopeVersion]);
+      [sessionId,...ids,target.folderId,priorTerm?1:0,lookup.term,lookup.term,scopeVersion]);
     signal?.throwIfAborted();
     const current = new Map(rows.map(row => [row.source_id,row]));
     return limited.flatMap(source => {
       const row = current.get(source.sourceId);
       return row && row.source_version === source.ref.sourceVersion && row.generation === source.generation
-        ? [issue(sessionId,scopeVersion,source)] : [];
+        ? [issue(sessionId,scopeVersion,source,comparison)] : [];
     });
   }
   async function session(id: string, includeControls = true) {
@@ -127,10 +136,10 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       worker.wake();
       return state;
     },
-    candidate(sessionId:string,scopeVersion:number,ticket:string) {
+    candidate(sessionId:string,scopeVersion:number,ticket:string,allowComparison=false) {
       if (!validMemorySession(sessionId)||!Number.isSafeInteger(scopeVersion)||typeof ticket!=='string'||ticket.length!==36) return;
       const own=tickets.get(ticket);
-      if(own?.sessionId===sessionId&&own.scopeVersion===scopeVersion&&own.expires>Date.now())return own.selection;
+      if(own?.sessionId===sessionId&&own.scopeVersion===scopeVersion&&own.expires>Date.now()&&(!comparisonFor(own.selection)||allowComparison&&own.previewed===true))return own.selection;
     },
     async sessions() {
       const current = await store.listAiConversationWorkspace();
@@ -159,13 +168,14 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       worker?.wake();
       return project(saved.ref,source?.label??'历史来源',source?.title??'',saved);
     },
-    async discover(sessionId: string, query: string, signal?: AbortSignal, includeSelected=false): Promise<HistoryDiscovery> {
+    async discover(sessionId: string, query: string, signal?: AbortSignal, includeSelected=false,priorTerm=false): Promise<HistoryDiscovery> {
       if (typeof query!=='string'||!query.trim()||query.length>1800||!validMemorySession(sessionId)) throw Error('invalid_input');
       const started = performance.now();
       const {saved:scope,target}=await historyTeachingContext(sql,sessionId);
       const selected=new Set(scope.selections.filter(item=>item.layer==='history').map(item=>item.id));
       const granted=(await access.permitted()).filter(item=>includeSelected||!selected.has(item.sourceId));
-      const permittedSessions=await eligibleHistorySessions(sql,granted.map(item=>item.ref.sessionId),target);
+      const lookup=priorTerm?priorTeachingTarget(target):target;
+      const permittedSessions=lookup?await eligibleHistorySessions(sql,granted.map(item=>item.ref.sessionId),lookup,priorTerm):new Set<string>();
       const active=granted.filter(item=>permittedSessions.has(item.ref.sessionId));
       signal?.throwIfAborted();
       if(!active.length)return {mode:'local',candidates:[],reason:'empty_scope',elapsedMs:Math.round(performance.now()-started)};
@@ -182,7 +192,7 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
           if(row)selectedByTitle.push(await project(row.ref,row.label,row.title,saved));
           if(selectedByTitle.length===12)break;
         }
-        if(selectedByTitle.length)return {mode:'local',candidates:await publish(sessionId,scope.version,selectedByTitle,signal),
+        if(selectedByTitle.length)return {mode:'local',candidates:await publish(sessionId,scope.version,selectedByTitle,signal,priorTerm),
           elapsedMs:Math.round(performance.now()-started)};
       }
       if (engine) {
@@ -207,7 +217,7 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
               const row=await readAllowed(saved).catch(()=>null);
               if(row)candidates.push(await project(row.ref,row.label,row.title,saved));
             }
-            return {mode:'hindsight',candidates:await publish(sessionId,scope.version,candidates,signal),elapsedMs:Math.round(performance.now()-started)};
+            return {mode:'hindsight',candidates:await publish(sessionId,scope.version,candidates,signal,priorTerm),elapsedMs:Math.round(performance.now()-started)};
           }
         } catch { signal?.throwIfAborted(); }
       }
@@ -224,11 +234,18 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
         }
       }
       const ranked = score.sort((a,b)=>b.score-a.score||a.source.sourceId.localeCompare(b.source.sourceId,'en')).map(item=>item.source);
-      return {mode:'local',candidates:await publish(sessionId,scope.version,ranked,signal),
+      return {mode:'local',candidates:await publish(sessionId,scope.version,ranked,signal,priorTerm),
         ...(engine?{reason:'service_unavailable' as const}:{}),elapsedMs:Math.round(performance.now()-started)};
     },
-    async preview(ref: HistorySourceRef, offset: number, permittedOnly: boolean): Promise<HistoryPreview> {
+    async preview(ref: HistorySourceRef, offset: number, permittedOnly: boolean,ticket?:string): Promise<HistoryPreview> {
       if (!validHistoryRef(ref)||!Number.isSafeInteger(offset)||offset<0||offset>100000) throw Error('invalid_input');
+      const own=ticket===undefined?undefined:tickets.get(ticket);
+      const assertPreview=async()=>{
+        if(ticket===undefined)return;
+        if(!permittedOnly||!own||tickets.get(ticket)!==own||own.expires<=Date.now()||own.selection.id!==historyId(ref)||
+          own.selection.sourceVersion!==ref.sourceVersion||!await eligibleTarget(own.sessionId,ref,own.selection))throw Error('permission_denied');
+      };
+      await assertPreview();
       const saved = await access.get(historyId(ref));
       if (permittedOnly && (!saved||!saved.allowed||saved.status!=='active')) throw Error('permission_denied');
       if (permittedOnly && saved!.ref.sourceVersion!==ref.sourceVersion) throw Error('source_changed');
@@ -242,6 +259,11 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
         if (!current?.allowed || current.status !== 'active') throw Error('permission_denied');
         if (current.generation !== view.generation || current.ref.sourceVersion !== ref.sourceVersion) throw Error('source_changed');
       }
+      if(own){
+        await assertPreview();
+        if(!view.allowed||view.generation!==own.selection.version)throw Error('source_changed');
+        if(offset===0)own.previewed=true;
+      }
       return {source:view,text:text.slice(offset,end),offset,nextOffset:end<text.length?end:null};
     },
     async selected(selection: HistorySelection) {
@@ -252,10 +274,10 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     async selectedFor(sessionId:string,selection:HistorySelection) {
       const saved=await access.get(selection.id);
       if(!saved||saved.generation!==selection.version||saved.ref.sourceVersion!==selection.sourceVersion)throw Error('source_changed');
-      const before=await eligibleTarget(sessionId,saved.ref);
+      const before=await eligibleTarget(sessionId,saved.ref,selection);
       if(!before)throw Error('permission_denied');
       const source=await readAllowed(saved);
-      const after=await eligibleTarget(sessionId,saved.ref);
+      const after=await eligibleTarget(sessionId,saved.ref,selection);
       if(!after)throw Error('permission_denied');
       if(after.folderId!==before.folderId||after.term!==before.term)throw Error('source_changed');
       const current=await access.get(selection.id);

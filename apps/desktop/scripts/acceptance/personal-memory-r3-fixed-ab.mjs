@@ -164,6 +164,13 @@ async function seedPreferences(page,input,snapshot){
 async function chooseHistory(app,page,data,input,source,snapshot,query=localQuery,observeDenial=false){
   await input.fill(query);
   await page.getByTestId('history-lookup-open').click();
+  const previousTerm=page.getByRole('checkbox',{name:'查找本班上学期的资料（仅本次比较）'});
+  if(observeDenial&&await previousTerm.isVisible()){
+    await page.getByTestId('history-lookup-search').click();
+    await page.getByTestId('history-lookup').getByText(/当前没有更多获准查找的来源|没有找到相符的历史/u).waitFor();
+    assert.equal(await page.getByTestId('history-candidate-'+source.record_id).count(),0);
+    await previousTerm.check();
+  }
   await page.getByTestId('history-lookup-search').click();
   const finder=page.getByTestId('history-lookup');
   const candidate=finder.getByTestId('history-candidate-'+source.record_id);
@@ -179,6 +186,13 @@ async function chooseHistory(app,page,data,input,source,snapshot,query=localQuer
   }
   await candidate.click();
   await finder.getByTestId('history-lookup-preview').getByText(source.content,{exact:true}).waitFor();
+  if(observeDenial&&await previousTerm.isVisible()){
+    assert.equal(await finder.getByTestId('history-lookup-use-session').count(),0);
+    await finder.getByRole('button',{name:'仅用于本次比较',exact:true}).click();
+    await page.getByTestId('history-intent-pending').getByText(/上学期资料仅用于这次比较/u).waitFor();
+    assert.deepEqual((await snapshot()).memoryScope.selections,[]);
+    return {state:'confirmed_for_comparison'};
+  }
   const explicitSession=finder.getByTestId('history-lookup-use-session');
   if(await explicitSession.isVisible())await explicitSession.click();
   else await finder.getByTestId('history-lookup-use').click();
@@ -818,6 +832,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     }
     result.cost='UNKNOWN';
     if(semesterSource){
+      if(result.historyAccess.state==='confirmed_for_comparison'){
+        result.selectedForSemester=read(data,"SELECT source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=? AND reason='turn'",result.terminal.runId).map(row=>row.source_id);
+        assert.equal(read(data,"SELECT count(*) n FROM app_settings,json_each(app_settings.value_json,'$.selections') p WHERE key GLOB 'xiaozhi.memory-use.task.v1:*' AND (p.value->>'$.id')=?",semesterSource.source_id)[0].n,0);
+      }
       if(result.historyAccess.state==='excluded_by_host'){
         assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));
         assert(result.realModel.every(item=>!item.includesProtectedSource));

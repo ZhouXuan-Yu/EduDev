@@ -4,7 +4,7 @@ import type {XiaozhiMemoryUseSelection} from '../../../shared/xiaozhi-memory';
 import {validTaskOwner,type TaskView,type TaskOwner} from '../../../shared/xiaozhi-task';
 import type {createHistoryMemory} from '../history/memory';
 import {createHistoryState} from '../history/state';
-import {eligibleHistorySessions,historyTargetApplies,historyTeachingContext,type HistoryTeachingTarget as Target} from '../history/teaching-target';
+import {eligibleHistorySessions,comparisonFor,markComparison,pinTargetApplies,historyTeachingContext,type HistoryTeachingTarget as Target} from '../history/teaching-target';
 import type {PrivateMemoryScope} from '../memory-scope-state';
 import {createReferenceReceipts} from './receipts';
 import {memorySelectionKey,validMemoryUseSelection} from '../memory-selection';
@@ -61,11 +61,11 @@ export function combinedMemorySelections<T extends XiaozhiMemoryUseSelection>(se
   return [...merged.values()];
 }
 
-async function currentPin(sql:Sql,pin:HistoryPin,target:Target) {
+async function currentPin(sql:Sql,pin:HistorySelection,target:Target,sessionId='',version=-1) {
   const access=await createHistoryState(sql).get(pin.id);
   if(!access?.allowed||access.status!=='active'||access.generation!==pin.version||access.ref.sourceVersion!==pin.sourceVersion)return false;
   const source=(await historyTeachingContext(sql,access.ref.sessionId).catch(()=>null))?.target;
-  return !!source&&historyTargetApplies(source,target);
+  return !!source&&pinTargetApplies(pin,source,target,sessionId,version);
 }
 
 async function readTaskBinding(sql:Sql,task:TaskView):Promise<TaskBinding|null> {
@@ -94,20 +94,23 @@ async function readTaskBinding(sql:Sql,task:TaskView):Promise<TaskBinding|null> 
 export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof createHistoryMemory>,'candidate'|'selected'>) {
   const pending=new Map<string,Pending>();
   async function stage(sessionId:string,scopeVersion:number,ticket:string):Promise<PendingHistoryReference> {
-    const selection=history.candidate(sessionId,scopeVersion,ticket);
+    const selection=history.candidate(sessionId,scopeVersion,ticket,true);
     if(!selection)throw Error('command_conflict');
     const {saved,target}=await historyTeachingContext(sql,sessionId);
     if(saved.version!==scopeVersion)throw Error('command_conflict');
+    if(!await currentPin(sql,selection,target,sessionId,scopeVersion))throw Error('permission_denied');
     const source=await history.selected(selection);
     const pin={...selection,fingerprint:source.fingerprint};
-    if(!await currentPin(sql,pin,target))throw Error('permission_denied');
+    const comparison=comparisonFor(selection);
+    if(comparison)markComparison(pin,comparison);
+    if(!await currentPin(sql,pin,target,sessionId,scopeVersion))throw Error('permission_denied');
     combinedMemorySelections(saved.selections,[pin]);
     const now=Date.now();
     for(const [key,entry] of pending)if(entry.expires<=now)pending.delete(key);
     if(pending.size>=192)pending.delete(pending.keys().next().value!);
     const token=randomUUID();
     pending.set(token,{sessionId,scopeVersion,target,pin,expires:now+1_800_000});
-    return {token,sourceId:pin.id,scopeVersion,title:source.title+' · '+source.label};
+    return {token,sourceId:pin.id,scopeVersion,title:source.title+' · '+source.label,...(comparison?{comparisonTerm:comparison.term}:{})};
   }
 
   type Prepared={
@@ -129,7 +132,7 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
       const entry=pending.get(token);
       if(!entry||entry.sessionId!==sessionId||entry.scopeVersion!==saved.version||!sameTarget(entry.target,target)||entry.expires<=Date.now())throw Error('memory_scope_changed');
       const source=await history.selected(entry.pin).catch(()=>null);
-      if(source?.fingerprint!==entry.pin.fingerprint||!await currentPin(sql,entry.pin,target))throw Error('memory_scope_changed');
+      if(source?.fingerprint!==entry.pin.fingerprint||!await currentPin(sql,entry.pin,target,sessionId,saved.version))throw Error('memory_scope_changed');
       pins.push(entry.pin);
     }
     const selections=[...new Map(pins.map(pin=>[pin.id,pin])).values()];
@@ -171,7 +174,7 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
       const named=await namedSessionPin(work,proof.namedTitle,saved,target);
       if(!named||JSON.stringify(named)!==JSON.stringify(proof.selections[0]))throw Error('memory_scope_changed');
     }
-    for(const pin of proof.selections)if(!await currentPin(work,pin,target))throw Error('memory_scope_changed');
+    for(const pin of proof.selections)if(!await currentPin(work,pin,target,sessionId,saved.version))throw Error('memory_scope_changed');
     return saved;
   }
 
@@ -211,8 +214,11 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     if(prior&&!prior.invalidated&&sameTarget(prior.target,proof.target)){
       for(const pin of prior.selections)if(await currentPin(work,pin,proof.target))existing.push(pin);
     }
-    const selections=combinedMemorySelections(existing,proof.selections);
-    combinedMemorySelections(saved.selections,selections);
+    // A semester comparison is explicitly for this send. Only ordinary confirmations survive a later Task turn.
+    const regular=proof.selections.filter(pin=>!comparisonFor(pin));
+    const selections=combinedMemorySelections(existing,regular);
+    combinedMemorySelections(saved.selections,combinedMemorySelections(selections,proof.selections));
+    if(!regular.length)return;
     assertCurrentIntent(owner.sessionId,proof);
     await writeBinding(work,task,owner,prior,proof.target,selections,prior?.excludeSessionHistory,{
       kind:proof.namedTitle?'session_reference':'confirmed_picker',scopeVersion:proof.scopeVersion,
@@ -306,9 +312,9 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
   }
 
   async function eligibleTurn(history:RunHistory,sessionId:string) {
-    const {target}=await historyTeachingContext(sql,sessionId);
+    const {saved,target}=await historyTeachingContext(sql,sessionId);
     const selections:HistoryPin[]=[];
-    for(const pin of history.selections)if(await currentPin(sql,pin,target))selections.push(pin);
+    for(const pin of history.selections)if(await currentPin(sql,pin,target,sessionId,saved.version))selections.push(pin);
     return selections.length?{...history,selections}:undefined;
   }
 

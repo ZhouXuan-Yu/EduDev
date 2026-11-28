@@ -445,3 +445,27 @@ test('An exact historical title grants Task use only with one existing explicit 
   await assert.rejects(f.sql.transaction(work=>f.binding.attachTask(work,f.task,f.owner,exact)),/memory_scope_changed/);
   assert.equal((await f.grants()).length,0);
 });
+
+test('prior-term comparison requires an explicit same-class target and only the immediately preceding teaching term',async()=>{
+  const {priorTeachingTarget}=await import('../../src/main/xiaozhi-agent/history/teaching-target.ts');
+  const folderId='aifolder_'+randomUUID();
+  assert.deepEqual(priorTeachingTarget({folderId,term:'2026-spring'}),{folderId,term:'2025-fall'});
+  assert.deepEqual(priorTeachingTarget({folderId,term:'2026-fall'}),{folderId,term:'2026-spring'});
+  for(const target of [{folderId:null,term:'2026-spring'},{folderId,term:null},{folderId,term:'2000-spring'},{folderId,term:'2026'}]){
+    assert.equal(priorTeachingTarget(target),undefined);
+  }
+});
+
+test('comparison cannot be copied into a Session, moved to another class or reused at another authority revision',async()=>{
+  const {pinTargetApplies,markComparison}=await import('../../src/main/xiaozhi-agent/history/teaching-target.ts');
+  const folderId='aifolder_'+randomUUID(),source={folderId,term:'2025-fall'},target={folderId,term:'2026-spring'};
+  const session=request().sessionId,pin={id:randomUUID()};
+  const grant={sessionId:session,scopeVersion:2,folderId,term:source.term,destinationTerm:target.term};
+  markComparison(pin,grant);
+  assert.equal(pinTargetApplies(pin,source,target,session,2),true);
+  for(const args of [[{...pin},source,target,session,2],[pin,source,target,session,3],[pin,source,target,request().sessionId,2],
+    [pin,{...source,folderId:null},target,session,2],[pin,{...source,folderId:'other'},target,session,2],
+    [pin,{...source,term:'2024-fall'},target,session,2],[pin,source,{...target,term:'2026-fall'},session,2]]){
+    assert.equal(pinTargetApplies(...args),false);
+  }
+});

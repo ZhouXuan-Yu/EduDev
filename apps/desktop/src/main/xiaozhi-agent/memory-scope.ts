@@ -13,6 +13,7 @@ import type { createPersonalMemoryUse } from '../education/personal-memory/use';
 import {personalReferencePlan} from './memory-use/personal-references';
 import {REFERENCE_CONTEXT_FACTOR} from './memory-use/selection';
 import type {ReceivedReference} from './memory-use/receipts';
+import {comparisonFor} from './history/teaching-target';
 import {combinedMemorySelections,type RunHistory} from './memory-use/history-binding';
 
 type RunMemoryPolicy={loadHistory:()=>Promise<RunHistory|undefined>;omitHistory:boolean};
@@ -168,7 +169,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         const row={sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
           excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal};
         const receipt:ReceivedReference={id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
-          reason:extra.scope,estimatedTokens:Math.min(1024,Buffer.byteLength(JSON.stringify(row)))};
+          reason:comparisonFor(pin)?'turn':extra.scope,estimatedTokens:Math.min(1024,Buffer.byteLength(JSON.stringify(row)))};
         candidates.push({pin,score,row,receipt});
       }
       candidates.sort((a,b)=>b.score-a.score||a.pin.id.localeCompare(b.pin.id,'en'));

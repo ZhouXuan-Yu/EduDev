@@ -14,11 +14,11 @@ export function historyOperations(history: ReturnType<typeof createHistoryMemory
     rebuild:()=>result(async()=>{await history.rebuild();return history.status();}),
     sessions:()=>result(()=>history.sessions()),
     list:(sessionId:string,offset:number)=>result(()=>history.list(sessionId,offset)),
-    preview:(ref:HistorySourceRef,offset:number,authorized:boolean)=>result(async()=>{
+    preview:(ref:HistorySourceRef,offset:number,authorized:boolean,ticket?:string)=>result(async()=>{
       if (typeof authorized!=='boolean') throw Error('invalid_input');
-      return history.preview(ref,offset,authorized);
+      return history.preview(ref,offset,authorized,ticket);
     }),
-    discover:(sessionId:string,query:string,includeSelected=false)=>result(()=>history.discover(sessionId,query,undefined,includeSelected)),
+    discover:(sessionId:string,query:string,includeSelected=false,priorTerm=false)=>result(()=>history.discover(sessionId,query,undefined,includeSelected,priorTerm)),
     change:(ref:HistorySourceRef,revision:number,action:HistoryAccessAction)=>result(()=>mutate(async()=>{
       const updated = await history.change(ref,revision,action);
       await revokeRunning(updated.sourceId);

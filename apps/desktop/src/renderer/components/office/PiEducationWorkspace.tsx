@@ -563,7 +563,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       <div className="edu-composer-viewport" data-testid="pi-composer-viewport">
         <PiConversationContextActions>
         {visible&&pendingHistory.length>0&&<section aria-label="待发送历史引用" data-testid="history-intent-pending">
-          <p role="status">已准备 {pendingHistory.length} 条历史。发送后随任务引用，普通问答仅用于本轮。</p>
+          <p role="status">已准备 {pendingHistory.length} 条历史。{pendingHistory.some(item=>item.comparisonTerm)?'上学期资料仅用于这次比较。':'发送后随任务引用，普通问答仅用于本轮。'}</p>
           {pendingHistory.map((item,index)=><Button key={item.token} size="sm" variant="ghost"
             aria-label={`移除待发送历史 ${index+1}`} isDisabled={snapshot?.running}
             onPress={()=>void removePendingHistory(item.token)}>移除 {item.title}</Button>)}

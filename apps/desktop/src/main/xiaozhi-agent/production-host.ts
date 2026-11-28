@@ -180,6 +180,7 @@ import {createSkillGovernance} from './skills/service';
 import {createSkillTeamService} from './skills/teams';
 import {createLegacySkillAdapter} from './skills/legacy';
 import {createGovernedSkillSource} from './skills/runtime';
+import {comparisonFor} from './history/teaching-target';
 import {createSkillCreatorTools,currentMethodEvidence,methodReviewOnly} from './skills/tools';
 import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
 import {captureRetiredPrivateHistory} from './skills/private-history';
@@ -1168,10 +1169,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const questionContext=createQuestionContextRuntime(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();});
     const loadRunHistory=async()=>{
       if(!owner||closing||owner.stopped||active.get(id)!==owner)return;
-      if(owner.turnHistory)return taskHistory.eligibleTurn(owner.turnHistory,id);
-      if(!owner.task||!owner.publisher)return;
+      const turn=owner.turnHistory?await taskHistory.eligibleTurn(owner.turnHistory,id):undefined;
+      if(!owner.task||!owner.publisher)return turn;
       const current=await tasks.committed(id);
-      if(current?.id===owner.task.id)return taskHistory.forRun(current,owner.publisher.owner);
+      if(current?.id!==owner.task.id)return;
+      const task=await taskHistory.forRun(current,owner.publisher.owner);
+      if(!turn||!task)return turn??task;
+      return {...task,selections:combinedMemorySelections(task.selections,turn.selections)};
     };
     const memoryPolicy={loadHistory:loadRunHistory,omitHistory:owner?.omitHistory===true};
     try { return {stateRoot,workspace,fileReferences,modelToolPrivacy:createModelToolPrivacy({sanitizer:()=>createStudentContextSanitizer(store),current:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)}),thinkingPolicy,thinkingBaseline,toolTaskQuery,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
@@ -2296,9 +2300,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       await revokeUnavailablePersonalMemory();
       for (const [sessionId,run] of active) {
         const scope = await store.xiaozhiState.memoryScope(sessionId);
-        const extra=run.turnHistory??(run.task&&run.publisher?await taskHistory.forRun(run.task,run.publisher.owner,true).catch(()=>undefined):undefined);
+        const extra=run.task&&run.publisher?await taskHistory.forRun(run.task,run.publisher.owner,true).catch(()=>undefined):undefined;
         if ((scope.enabled && scope.selections.some(item=>item.layer==='history'&&item.id===sourceId))||
-          extra?.selections.some(item=>item.id===sourceId)) {
+          run.turnHistory?.selections.some(item=>item.id===sourceId)||extra?.selections.some(item=>item.id===sourceId)) {
           await host.stop(sessionId);
           await run.done;
         }
@@ -2663,6 +2667,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         else {
           await phase(()=>tasks.bindSessionEventOwner(id,run.publisher!));
           if(historyProof)run.turnHistory=await phase(()=>taskHistory.turn(run.runId,id,historyProof!));
+        }
+        if(run.task&&historyProof?.selections.some(pin=>comparisonFor(pin))){
+          const current=await phase(()=>taskHistory.turn(run.runId,id,historyProof!));
+          run.turnHistory={...current,selections:current.selections.filter(pin=>comparisonFor(pin))};
         }
         if(input.historyIntents)taskHistory.consume(input.historyIntents);
         if(closing||run.stopped)throw Error('cancelled');

@@ -8,6 +8,7 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
   onClose:()=>void;onConfirmed:()=>Promise<void>;onStaged:(intent:PendingHistoryReference)=>void;
 }) {
   const [input,setInput]=useState(query);
+  const [priorTerm,setPriorTerm]=useState(false);
   const [result,setResult]=useState<{scopeVersion:number;reply:HistoryDiscovery}>();
   const [preview,setPreview]=useState<HistoryPreview & {candidate:HistoryCandidate}>();
   const [busy,setBusy]=useState(false);
@@ -18,7 +19,7 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
     work.current=true;setBusy(true);setMessage('');setPreview(undefined);setResult(undefined);
     const version=scope.version;
     try{
-      const reply=await window.omniEdu?.discoverHistoryMemory(sessionId,input,includeSelected);
+      const reply=await window.omniEdu?.discoverHistoryMemory(sessionId,input,includeSelected,priorTerm);
       if(!reply?.ok)throw Error('discover');
       setResult({scopeVersion:version,reply:reply.value});
     }catch{setMessage('无法查找，请核对许可或重试。');}
@@ -28,7 +29,7 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
     if(work.current)return;
     work.current=true;setBusy(true);setMessage('');
     try{
-      const reply=await window.omniEdu?.previewHistoryMemory(source.ref,offset,true);
+      const reply=await window.omniEdu?.previewHistoryMemory(source.ref,offset,true,source.ticket);
       if(!reply?.ok||source.generation!==reply.value.source.generation)throw Error('source_changed');
       setPreview({...reply.value,candidate:source});
     }catch{setPreview(undefined);setMessage('来源的内容或许可已变化，请重新查找。');}
@@ -73,6 +74,9 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
           void search();
         }
       }} />
+    {scope.teachingTarget&&<label><input type="checkbox" checked={priorTerm} disabled={busy}
+      onChange={event=>{setPriorTerm(event.target.checked);setPreview(undefined);setResult(undefined);setMessage('');}} />
+      查找本班上学期的资料（仅本次比较）</label>}
     <Button size="sm" variant="secondary" isDisabled={busy||!input.trim()} data-testid="history-lookup-search"
       onPress={()=>void search()}>查找</Button>
     {busy&&<p role="status">正在处理…</p>}
@@ -89,9 +93,9 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
       <p>{preview.text}</p>
       {preview.nextOffset!==null&&<Button size="sm" variant="ghost" isDisabled={busy}
         onPress={()=>void show(preview.candidate,preview.nextOffset??0)}>查阅下一段</Button>}
-      <Button size="sm" variant="secondary" isDisabled={busy} data-testid="history-lookup-use" onPress={()=>void confirm('task')}>随任务引用</Button>
-      <Button size="sm" variant="ghost" isDisabled={busy} data-testid="history-lookup-use-session"
-        onPress={()=>void confirm('session')}>本会话引用</Button>
+      <Button size="sm" variant="secondary" isDisabled={busy} data-testid="history-lookup-use" onPress={()=>void confirm('task')}>{preview.candidate.comparisonTerm?'仅用于本次比较':'随任务引用'}</Button>
+      {!preview.candidate.comparisonTerm&&<Button size="sm" variant="ghost" isDisabled={busy} data-testid="history-lookup-use-session"
+        onPress={()=>void confirm('session')}>本会话引用</Button>}
     </section>}
     <Button size="sm" variant="ghost" isDisabled={busy} onPress={onClose}>不再查找</Button>
   </section>;

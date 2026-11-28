@@ -14,7 +14,7 @@ export type HistorySource = {
 };
 export type HistorySelection = { layer: 'history'; source: 'history'; id: string; version: number; sourceVersion: string };
 export type HistoryPreview = { source: HistorySource; text: string; offset: number; nextOffset: number | null };
-export type HistoryCandidate = HistorySource & {ticket:string};
+export type HistoryCandidate = HistorySource & {ticket:string;comparisonTerm?:string};
 export type HistoryDiscovery = { candidates: HistoryCandidate[]; mode: 'local' | 'hindsight'; reason?: 'empty_scope' | 'service_unavailable'; elapsedMs: number };
 export type HistoryAccessAction = 'allow' | 'revoke' | 'disable' | 'restore' | 'forget';
 export type HistoryMemoryError = 'invalid_input' | 'permission_denied' | 'command_conflict' | 'source_changed' | 'source_unavailable' | 'busy' | 'configuration';
@@ -35,7 +35,7 @@ export function validTaskHistoryRemoval(value:unknown):value is TaskHistoryRemov
     typeof sourceId==='string'&&/^[a-f0-9]{64}$/u.test(sourceId);
 }
 
-export type PendingHistoryReference = {token:string;sourceId:string;scopeVersion:number;title:string};
+export type PendingHistoryReference = {token:string;sourceId:string;scopeVersion:number;title:string;comparisonTerm?:string};
 
 export function validHistoryIntentIds(value:unknown):value is string[] {
   return Array.isArray(value) && value.length>0 && value.length<=12 &&
