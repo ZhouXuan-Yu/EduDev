@@ -155,6 +155,24 @@ try {
     await assert.rejects(lease.validate({summary:'重复',firstKeptEntryId:second,tokensBefore:10}),/compaction_failed/);
     lease.release();
   });
+  await check('A native metadata anchor retains the exact next message and cannot repeat its effective compaction boundary',async()=>{
+    const manager=SessionManager.create(output,output);
+    manager.appendMessage({role:'user',content:'待压缩旧文本',timestamp:now});
+    const boundary=manager.appendCustomEntry('xiaozhi.memory.run.v1',{runId:'synthetic'});
+    const kept=manager.appendMessage({role:'user',content:'保留新任务',timestamp:now+1});
+    const tail=manager.appendCustomEntry('xiaozhi.compaction.usage.v1',{});
+    const adapter=createContextAdapter(manager);
+    let lease=await adapter.begin('manual');
+    await assert.rejects(lease.validate({summary:'末尾没有可保留上下文',firstKeptEntryId:tail,tokensBefore:20}),/compaction_failed/);
+    const draft=await lease.validate({summary:'旧文本摘要',firstKeptEntryId:boundary,tokensBefore:20});
+    assert.equal(draft.firstKeptEntryId,boundary);
+    manager.appendCompaction(draft.summary,draft.firstKeptEntryId,draft.tokensBefore,draft.details);
+    lease.release();
+    assert(JSON.stringify(manager.buildSessionContext().messages).includes('保留新任务'));
+    lease=await adapter.begin('manual');
+    await assert.rejects(lease.validate({summary:'同一上下文重复压缩',firstKeptEntryId:kept,tokensBefore:20}),/compaction_failed/);
+    lease.release();
+  });
   await check('Dynamic thresholds, output reservation and actual wire-prefix hashing are deterministic',()=>{
     let at=1234; const budget=createCompactionBudget(32000,4096,()=>at);
     assert(budget.low<budget.high);assert(budget.observe(budget.high));budget.committed();
