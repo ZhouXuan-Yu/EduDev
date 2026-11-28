@@ -10,17 +10,23 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
-const frozenScopeIndex=process.argv.findIndex(arg=>['--frozen-ambiguity','--frozen-question'].includes(arg));
+const frozenScopeIndex=process.argv.findIndex(arg=>['--frozen-ambiguity','--frozen-question','--frozen-named'].includes(arg));
 const frozenScopeBytes=frozenScopeIndex>=0?fs.readFileSync(process.argv[frozenScopeIndex+1]):undefined;
 const frozenScopeHash=frozenScopeBytes&&createHash('sha256').update(frozenScopeBytes).digest('hex');
-const scopeCaseId=process.argv[frozenScopeIndex]==='--frozen-question'?'SCP-07':'SCP-08';
-const scopeCase=frozenScopeBytes&&JSON.parse(frozenScopeBytes).cases.find(row=>row.id===scopeCaseId);
+const caseIds={'--frozen-question':'SCP-07','--frozen-ambiguity':'SCP-08','--frozen-named':'SCP-09'};
+const scopeCases=frozenScopeBytes&&JSON.parse(frozenScopeBytes).cases;
+const scopeCaseId=caseIds[process.argv[frozenScopeIndex]];
+const scopeCase=scopeCases&&scopeCases.find(row=>row.id===scopeCaseId);
 const frozenQuestion=scopeCase?.id==='SCP-07'?scopeCase:undefined;
 const frozenAmbiguity=scopeCase?.id==='SCP-08'?scopeCase:undefined;
+const frozenNamed=scopeCase?.id==='SCP-09'?scopeCase:undefined;
+const frozenNamedReference=frozenNamed&&scopeCases.find(row=>row.id==='SCP-10');
 if(frozenScopeBytes){
   assert.equal(frozenScopeHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
-  assert.equal(scopeCase?.kind,frozenQuestion?'question_no_task':'ambiguous_history');
-  assert.equal(scopeCase.expectedRule,frozenQuestion?'Run only':'Clarification');
+  const expected = frozenQuestion?['question_no_task','Run only']
+    :frozenAmbiguity?['ambiguous_history','Clarification']:['one_source_permission','No auto model text'];
+  assert.deepEqual([scopeCase?.kind,scopeCase?.expectedRule],expected);
+  if(frozenNamed)assert.deepEqual([frozenNamedReference?.kind,frozenNamedReference?.expectedRule],['unique_explicit','Conditional auto use']);
 }
 const textbookVersions=Boolean(frozenAmbiguity)||process.argv.includes('--textbook-versions');
 const reportedQuote=process.argv.includes('--reported-quote');
@@ -48,10 +54,10 @@ const compactionMemory=process.argv.includes('--compaction-memory');
 const unknownHistory=process.argv.includes('--unknown-history');
 const checkPreference=process.argv.includes('--preference-and-history');
 const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--vague-choice');
-const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
+const namedHistory=Boolean(frozenNamed)||multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle=frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -70,6 +76,7 @@ if(frozenResume||scopeCase){
   assert.equal(report.buildHash,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
   assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/);
   report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
+  if(frozenNamedReference)report.relatedFixture={id:frozenNamedReference.id,sha256:frozenScopeHash,scenario:frozenNamedReference.teacherUtterance};
 }
 let app,page;
 
@@ -736,6 +743,7 @@ async function runHistoryJourney(){
       :'请引用历史《'+declaredTitle+'》。给出该教师的复核口令，只在聊天回复。';
     const before=await provider();
     const count=read('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',target)[0].n;
+    const previousScope=(await snapshot(target)).memoryScope;
     await composer().fill(namedPrompt);
     await page.getByRole('button',{name:'发送消息',exact:true}).click();
     await page.getByTestId('history-lookup').waitFor();
@@ -747,6 +755,15 @@ async function runHistoryJourney(){
     await page.getByTestId('history-lookup-search').click();
     await page.getByTestId('history-candidate-'+row.id).click();
     await page.getByTestId('history-lookup-preview').getByText(source,{exact:true}).waitFor();
+    if(frozenNamed){
+      assert.equal(await page.getByTestId(/^history-candidate-/).count(),1);
+      assert.deepEqual(previousScope.selections,[]);
+      assert.deepEqual((await snapshot(target)).memoryScope,previousScope);
+      assert.deepEqual(bindings(target),[]);
+      assert.equal((await provider()).length,before.length);
+      assert.equal(read('SELECT COUNT(*) n FROM ai_agent_runs WHERE session_id=?',target)[0].n,count);
+      pass('A unique, previewed search hit preserves the discovery-only authority and creates no Run');
+    }
     await captureTeacherAction(page,page.getByTestId('history-lookup-use-session'),root,'before-history-consent',report);
     await page.getByTestId('history-lookup-use-session').click();
     await page.getByTestId('history-use-selection').waitFor();
@@ -779,6 +796,11 @@ async function runHistoryJourney(){
       assert.equal(read('SELECT status FROM ai_agent_runs WHERE id=?',task.runId)[0].status,'failed');
       await page.getByTestId('history-task-run-failed').waitFor();
       pass('A failed Run retains its specific provider delivery while exposing the durable failure state',{runId:task.runId});
+    }
+    if(frozenNamed){
+      report.namedAuthority={query:namedPrompt,selected:binding.selections[0].id,runId:task.runId,
+        bindingVersion:binding.requirementsVersion,basis:binding.permissionBasis.kind,provider:task.sent};
+      return;
     }
     if(multiRevoke){
       await revokeSharedSource(target,sourceSession,row.id,allowed,namedPrompt);
