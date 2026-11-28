@@ -3,7 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {Globe,PanelRight,Plus,X} from 'lucide-react';
 import {BrowserAddress,BrowserControlBanner,browserTabLabel} from './components/office/BrowserChrome';
 import type {XiaozhiBrowserStatus} from '../shared/xiaozhi-agent';
-import type {BrowserChromeResult,BrowserControlCommand} from '../shared/xiaozhi-browser';
+import {BROWSER_CHROME_ERRORS,browserChromeError,type BrowserChromeResult,type BrowserControlCommand} from '../shared/xiaozhi-browser';
 import './ui-system/browser-workspace.css';
 
 declare global {
@@ -18,7 +18,7 @@ function FloatingBrowserToolbar(){
   async function run(action:BrowserControlCommand,value?:string){
     const result=await window.xiaozhiBrowserToolbar.run(action,value);
     if(result.status)setStatus(result.status);
-    if(action!=='status')setError(result.ok?'':'浏览器操作未完成。请检查地址或稍后重试。');
+    if(action!=='status')setError(result.ok?'':BROWSER_CHROME_ERRORS[browserChromeError(result.error)||'unavailable']);
     return result.ok;
   }
   useEffect(()=>{

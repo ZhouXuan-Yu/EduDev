@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+右栏网页导航与任务权限恢复的复验入口见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
 右栏已发送附件的复验入口和版本记录见[浏览器专项](BROWSER_CONTROL_R2.md)。
 
 浏览器原生操作指针与控制条的验收入口在[浏览器专项](BROWSER_CONTROL_R2.md)。

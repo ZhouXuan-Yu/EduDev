@@ -3,18 +3,13 @@ import {Button} from '@heroui/react';
 import {ExternalLink,FileText,FolderOpen,Globe,PanelRightClose,Plus,X} from 'lucide-react';
 import type {XiaozhiAttachment} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiBrowserStatus} from '../../../shared/xiaozhi-agent';
-import type {BrowserControlCommand} from '../../../shared/xiaozhi-browser';
+import {BROWSER_CHROME_ERRORS,browserChromeError,type BrowserControlCommand} from '../../../shared/xiaozhi-browser';
 import '../../ui-system/browser-workspace.css';
 import {BrowserAddress,BrowserControlBanner,browserTabLabel} from './BrowserChrome';
 
 export type FileTabRequest={id:string;requestId?:string;path?:string;artifactId?:string;attachment?:XiaozhiAttachment;title?:string;version?:string;workspaceVersion?:string};
 const folderTab={id:'directory',title:'对话文件'};
 const fileKey=(request:FileTabRequest)=>request.attachment?'attachment:'+request.attachment.id+':'+request.attachment.revision:request.artifactId?'saved:'+request.artifactId:request.path?'file:'+request.path:'directory';
-const browserError:Record<string,string>={
-  invalid_input:'无法识别此地址或标签页。',permission_denied:'请使用公开 HTTP(S) 地址。去对话文件打开本地资料。',
-  busy:'正在处理浏览器操作，请稍后重试。',network:'网页连接失败，请检查网络后重试。'
-};
-
 export function PiBrowserDock({id,initial,visible,covered,width,fileRequest,files,onClose}:{
   id:string;initial?:XiaozhiBrowserStatus;visible:boolean;covered:boolean;width:number;fileRequest?:FileTabRequest;
   files?:(close:()=>void,request?:FileTabRequest,openFile?:(request:FileTabRequest)=>void)=>ReactNode;onClose:()=>void;
@@ -42,7 +37,7 @@ export function PiBrowserDock({id,initial,visible,covered,width,fileRequest,file
       const result=await window.omniEdu?.controlXiaozhiBrowser(id,action,undefined,value);
       if(stamp!==inflight.current)return false;
       if(result?.status)setStatus(result.status);
-      if(!result?.ok){setMessage(browserError[result?.error||'']||'浏览器操作未完成，请重试。');return false;}
+      if(!result?.ok){setMessage(BROWSER_CHROME_ERRORS[browserChromeError(result?.error)||'unavailable']);return false;}
       if(['new-tab','select-tab','redock'].includes(action))setFileId(undefined);
       setMessage(action==='forget'?'已清除此站保存在小智中的登录信息。':'');setForget(false);
       return true;

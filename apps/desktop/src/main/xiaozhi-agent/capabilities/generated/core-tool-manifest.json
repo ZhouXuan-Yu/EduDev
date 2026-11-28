@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "c37f5937c258214a00397bb34cf5807618d5a0666958f055c96c45baa02f7a51",
+  "sourceHash": "3d0a198d3638b46d215afabf6557c16aadceba30add6cad716d9ba26eb43f2b2",
   "sources": [
     {
       "file": "package-lock.json",
@@ -520,7 +520,7 @@
     },
     {
       "file": "src/main/education/question-web-answer-tools.ts",
-      "sha256": "18a01dd1432527114c73cad4a49f2cc691fc331826182f74a453e4fce5a7a399"
+      "sha256": "bd76cb94b7ac7b45f68347cb3c8fd47d4c888e13bf446727444f50994f1be3f6"
     },
     {
       "file": "src/main/education/reading-host.ts",
@@ -848,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "89f98545c7fe9e5f0e35dc695f1207ed641e37913947456d83151f1737cdd1ca"
+      "sha256": "4d6ede0bf109b60ca32aee1c42d086b330549024c5fbd9038f5dbf2e46b4cd00"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-pointer.ts",
@@ -968,7 +968,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "968f95a422755a6143488275f99a5ea4944ca5ed9d88954c56ef0ddead4fb332"
+      "sha256": "2949e210a7092ecbdc5d14dafaf4576b9d576fffee78b57fbd09d65c38b7ca61"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1816,7 +1816,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "102afff036b449d16db220d001ecadd6c42a0cf956b088e6711fc46db88eb48d"
+      "sha256": "41ffe05c496fbc653b2f30b7d15bd75ee2867f2faf7867bedab6c300f1d08499"
     },
     {
       "file": "src/main/xiaozhi-agent/provider-cooldown-store.ts",
@@ -2912,7 +2912,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "0172e66b43ce8fadaca5c7f856f6d90dbd9967b1f0cec17f8e2b30b11df3160e"
+      "sha256": "15d574be4c7d8fbffb3d3c6f7876efda99197beb39bddbe3cf623b45d87708dc"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

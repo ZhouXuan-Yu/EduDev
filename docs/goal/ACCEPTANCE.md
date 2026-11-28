@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+右栏导航验证公开站点、页内锚点、站点登录切换和补答权限结束后的新导航。见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
 右栏文件预览从真实 Electron 对话验收发送、打开、查看和关闭，覆盖 Word、Markdown、双工作表 Excel、图片缩放和网页标签。见[浏览器专项](BROWSER_CONTROL_R2.md)。
 
 浏览器控制权专项覆盖待批准坐标、原生人工输入、Agent 授权按键和右栏独立窗。同一套确认面板用于提交教师决策。[浏览器专项](BROWSER_CONTROL_R2.md)

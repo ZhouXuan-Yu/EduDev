@@ -60,7 +60,7 @@ export function createQuestionWebAnswerTools(options:{repo:QuestionWebAnswerRepo
   }
  };
  return{tools:[tool],requireAuthorization,guard:(input:XiaozhiBrowserInput)=>{
-  if(options.observed.size)requireAuthorization();options.onNetworkScope?.(networkScope);if(!engaged)return;const active=[...grants.values()].filter(g=>g.expiresAt>=Date.now());
+  if(options.observed.size)requireAuthorization();if(!engaged)return;const active=[...grants.values()].filter(g=>g.expiresAt>=Date.now());
   if(input.action==='navigate'&&input.url){if(!networkScope(input.url))throw Error('permission_denied');const url=new URL(input.url),values=[...url.searchParams];if(url.hash||url.username||url.password)throw Error('permission_denied');if(url.pathname==='/'&&!values.length)return;if(!['/','/search','/s','/web'].includes(url.pathname)||values.length!==1||!['q','wd','query','keyword'].includes(values[0][0])||!active.some(g=>g.origins.includes(url.origin)&&g.texts.has(values[0][1].trim())))throw Error('permission_denied');}
   if(input.action==='type'&&input.text?.trim()&&!active.some(g=>g.texts.has(input.text!.trim())))throw Error('permission_denied');
   if(input.action==='select'&&input.value&&!active.some(g=>g.texts.has(input.value!))&&!/^\d{1,3}$/.test(input.value))throw Error('permission_denied');

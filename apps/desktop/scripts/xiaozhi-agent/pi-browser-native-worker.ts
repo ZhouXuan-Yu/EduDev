@@ -24,6 +24,24 @@ const ref=(p:XiaozhiBrowserReceipt,name:string)=>{const line=p.text!.split('\n')
 const until=async(fn:()=>unknown)=>{for(let i=0;i<100;i++){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,50));}throw new Error('Native status did not arrive');};
 try{
  let got=0;const accessor=Object.defineProperty({action:'snapshot'},'text',{get(){got++;return 'x';},enumerable:true});assert(!validBrowserInput(accessor));assert.equal(got,0);assert(!validBrowserInput({action:'snapshot',url:'x'}));assert(!validBrowserInput({action:'type',ref:1}));check('Strict browser boundary rejects accessors, extra action fields and missing ref epoch');
+ const scopedId='aisession_'+randomUUID();
+ let scopedRun=true;
+ host.setNetworkScope(scopedId,url=>scopedRun&&new URL(url).origin==='https://fixture.invalid',true,()=>scopedRun);
+ await host.teacher(scopedId,'new-tab');
+ await host.teacher(scopedId,'navigate',undefined,undefined,'https://fixture.invalid/approved');
+ await until(async()=>(await host.chromeStatus(scopedId)).tabs?.[0].state==='ready');
+ const restricted=contents!;
+ await assert.rejects(host.teacher(scopedId,'navigate',undefined,undefined,'https://example.com/'),/scope_denied/);
+ assert(!restricted.isDestroyed());
+ scopedRun=false;
+ await assert.rejects(host.teacher(scopedId,'navigate',undefined,undefined,'http://127.0.0.1:15175/'),/local_address/);
+ assert(!restricted.isDestroyed());
+ await host.teacher(scopedId,'navigate',undefined,undefined,'https://fixture.invalid/after#lesson');
+ await until(async()=>(await host.chromeStatus(scopedId)).tabs?.some(tab=>tab.url.endsWith('/after#lesson')&&tab.state==='ready'));
+ assert(restricted.isDestroyed());
+ assert.notEqual(contents,restricted);
+ assert.equal((await host.chromeStatus(scopedId)).tabs?.length,1);
+ check('A live question grant constrains manual browsing; subsequent browsing retires the scoped page and connection before opening a fresh page');
  const navigation = {runId:randomUUID(), callId:randomUUID()};
  let p=page(await host.execute(id,{action:'navigate',url:'https://fixture.invalid'},{...context,invocation:navigation}));
  assert(host.hasLiveNavigation(id,navigation.runId,navigation.callId));
