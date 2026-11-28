@@ -18,6 +18,7 @@ const frozenScopeModes={
   '--frozen-terminal':['SCP-15','completed_not_applied','No old binding'],
   '--frozen-class-edit':['SCP-17','requirements_rename','Selective recheck'],
   '--frozen-semester':['SCP-20','as_of_history','Historical not current'],
+  '--frozen-revocation':['SCP-18','revoked_race','Fail closed'],
 };
 const pairedScopeModes={
   'SCP-09':['SCP-10','unique_explicit','Conditional auto use'],
@@ -39,6 +40,7 @@ const frozenLifecycle=scopeCase?.id==='SCP-05';
 const frozenTerminal=scopeCase?.id==='SCP-15';
 const frozenClassEdit=scopeCase?.id==='SCP-17';
 const frozenSemester=scopeCase?.id==='SCP-20';
+const frozenRevocation=scopeCase?.id==='SCP-18';
 if(frozenScopeBytes){
   assert.equal(frozenScopeHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
   assert.deepEqual([scopeCase?.id,scopeCase?.kind,scopeCase?.expectedRule],scopeMode);
@@ -76,7 +78,7 @@ const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--va
 const namedHistory=Boolean(frozenNamed)||multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle=frozenExclusion?'上一节课的总结':frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenExclusion?'r3-frozen-exclusion-':frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':frozenLifecycle?'r3-frozen-lifecycle-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenRevocation?'r3-frozen-revocation-':frozenExclusion?'r3-frozen-exclusion-':frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':frozenLifecycle?'r3-frozen-lifecycle-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -310,6 +312,12 @@ async function launch(){
         alternateRoles:body.messages.filter(m=>JSON.stringify(m.content??'').includes(alternateMarker)).map(m=>m.role)};
       globalThis.historyTaskWire.push(record);
       const started=Date.now();
+      if(globalThis.deferHistoryTransport&&record.sourceRoles.includes('user')){
+        globalThis.deferHistoryTransport=false;
+        record.preDispatchHeld=true;
+        await new Promise(resolve=>{globalThis.releaseHistoryTransport=resolve;});
+        record.abortedWhenReleased=Boolean(init.signal?.aborted);
+      }
       const response=await actual(input,init);
       record.status=response.status;
       if(globalThis.holdHistoryResponse&&response.ok&&record.sourceRoles.includes('user')){
@@ -522,6 +530,55 @@ async function runHistoryJourney(){
   }
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
+  if(frozenRevocation){
+    const req='请整理课堂温度计复核三条规则。只用这次选择的原文，在聊天中回复。';
+    await stage(row.id,req);
+    const prior=(await provider()).length;
+    await app.evaluate(()=>{globalThis.deferHistoryTransport=true;});
+    await page.getByRole('button',{name:'发送消息',exact:true}).click();
+    await until(async()=>(await provider()).slice(prior).some(call=>call.preDispatchHeld));
+    const before=read('SELECT id FROM ai_agent_runs WHERE session_id=? ORDER BY rowid DESC LIMIT 1',target)[0];
+    assert(before?.id);
+    const change=app.waitForEvent('window');
+    let control;
+    let revoked;
+    try{
+      await page.getByRole('button',{name:'设置',exact:true}).click();
+      control=await change;
+      await control.getByTestId('pi-settings-tab-teacher-memory').click();
+      await control.getByTestId('history-settings-session').selectOption(sourceSession);
+      await control.getByTestId('history-settings-source-'+row.id).getByRole('button',{name:'暂停参考',exact:true}).click();
+      revoked=await until(()=>read("SELECT generation,memory_state,index_allowed FROM memory_source_access WHERE source_id=? AND memory_state='disabled' AND index_allowed=0",allowed.source_id)[0]);
+      assert(revoked.generation>allowed.generation);
+      await app.evaluate(()=>globalThis.releaseHistoryTransport?.());
+      await control.getByTestId('history-settings-source-'+row.id).getByText(/^已暂停(?: · 索引.*)?$/u).waitFor();
+    }finally{
+      await app.evaluate(()=>globalThis.releaseHistoryTransport?.());
+    }
+    await until(async()=>{
+      const state=await snapshot(target);
+      return !state.running&&state.projection.turns.some(turn=>turn.id===before.id&&['completed','failed','interrupted'].includes(turn.status));
+    });
+    const wire=(await provider()).slice(prior);
+    const dbRun=read('SELECT status FROM ai_agent_runs WHERE id=?',before.id)[0];
+    report.revocation={sourceId:allowed.source_id,runId:before.id,dbRun,revoked,provider:wire};
+    assert(wire.some(call=>call.preDispatchHeld&&call.abortedWhenReleased));
+    assert(wire.every(call=>!call.sourceRoles.length||call.status===0),'A request carrying revoked source data must never reach HTTP acknowledgement');
+    assert(['blocked','failed','interrupted','cancelled'].includes(dbRun.status));
+    const receipts=read('SELECT source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=?',before.id);
+    assert.deepEqual(receipts,[]);
+    assert(read("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='assistant'",target).every(item=>!item.content.includes(marker)));
+    if(control)await Promise.all([control.waitForEvent('close'),control.getByTestId('settings-window-close').click()]);
+    await close();await launch();
+    if(await session()!==target)await page.getByTestId('workbench-session-'+target).filter({visible:true}).first().click();
+    await until(async()=>await session()===target);
+    const next=await send(target,'什么是温度计？只在聊天中回答。');
+    assert(next.sent.some(call=>call.status===200));
+    assert(next.sent.every(call=>!call.sourceRoles.length));
+    assert.deepEqual(read('SELECT generation,memory_state,index_allowed FROM memory_source_access WHERE source_id=?',allowed.source_id),[revoked]);
+    pass('Teacher revocation aborts a prepared request before transport acknowledgement and restart never reuses the source',{runId:before.id,laterRunId:next.runId});
+    return;
+  }
   if(frozenExclusion){
     const request=frozenExclusion.teacherRequest;
     const before=(await snapshot(target)).memoryScope;
