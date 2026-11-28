@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -9,13 +10,17 @@ import { setTimeout as wait } from 'node:timers/promises';
 import { _electron as electron } from 'playwright';
 import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
 
-const desktop = path.resolve(import.meta.dirname,'../..');
+const baselineIndex=process.argv.indexOf('--baseline-desktop');
+const desktop=baselineIndex<0?path.resolve(import.meta.dirname,'../..'):fs.realpathSync(process.argv[baselineIndex+1]);
+const sourceSha=execFileSync('git',['rev-parse','HEAD'],{cwd:desktop,encoding:'utf8'}).trim();
+if(baselineIndex>=0)assert.equal(sourceSha,'ca2a51425619dc14412508839e0799338567c399');
+const prepareClassPreference=process.argv.includes('--prepare-class-preference');
 const evidence = process.env.OMNI_EDU_ACCEPTANCE_ROOT;
 const modelKey = process.env.DEEPSEEK_API_KEY;
 assert(evidence && modelKey,'Isolated evidence directory and configured DeepSeek are required');
 const rejection=process.argv.includes('--reject');
-const adoption=rejection||process.argv.includes('--adoption');
-const verifyClass=process.argv.includes('--class-scope');
+const adoption=prepareClassPreference||rejection||process.argv.includes('--adoption');
+const verifyClass=prepareClassPreference||process.argv.includes('--class-scope');
 let classFolders;
 const verifyUse=process.argv.includes('--use');
 const verifyPending=process.argv.includes('--pending');
@@ -32,7 +37,7 @@ const root = fs.mkdtempSync(path.join(evidence,workerUnavailable?'r2-worker-unav
 const data = path.join(root,'data');
 const profile = path.join(root,'profile');
 const sha256 = createHash('sha256').update(fs.readFileSync(main)).digest('hex');
-const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root, sha256 };
+const report = { model:'deepseek-flash', modelRequests:[], checks:[], main, root, sha256, sourceSha };
 const prefix = 'xiaozhi.teacher-preference.v1';
 let app, page, settingsPage;
 
@@ -52,7 +57,7 @@ async function launch() {
     DEEPSEEK_MODEL:report.model,DEEPSEEK_API_KEY:modelKey};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','OMNI_EDU_HISTORY_LOOPBACK','OMNI_EDU_HISTORY_TOKEN'])delete env[key];
   if(workerUnavailable)delete env.OMNI_EDU_R2_PYTHON;
-  app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
+  app=await electron.launch({executablePath:path.join(desktop,'node_modules/electron/dist/electron.exe'),args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
   const launchExit={exited:false};
   (report.launches??=[]).push(launchExit);
   app.process().once('exit',(code,signal)=>Object.assign(launchExit,{exited:true,code,signal}));
@@ -259,7 +264,7 @@ async function handoutPreference(){
 async function openSettings() {
   if(!settingsPage||settingsPage.isClosed()) {
     const opened=app.waitForEvent('window');
-    await page.getByTestId('nav-settings').click();
+    await page.getByRole('button',{name:'设置',exact:true}).click();
     settingsPage=await opened;
     await settingsPage.getByTestId('pi-settings-workspace').waitFor();
     assert(settingsPage.url().endsWith('/settings.html'));
@@ -454,7 +459,7 @@ async function reviewInConversation(sessionId,candidateId,draft,source){
   const pending=()=>page.getByTestId('pi-composer-pending-panel').getByTestId('personal-memory-conversation-review');
   const candidate=()=>pending().getByTestId('personal-memory-candidate-'+candidateId);
   const review=await page.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
-  assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
+  assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes(prepareClassPreference?'验算':'四年级科学'));
   for (const [width,height] of [[1366,768],[1920,1080]]) {
     await app.evaluate(({BrowserWindow},size)=>{
       const window=BrowserWindow.getAllWindows().find(win=>win.isVisible());
@@ -497,19 +502,19 @@ async function reviewInConversation(sessionId,candidateId,draft,source){
 async function candidateAdoption(){
   const sessionId=await active();
   if (verifyClass) {
-    classFolders=await page.evaluate(async()=>{
+    classFolders=await page.evaluate(async names=>{
       const folders=[];
-      for (const name of ['物理一班（合成）','物理二班（合成）']) {
+      for (const name of names) {
         const workspace=await window.omniEdu.createAiConversationFolder({name});
         folders.push(workspace.folders.find(row=>row.name===name).id);
       }
       return folders;
-    });
+    },prepareClassPreference?['B 班','A 班']:['物理一班（合成）','物理二班（合成）']);
     await confirmClass(sessionId,classFolders[0],'fall');
     await returnToConversation();
   }
-  const source='我本学期负责四年级科学。';
-  const turn=await send(source,{answer:'请简短确认这条四年级科学任教记录。这一步只确认原话，不替我采用记忆建议。'});
+  const source=prepareClassPreference?'我在 B 班这学期的数学练习中习惯让学生用读题、列式、验算三个小标题分步写解法。':'我本学期负责四年级科学。';
+  const turn=await send(source,{answer:prepareClassPreference?'这是本学期 B 班数学练习的习惯。这一步只核对原话。':'请简短确认这条四年级科学任教记录。这一步只确认原话，不替我采用记忆建议。'});
   let memory=await memorySettings();
   const auto=memory.getByTestId('personal-memory-auto');
   await auto.click();
@@ -562,7 +567,7 @@ async function candidateAdoption(){
     const candidate=memory.getByTestId('personal-memory-candidate-'+candidateId);
     await candidate.getByRole('button',{name:'查看来源',exact:true}).click();
     const review=await settingsPage.evaluate(key=>window.omniEdu.personalMemory.preview({key,revision:1}),candidateId);
-    assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes('四年级科学'));
+    assert(review.ok && source.includes(review.value.quote) && review.value.quote.includes(prepareClassPreference?'验算':'四年级科学'));
     await candidate.getByTestId('personal-memory-reviewed-quote').waitFor();
     assert.equal(await candidate.getByTestId('personal-memory-reviewed-quote').textContent(),review.value.quote);
     await settingsPage.screenshot({path:path.join(root,'review-candidate.png')});
@@ -595,6 +600,13 @@ async function candidateAdoption(){
   assert.equal(adopted.revision,1);
   assert.equal(adopted.sourceCurrent,true);
   check('the teacher reviews a real source and adopts a formal memory through typed preload',{id:adopted.id,revision:adopted.revision});
+  if(prepareClassPreference){
+    assert.equal(adopted.kind,'preference');
+    assert(adopted.value.includes('验算'));
+    report.classPreference={sessionId,source,folder:classFolders[0],id:adopted.id,revision:adopted.revision,
+      term:adopted.term,value:adopted.value,sourceVersion:adopted.sourceVersion};
+    return;
+  }
   let useSession;
   if(verifyUse){
     useSession=await useAdoptedMemory(adopted,source);
