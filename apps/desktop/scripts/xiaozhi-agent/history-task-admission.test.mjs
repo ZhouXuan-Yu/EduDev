@@ -22,7 +22,7 @@ import {DatabaseSync} from 'node:sqlite';
 const {historyMemorySchema}=await import('../../src/main/xiaozhi-agent/history/schema.ts');
 const {createHistoryState,historyHash}=await import('../../src/main/xiaozhi-agent/history/state.ts');
 const {createPiMemoryScopeState}=await import('../../src/main/xiaozhi-agent/memory-scope-state.ts');
-const {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyUseRequest}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
+const {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyOmissionTitle,historyUseRequest}=await import('../../src/main/xiaozhi-agent/memory-use/history-binding.ts');
 const {createPiMemoryScope}=await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const {createPiMemoryTools}=await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 
@@ -516,4 +516,39 @@ test('only the previewed same-class previous semester source can reach one Turn,
   await h.change(previous.ref,previous.accessRevision,'revoke');
   assert.equal(await bindings.eligibleTurn(turn,f.target),undefined);
   assert.deepEqual(await discover(true),[]);
+});
+
+
+test('Turn omission accepts an explicit history title and does not follow reported or positive wording',()=>{
+  assert.equal(historyOmissionTitle('本次不引用上一节课的总结。'),'上一节课的总结');
+  assert.equal(historyOmissionTitle('只改第三题。请这一轮别用上节课小结。'),'上一节课的小结');
+  assert.equal(historyOmissionTitle('请本轮不引用历史《积分讲评》；其他条件照旧。'),'积分讲评');
+  for(const text of ['要引用上节课的小结。','学生说：“本次不引用上一节课的总结。”',
+    '请分析“本次不引用上一节课的总结”的意思。','别引用上一节课的总结部分练习。','本任务不引用上节课的总结。']){
+    assert.equal(historyOmissionTitle(text),undefined,text);
+  }
+});
+
+test('A scoped omission is resolved against the current selected versions and fences readback without rewriting the grant',async t=>{
+  const f=await fixture(t);
+  await f.sql.run('UPDATE ai_conversation_sessions SET title=? WHERE id=?',['上节课总结',f.source]);
+  const {token}=await f.binding.stage(f.target,0,'signed-ticket');
+  const proof=await f.binding.prepare(f.target,[token]);
+  assert.deepEqual([...(await f.binding.omittedSources(f.target,'上一节课的总结',null,proof))],[f.pin.id]);
+  assert.deepEqual([...(await f.binding.omittedSources(f.target,'上一节课的总结',null))],[]);
+  await f.sql.transaction(work=>f.binding.attachTask(work,f.task,f.owner,proof));
+  f.binding.consume([token]);
+  assert.deepEqual([...(await f.binding.omittedSources(f.target,'上一节课的总结',f.task))],[f.pin.id]);
+  const before=await f.state.memoryScope(f.target);
+  const scope=createPiMemoryScope({xiaozhiState:f.state,getAiConversationSession:async()=>({session:{}})},{history:f.history});
+  const loadHistory=()=>f.binding.forRun(f.task,f.owner);
+  const normal=await scope.authority(f.target,{omitHistory:false,loadHistory});
+  const policy={omitHistory:false,loadHistory,excludedHistoryIds:new Set([f.pin.id])};
+  const omitted=await scope.authority(f.target,policy);
+  assert.equal(normal.history,true);
+  assert.equal(omitted.history,false);
+  assert.notEqual(normal.fingerprint,omitted.fingerprint);
+  assert.equal(await scope.historyProjection(f.target,omitted.fingerprint,'历史信息',12000,undefined,policy),undefined);
+  assert.deepEqual(await f.state.memoryScope(f.target),before);
+  assert.equal((await f.binding.forRun(f.task,f.owner)).selections.length,1);
 });

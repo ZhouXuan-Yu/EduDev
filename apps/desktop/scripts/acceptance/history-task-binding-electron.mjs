@@ -10,43 +10,62 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
-const frozenScopeIndex=process.argv.findIndex(arg=>['--frozen-ambiguity','--frozen-question','--frozen-named'].includes(arg));
+const frozenScopeModes={
+  '--frozen-question':['SCP-07','question_no_task','Run only'],
+  '--frozen-ambiguity':['SCP-08','ambiguous_history','Clarification'],
+  '--frozen-named':['SCP-09','one_source_permission','No auto model text'],
+  '--frozen-lifecycle':['SCP-05','pre_send_cancel','No binding'],
+  '--frozen-terminal':['SCP-15','completed_not_applied','No old binding'],
+  '--frozen-class-edit':['SCP-17','requirements_rename','Selective recheck'],
+  '--frozen-semester':['SCP-20','as_of_history','Historical not current'],
+};
+const pairedScopeModes={
+  'SCP-09':['SCP-10','unique_explicit','Conditional auto use'],
+  'SCP-05':['SCP-06','pre_send_new_task','New Task bound'],
+  'SCP-20':['SCP-25','bitemporal_date','Do not fabricate time'],
+};
+const frozenScopeIndex=process.argv.findIndex(arg=>Object.hasOwn(frozenScopeModes,arg));
 const frozenScopeBytes=frozenScopeIndex>=0?fs.readFileSync(process.argv[frozenScopeIndex+1]):undefined;
 const frozenScopeHash=frozenScopeBytes&&createHash('sha256').update(frozenScopeBytes).digest('hex');
-const caseIds={'--frozen-question':'SCP-07','--frozen-ambiguity':'SCP-08','--frozen-named':'SCP-09'};
 const scopeCases=frozenScopeBytes&&JSON.parse(frozenScopeBytes).cases;
-const scopeCaseId=caseIds[process.argv[frozenScopeIndex]];
-const scopeCase=scopeCases&&scopeCases.find(row=>row.id===scopeCaseId);
-const frozenQuestion=scopeCase?.id==='SCP-07'?scopeCase:undefined;
-const frozenAmbiguity=scopeCase?.id==='SCP-08'?scopeCase:undefined;
-const frozenNamed=scopeCase?.id==='SCP-09'?scopeCase:undefined;
-const frozenNamedReference=frozenNamed&&scopeCases.find(row=>row.id==='SCP-10');
+const scopeMode=frozenScopeModes[process.argv[frozenScopeIndex]];
+const scopeCase=scopeCases&&scopeCases.find(row=>row.id===scopeMode[0]);
+const pairedMode=pairedScopeModes[scopeCase?.id];
+const pairedScopeCase=pairedMode&&scopeCases.find(row=>row.id===pairedMode[0]);
+const frozenQuestion=scopeCase?.id==='SCP-07';
+const frozenAmbiguity=scopeCase?.id==='SCP-08';
+const frozenNamed=scopeCase?.id==='SCP-09';
+const frozenLifecycle=scopeCase?.id==='SCP-05';
+const frozenTerminal=scopeCase?.id==='SCP-15';
+const frozenClassEdit=scopeCase?.id==='SCP-17';
+const frozenSemester=scopeCase?.id==='SCP-20';
 if(frozenScopeBytes){
   assert.equal(frozenScopeHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
-  const expected = frozenQuestion?['question_no_task','Run only']
-    :frozenAmbiguity?['ambiguous_history','Clarification']:['one_source_permission','No auto model text'];
-  assert.deepEqual([scopeCase?.kind,scopeCase?.expectedRule],expected);
-  if(frozenNamed)assert.deepEqual([frozenNamedReference?.kind,frozenNamedReference?.expectedRule],['unique_explicit','Conditional auto use']);
+  assert.deepEqual([scopeCase?.id,scopeCase?.kind,scopeCase?.expectedRule],scopeMode);
+  if(pairedMode)assert.deepEqual([pairedScopeCase?.id,pairedScopeCase?.kind,pairedScopeCase?.expectedRule],pairedMode);
 }
 const textbookVersions=Boolean(frozenAmbiguity)||process.argv.includes('--textbook-versions');
 const reportedQuote=process.argv.includes('--reported-quote');
 const multiRevoke=process.argv.includes('--multi-revoke');
-const semesterRules=process.argv.includes('--semester-rules');
-const amendClass=process.argv.includes('--change-class');
-const frozenResumeIndex=process.argv.indexOf('--frozen-resume');
-const frozenResumeBytes=frozenResumeIndex>=0?fs.readFileSync(process.argv[frozenResumeIndex+1]):undefined;
-const frozenResumeHash=frozenResumeBytes&&createHash('sha256').update(frozenResumeBytes).digest('hex');
-const frozenResume=frozenResumeBytes&&JSON.parse(frozenResumeBytes).cases.find(row=>row.id==='R3-FX-005');
-if(frozenResumeBytes){
-  assert.equal(frozenResumeHash,'53000255841392a5d3ef6cae264623d89e2326cfab6ac6fb114a19c28b4ade20');
-  assert.equal(frozenResume?.expectedBehavior,'task_authority');
-  assert(process.argv.includes('--paused-task'));
+const semesterRules=frozenSemester||process.argv.includes('--semester-rules');
+const amendClass=frozenClassEdit||process.argv.includes('--change-class');
+const frozenRequestIndex=process.argv.findIndex(arg=>['--frozen-resume','--frozen-exclusion'].includes(arg));
+const frozenRequestBytes=frozenRequestIndex>=0?fs.readFileSync(process.argv[frozenRequestIndex+1]):undefined;
+const frozenRequestHash=frozenRequestBytes&&createHash('sha256').update(frozenRequestBytes).digest('hex');
+const frozenRequestId=process.argv[frozenRequestIndex]==='--frozen-exclusion'?'R3-FX-004':'R3-FX-005';
+const frozenRequest=frozenRequestBytes&&JSON.parse(frozenRequestBytes).cases.find(row=>row.id===frozenRequestId);
+const frozenResume=frozenRequest?.id==='R3-FX-005'?frozenRequest:undefined;
+const frozenExclusion=frozenRequest?.id==='R3-FX-004'?frozenRequest:undefined;
+if(frozenRequestBytes){
+  assert.equal(frozenRequestHash,'53000255841392a5d3ef6cae264623d89e2326cfab6ac6fb114a19c28b4ade20');
+  assert.equal(frozenRequest?.expectedBehavior,frozenExclusion?'exclude_requested':'task_authority');
+  if(frozenResume)assert(process.argv.includes('--paused-task'));
 }
-const teachingScope=frozenResume?.taskScope??{classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
+const teachingScope=frozenRequest?.taskScope??{classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
 const exclusion=process.argv.includes('--task-exclusion');
 const suspendedTask=process.argv.includes('--paused-task')?'paused':process.argv.includes('--interrupted-task')?'interrupted':null;
 const recoveryIndex=process.argv.indexOf('--recover-from');
-const terminalTask=process.argv.includes('--completed-task')?'completed':process.argv.includes('--ended-task')?'ended':null;
+const terminalTask=(frozenTerminal||process.argv.includes('--completed-task'))?'completed':process.argv.includes('--ended-task')?'ended':null;
 const receiptFailure=process.argv.includes('--receipt-failure');
 const receiptVerified=process.argv.includes('--receipt-verified');
 const keyboardHistory=process.argv.includes('--keyboard-history');
@@ -55,9 +74,9 @@ const unknownHistory=process.argv.includes('--unknown-history');
 const checkPreference=process.argv.includes('--preference-and-history');
 const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--vague-choice');
 const namedHistory=Boolean(frozenNamed)||multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
-const declaredTitle=frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
+const declaredTitle=frozenExclusion?'上一节课的总结':frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenExclusion?'r3-frozen-exclusion-':frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':frozenNamed?'r3-frozen-named-':frozenLifecycle?'r3-frozen-lifecycle-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -70,13 +89,13 @@ const alternateSource=frozenAmbiguity?'请用一句话说明你已收到这条�
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
-if(frozenResume||scopeCase){
-  report.fixture=frozenResume?{id:frozenResume.id,sha256:frozenResumeHash,request:frozenResume.teacherRequest,scope:teachingScope}
+if(frozenRequest||scopeCase){
+  report.fixture=frozenRequest?{id:frozenRequest.id,sha256:frozenRequestHash,request:frozenRequest.teacherRequest,scope:teachingScope}
     :{id:scopeCase.id,sha256:frozenScopeHash,scenario:scopeCase.teacherUtterance,...(frozenAmbiguity?{scope:teachingScope}:{})};
   assert.equal(report.buildHash,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
   assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/);
   report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
-  if(frozenNamedReference)report.relatedFixture={id:frozenNamedReference.id,sha256:frozenScopeHash,scenario:frozenNamedReference.teacherUtterance};
+  if(pairedScopeCase)report.relatedFixture={id:pairedScopeCase.id,sha256:frozenScopeHash,scenario:pairedScopeCase.teacherUtterance};
 }
 let app,page;
 
@@ -130,13 +149,13 @@ async function send(id,text,{answer,expectedStatus='completed'}={}){
   assert(sent.length,'A real provider request is required');
   return {runId:turn.id,sent,answerUsed:turn.items.some(item=>item.role==='assistant'&&item.text?.includes(marker))};
 }
-async function stage(recordId,text){
+async function stage(recordId,text,original=source,query=search){
   await composer().fill(text);
   await page.getByTestId('history-lookup-open').click();
-  await page.getByTestId('history-lookup-query').fill(search);
+  await page.getByTestId('history-lookup-query').fill(query);
   await page.getByTestId('history-lookup-search').click();
   await page.getByTestId('history-candidate-'+recordId).click();
-  await page.getByTestId('history-lookup-preview').getByText(source,{exact:true}).waitFor();
+  await page.getByTestId('history-lookup-preview').getByText(original,{exact:true}).waitFor();
   await page.getByTestId('history-lookup-use').click();
   await page.getByTestId('history-intent-pending').waitFor();
   assert.equal(await composer().inputValue(),text);
@@ -441,19 +460,19 @@ async function runHistoryJourney(){
     assert.equal(await composer().inputValue(),saved);
     pass('Keyboard opening and cancellation restore lookup focus and preserve the draft');
   }
-  const renameSource=async id=>{
+  const renameSource=async (id,title=declaredTitle)=>{
     await page.getByTestId('workbench-manage-history').click();
     const manage=page.getByTestId('workbench-history-dialog');
     await manage.getByTestId('ai-conversation-session-'+id).click({button:'right'});
     await page.getByTestId('ai-conversation-context-rename').click();
     const name=manage.getByTestId('ai-conversation-rename-session-'+id);
-    await name.fill(declaredTitle);
+    await name.fill(title);
     await name.press('Enter');
-    await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',id)[0]?.title===declaredTitle);
+    await until(()=>read('SELECT title FROM ai_conversation_sessions WHERE id=?',id)[0]?.title===title);
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
   };
-  if(namedHistory||textbookVersions)await renameSource(sourceSession);
-  if(frozenResume||amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
+  if(namedHistory||textbookVersions||frozenExclusion)await renameSource(sourceSession);
+  if(frozenRequest||amendClass||semesterRules||textbookVersions||frozenLifecycle)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
   if(checkPreference||amendClass){
     await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
     const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -464,7 +483,7 @@ async function runHistoryJourney(){
   const row=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",sourceSession,source)[0];
   assert(row?.id);
   let alternative;
-  if(vagueChoice||semesterRules){
+  if(vagueChoice||semesterRules||frozenLifecycle||frozenExclusion){
     await page.getByTestId('pi-new-session').click();
     const id=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession?id:null;});
     if(textbookVersions){
@@ -472,6 +491,8 @@ async function runHistoryJourney(){
       await confirmTeachingTarget(until,app,page,id,teachingScope);
     }
     if(semesterRules)await confirmTeachingTarget(until,app,page,id,{...teachingScope,termRef:'2026S'});
+    if(frozenLifecycle||frozenExclusion)await confirmTeachingTarget(until,app,page,id,teachingScope);
+    if(frozenExclusion)await renameSource(id,'本周实验复核清单');
     await send(id,alternateSource,{answer:'这是合成记录，请简单确认收到。'});
     const candidate=read("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",id,alternateSource)[0];
     assert(candidate?.id);
@@ -479,7 +500,7 @@ async function runHistoryJourney(){
   }
   await page.getByTestId('pi-new-session').click();
   const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
-  if(frozenResume||amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,target,teachingScope);
+  if(frozenRequest||amendClass||semesterRules||textbookVersions||frozenLifecycle)await confirmTeachingTarget(until,app,page,target,teachingScope);
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -501,6 +522,79 @@ async function runHistoryJourney(){
   }
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
 
+  if(frozenExclusion){
+    const request=frozenExclusion.teacherRequest;
+    const before=(await snapshot(target)).memoryScope;
+    const counts=()=>read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',target)[0].n;
+    assert.equal(counts(),0);
+    const denied=allowed.source_id;
+    const kept=read('SELECT source_id FROM memory_source_access WHERE record_id=?',alternative.recordId)[0].source_id;
+    assert.notEqual(denied,kept);
+    await stage(row.id,request);
+    await stage(alternative.recordId,request,alternateSource,'温度计实验 复核口令 冬砂比对');
+    await page.getByRole('button',{name:'移除待发送历史 2'}).waitFor();
+    assert.deepEqual(bindings(target),[]);
+    assert.deepEqual((await snapshot(target)).memoryScope,before);
+    const offset=(await provider()).length;
+    const observed=await send(target,request);
+    const receipts=read('SELECT source_id,reason FROM xiaozhi_memory_reference_deliveries WHERE run_id=?',observed.runId);
+    report.exclusion={request,denied,kept,runId:observed.runId,provider:observed.sent,receipts,offset};
+    assert(observed.sent.some(call=>call.status===200));
+    assert(observed.sent.every(call=>!call.sourceRoles.length),'The temporarily excluded source must not enter a provider request');
+    assert(observed.sent.some(call=>call.status===200&&call.alternateRoles.includes('user')),'The other teacher-selected source remains valid');
+    assert.deepEqual(receipts.map(item=>item.source_id),[kept]);
+    assert(bindings(target).every(binding=>binding.selections.every(item=>item.id!==denied)));
+    assert.deepEqual((await snapshot(target)).memoryScope,before);
+    assert.deepEqual(read('SELECT memory_state,index_allowed FROM memory_source_access WHERE source_id=?',denied).map(r=>[r.memory_state,r.index_allowed]),[['active',1]]);
+    pass('The exact teacher exclusion removes only the temporarily declined source; the other approved source is still delivered');
+    return;
+  }
+  if(frozenLifecycle){
+    const scopeBefore=(await snapshot(target)).memoryScope;
+    assert(scopeBefore.teachingTarget?.folderId);
+    await stage(row.id,taskRequest);
+    const oldRun=await send(target,taskRequest);
+    const oldTask=(await snapshot(target)).task;
+    const [oldBinding]=bindings(target);
+    assert(oldTask&&oldBinding&&oldTask.id===oldBinding.taskId&&oldBinding.admittedBy.runId===oldRun.runId);
+    assert(oldRun.sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
+    const record=read('SELECT source_id,generation FROM memory_source_access WHERE record_id=?',alternative.recordId)[0];
+    assert(record?.source_id&&record.source_id!==allowed.source_id);
+    const checkpoint=()=>read('SELECT id FROM ai_agent_runs WHERE session_id=? ORDER BY rowid',target);
+    const entry=checkpoint(), calls=(await provider()).length;
+    const draft='给八年级 B 班新建一份温度计课堂讲义。先拟一个草稿。';
+    const alternateSearch='温度计实验 复核口令 冬砂比对';
+    await stage(alternative.recordId,draft,alternateSource,alternateSearch);
+    await page.getByRole('button',{name:'移除待发送历史 1'}).click();
+    await page.getByTestId('history-intent-pending').waitFor({state:'hidden'});
+    assert.equal(await composer().inputValue(),draft);
+    assert.deepEqual(checkpoint(),entry);
+    assert.equal((await provider()).length,calls);
+    assert.deepEqual(bindings(target),[oldBinding]);
+    assert.deepEqual((await snapshot(target)).memoryScope,scopeBefore);
+    assert.equal((await snapshot(target)).task.id,oldTask.id);
+    pass('Cancelling a staged reference to a different source persists no Run, Task binding or Session grant',{oldTask:oldTask.id});
+    const edited='请为八年级 B 班新写一份温度计课堂讲义，标题为《读数与复核》，写三条观察规则，并引用本次老师选择的原文。只用聊天展示，不创建文件。';
+    await stage(alternative.recordId,edited,alternateSource,alternateSearch);
+    assert.deepEqual(bindings(target),[oldBinding]);
+    assert.deepEqual(checkpoint(),entry);
+    const admitted=await send(target,edited);
+    const actual=(await snapshot(target)).task;
+    assert(actual?.id&&actual.id!==oldTask.id);
+    const grants=bindings(target);
+    const own=grants.find(binding=>binding.taskId===actual.id);
+    assert.deepEqual(grants.find(binding=>binding.taskId===oldTask.id),oldBinding);
+    assert.equal(own?.admittedBy.runId,admitted.runId);
+    assert.deepEqual(own?.selections.map(item=>[item.id,item.version]),[[record.source_id,record.generation]]);
+    assert(admitted.sent.some(call=>call.status===200&&call.alternateRoles.includes('user')));
+    assert(admitted.sent.every(call=>!call.sourceRoles.length));
+    assert.deepEqual((await snapshot(target)).memoryScope,scopeBefore);
+    const receipts=read('SELECT reason,source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=?',admitted.runId);
+    assert.deepEqual(receipts.map(item=>[item.reason,item.source_id]),[['task',record.source_id]]);
+    report.lifecycle={oldTask:oldTask.id,oldReference:allowed.source_id,newTask:actual.id,newSource:record.source_id,cancelledDraft:draft,submittedDraft:edited,runId:admitted.runId,provider:admitted.sent};
+    pass('Only the newly admitted B-class Task owns the edited draft source and the real provider never receives the old source');
+    return;
+  }
   if(reportedQuote){
     const ask='这条温度计实验记录中的口令原文是什么，谁说的？能确定这是我自己的长期偏好以及具体启用日吗？仅依据本次预览的记录，在聊天中回答。';
     const settingsView=()=>page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -523,8 +617,11 @@ async function runHistoryJourney(){
     return;
   }
   if(semesterRules){
-    const currentPrompt='当前是秋季，请根据本次选择的 B 班温度计实验记录，原样给出目前正在使用的完整复核口令。';
-    const oldPrompt='回顾 B 班春季的温度计实验，与当前秋季区分。当时使用的完整复核口令是什么？能否从原话确定具体启用日期？请只回答启用时间是否可确认，省略系统记录日期。';
+    const currentPrompt='当前是秋季，请根据本次选择的 B 班温度计实验记录，原样给出目前正在使用的完整复核口令。'
+      +(frozenSemester?'只回复口令，省略会话记录时间及其他说明。':'');
+    const oldPrompt=frozenSemester
+      ?'回顾 B 班春季的温度计实验。完整复核口令是什么？根据这次已选原文，能否确定口令生效的具体时点？只答这两点，不引用会话记录时间。'
+      :'回顾 B 班春季的温度计实验，与当前秋季区分。当时使用的完整复核口令是什么？能否从原话确定具体启用日期？请只回答启用时间是否可确认，省略系统记录日期。';
     for(const [prompt,ref,original,historical] of [[currentPrompt,row.id,source,false],[oldPrompt,alternative.recordId,alternateSource,true]]){
       await composer().fill(prompt);
       await page.getByTestId('history-lookup-open').click();
@@ -537,14 +634,23 @@ async function runHistoryJourney(){
       const observed=await send(target,prompt);
       const turn=(await snapshot(target)).projection.turns.find(item=>item.id===observed.runId);
       const reply=turn.items.filter(item=>item.role==='assistant').map(item=>item.text).join('\n');
+      if(frozenSemester)(report.comparison??=[]).push({historical,runId:observed.runId,reply,provider:observed.sent});
       assert(observed.sent.some(call=>call.status===200&&(historical?call.alternateRoles:call.sourceRoles).includes('user')));
       if(!historical)assert(observed.sent.every(call=>!call.alternateRoles.length));
       assert(reply.includes(historical?alternateMarker:marker),reply);
       assert(!/\d{4}[-/.年]\d{1,2}[-/.月]\d{1,2}/u.test(reply),reply);
       if(historical)assert(/无法|不能|没有|未记|不详|未提供|不确定/u.test(reply),reply);
+      if(frozenSemester)assert(!/\d{1,2}\s*月\s*\d{1,2}\s*[日号]|\d{1,2}\s*[点时](?:\d{1,2}\s*分)?|\b\d{1,2}:\d{2}\b/u.test(reply),reply);
       pass(historical?'Earlier spring rule is expressly previewed; actual response preserves the unknown effective date':'Current fall rule is read from the current class, with no spring text sent',{runId:observed.runId,reply});
     }
     assert(!(await snapshot(target)).memoryScope.selections.length);
+    if(frozenSemester){
+      const current=await send(target,'请为八年级 B 班秋季温度计实验整理三条通用课堂提示，只在聊天中回复。');
+      assert(current.sent.some(call=>call.status===200));
+      assert(current.sent.every(call=>!call.alternateRoles.length));
+      assert(!(await snapshot(target)).memoryScope.selections.length);
+      pass('A later normal fall request does not receive the source approved only for the spring comparison',{runId:current.runId});
+    }
     return;
   }
   if(unknownHistory){
