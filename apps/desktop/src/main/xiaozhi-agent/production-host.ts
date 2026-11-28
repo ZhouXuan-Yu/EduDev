@@ -68,7 +68,7 @@ import {createClassroomExportTools} from '../education/classroom-export-tools';
 import {createTeachingLessonExportTools} from '../education/teaching-lesson-export-tools';
 import {createTeachingHandoutTool,handoutRequest} from '../education/teaching-handout-tool';
 import {namedTeachingMaterialMatches,namedTeachingMaterialTitles,resolveNamedHandoutSources,type NamedHandoutSource} from '../education/named-teaching-materials';
-import {assertTeachingHandoutExportProposal,createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
+import {createConfirmedHandoutContinuationTool,handoutContinuationRequest,assertTeachingHandoutExportProposal,createTeachingHandoutExportTools,handoutExportRequest} from '../education/teaching-handout-export-tools';
 import {EXPORT_TEACHING_HANDOUT} from '../../shared/teaching-handout-export';
 import {createHandoutEditCoordinator,handoutEditRequest} from '../education/teaching-handout-edit';
 import {PROPOSE_HANDOUT_EDIT} from '../../shared/teaching-handout-edit';
@@ -1126,6 +1126,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     const requiredLessonSourcesRead=lessonBasis?()=>lessonBasis.every(({source})=>classroomContext.hasRead(source)):undefined;
     const runQuestions=async()=> (await store.xiaozhiState.controls(id))
       .filter(item=>item.runId===runId&&item.kind==='question');
+    const currentQuestionAnswer=async()=>{
+      const question=(await runQuestions()).at(-1);
+      return question?.state==='answered'?question.answer:undefined;
+    };
     const lessonRevisionTools=owner?.lessonRevision?createLessonRevisionTools({sessionId:id,runId,request:owner.lessonRevision,
       state:store.xiaozhiState.classroomPlans,current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
       sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:async()=>
@@ -1273,6 +1277,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           const {fileId:_fileId,kind:_kind,...proposal}=files[0];
           return officeArtifacts.tools(id,runId,wait)[0].execute(args[0],proposal,args[2],args[3],args[4]);
         }}),
+      ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutContinuationRequest(cleanPrompt)&&!handoutExportRequest(cleanPrompt)&&!handoutEditRequest(cleanPrompt)?{
+        handoutContinuationTool:createConfirmedHandoutContinuationTool({sessionId:id,taskId:owner.task.id,prompt:cleanPrompt,state:store.teachingBookVersions,
+          current:()=>!closing&&active.get(id)===owner&&!owner.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),teacherSelection:currentQuestionAnswer}),
+      }:{}),
       ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
         handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,prompt:cleanPrompt,state:store.teachingBookVersions,
           current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
@@ -1284,10 +1292,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }:{}),
       ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
         handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,prompt:cleanPrompt,
-          teacherSelection:async()=>{
-            const question=(await runQuestions()).at(-1);
-            return question?.state==='answered'?question.answer:undefined;
-          },
+          teacherSelection:currentQuestionAnswer,
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
             requirementsVersion:owner.task!.requirementsVersion}),
           current:()=>!closing&&active.get(id)===owner&&!owner.stopped,

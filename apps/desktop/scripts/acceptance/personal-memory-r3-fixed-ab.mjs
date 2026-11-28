@@ -365,7 +365,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     }
     app=await electron.launch({args:[arm.main,'--user-data-dir='+profile],cwd:arm.desktop,env,timeout:60000,
       executablePath:path.join(arm.desktop,'node_modules/electron/dist/electron.exe')});
-    await app.evaluate(({net},{prompt,protectedSource,untrustedText,classValue,otherCourseText,protectedClasses})=>{
+    await app.evaluate(({net},{prompt,protectedSource,untrustedText,classValue,otherCourseText,protectedClasses,confirmedVersion,confirmedDigest})=>{
       const original=net.fetch.bind(net),records=globalThis.r3FixedABRequests=[];
       globalThis.r3FixedABStage='setup';
       net.fetch=async(input,init)=>{
@@ -376,6 +376,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         const observation={phase:globalThis.r3FixedABStage,model:payload.model,reasoning:payload.reasoning_effort??null,maxTokens:payload.max_tokens,
           hasSubmittedPrompt:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes(prompt)),
           observedToolCalls:payload.messages.flatMap(message=>(message.tool_calls??[]).map(call=>call.function?.name).filter(Boolean)),
+          ...(confirmedVersion?{confirmedHandoutRead:payload.messages.some(message=>message.role==='tool'&&
+            payload.messages.some(previous=>previous.tool_calls?.some(call=>call.id===message.tool_call_id&&
+              call.function?.name==='education_read_teaching_handout'))&&JSON.stringify(message.content).includes(confirmedVersion)&&
+            JSON.stringify(message.content).includes(confirmedDigest))}:{}),
           memoryProjection:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes('宿主核验的本轮历史资料')),
           includesClassRecords:protectedClasses?.some(text=>JSON.stringify(payload.messages).includes(text))??false,
           includesOtherCourse:Boolean(otherCourseText)&&JSON.stringify(payload.messages).includes(otherCourseText),
@@ -397,7 +401,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         }).catch(()=>{});
         return response;
       };
-    },{prompt:task.userPrompt,protectedClasses:ambiguousCase?classRecords:undefined,otherCourseText:courseCase?otherCourseText:undefined,classValue:classPreference?.value,protectedSource:semesterCase?priorHandout:source?.content,untrustedText:attachment?attachmentText:undefined});
+    },{prompt:task.userPrompt,confirmedVersion:artifactFixture?.authority.confirmedVersion,confirmedDigest:artifactFixture?.authority.verifiedDigest,protectedClasses:ambiguousCase?classRecords:undefined,otherCourseText:courseCase?otherCourseText:undefined,classValue:classPreference?.value,protectedSource:semesterCase?priorHandout:source?.content,untrustedText:attachment?attachmentText:undefined});
     page=await app.firstWindow();
     await assertIsolatedPiMain(app,arm.main,profile);
     const input=page.getByTestId('office-prompt-input');
@@ -532,7 +536,8 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         ? {last,question,review}:null;
     },110000);
     let state=await waitForOutcome(priorTurn);
-    const answer=editCase?'请修改《'+artifact.before.book.title+'》，仅把第 3 题的题干改为“请在数轴上标出一对相反数，并写出它们分别到原点的距离。”原有答案、解析和其他题目保持原样。':undefined;
+    const answer=editCase?'请修改《'+artifact.before.book.title+'》，仅把第 3 题的题干改为“请在数轴上标出一对相反数，并写出它们分别到原点的距离。”原有答案、解析和其他题目保持原样。':
+      continuationCase?'请继续《'+artifact.before.book.title+'》，先核对已经确认的版本和章数，暂不更改或导出。':undefined;
     if(answer && state.question){
       const card=page.getByTestId('pi-composer-pending-panel').locator('[data-control-id="'+state.question.id+'"]');
       result.teacherClarification={controlId:state.question.id,runId:state.last.id,answer,question:await card.innerText()};
@@ -542,7 +547,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       const answered=(await snapshot()).controls.find(item=>item.id===result.teacherClarification.controlId);
       assert.equal(answered?.state,'answered');
       assert.equal(answered.answer,answer);
-    }else if(answer && !state.review && state.last.status==='completed'){
+    }else if(editCase && answer && !state.review && state.last.status==='completed'){
       const originalRun=state.last.id;
       result.firstAttempt={runId:originalRun,output:state.last.items.filter(item=>item.role==='assistant').map(item=>item.text)};
       result.teacherFollowup=answer;
@@ -577,6 +582,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     if(deliverySetup||outage||preferenceCase||draft)result.setupRequests=requests.filter(item=>item.phase==='setup');
     assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));
     if(!artifact&&!semesterCase)assert(result.realModel.every(item=>!item.memoryProjection));
+    if(continuationCase){
+      result.continuation.hostReceiptDelivered=result.realModel.some(item=>item.status===200&&item.confirmedHandoutRead);
+      result.continuation.sameOriginTask=result.continuation.taskId===result.continuation.originTask;
+    }
     if(ambiguousCase){
       assert(result.realModel.every(q=>!q.includesClassRecords),'Neither unselected class source may reach the model');
       result.targetQuestion=state.question?{id:state.question.id,text:state.question.text}:null;

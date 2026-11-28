@@ -143,7 +143,7 @@ export function createTeachingBookVersions(sql:Sql,readContent:(sql:Sql,id:strin
         return append(work,content,'confirmed',new Date().toISOString());
       });
     },
-    async forExport(sessionId:string,taskId:string,target:{title?:string;bookId?:string}|TeachingHandoutVersionRef={}) {
+    async forExport(sessionId:string,taskId:string,target:{title?:string;bookId?:string;taskOnly?:boolean}|TeachingHandoutVersionRef={}) {
       return read(async work=>{
         const selected=await chooseBook(work,sessionId,taskId,target);
         if(selected.kind==='ambiguous')return selected;

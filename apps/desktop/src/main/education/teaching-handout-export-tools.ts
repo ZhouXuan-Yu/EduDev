@@ -11,12 +11,33 @@ export type HandoutExportFile=OfficeArtifactProposal&{kind:'office';fileId:strin
 export function handoutExportRequest(prompt:string){
   const text=prompt.normalize('NFKC');
   if(!/(?:讲义|学案|学生版|教师版)/u.test(text))return false;
+  if(handoutContinuationRequest(text)&&/(?:暂不|不要|不用|无需|不必|不需要|先不)(?:再|立即)?(?:导出|另存|保存|交付|生成文件)/u.test(text))return false;
   const explicitExport=/(?:导出|另存)/u.test(text);
   const existingHandout=/(?:已确认|已有|现有|当前|刚才|这份|上述)/u.test(text);
   return explicitExport||existingHandout&&/(?:保存|交付|生成文件|Word|DOCX)/iu.test(text);
 }
 
+// Only the teacher's direct instruction can designate a different task's book in this session.
+const resumeVerb=/^(?:请(?:帮我)?|帮我|我们)?(?:继续|接着|打开|核对)/u;
+function directRequest(text:string){
+  return text.normalize('NFKC').trim().split(/[。！？!?；;，,\n]/u)[0].trim();
+}
+export function handoutContinuationRequest(prompt:string){
+  const clause=directRequest(prompt);
+  return resumeVerb.test(clause)&&/(?:讲义|学案)/u.test(clause)&&!/[“”「」"'？?]/u.test(clause);
+}
+
+function continuationTitle(text:string){
+  // A quoted instruction, second title, or withdrawal cannot authorize a session-wide lookup.
+  if(!text||Array.from(text.matchAll(/《[^《》]+》/gu)).length!==1||
+    /[“”「」"']|取消|算了|撤销|(?:不要|不用|停止|别再|暂不)(?:继续|打开|核对|读取)|(?:或是|或者|还是)/u.test(text))return undefined;
+  const clause=directRequest(text);
+  const match=/^(?:请(?:帮我)?|帮我|我们)?(?:继续|接着|打开|核对)\s*(?:这份|讲义|学案)?\s*《([^《》\r\n]{1,160})》(?:这份)?(?:讲义|学案)?$/u.exec(clause);
+  return match?.[1];
+}
+
 const messages:Record<string,string>={
+  book_selection_required:'请在原讲义会话中确认要继续的稿件。可以请老师回答“请继续《完整书名》”，同名稿件请从讲义编辑器核对。',
   invalid_input:'请用本轮读到的讲义版本，选择学生版或教师版，并提供新的 Word 文件名。',
   book_unavailable:'本会话没有找到这份讲义。请核对原对话或讲义名称。',
   ambiguous:'找到多份讲义，请老师指定要导出的稿件。',
@@ -35,6 +56,50 @@ const messages:Record<string,string>={
   configuration:'讲义 Word 尚未提交或保存，请核对当前记录。',
 };
 const result=(data:object,ok:boolean)=>({content:[{type:'text' as const,text:JSON.stringify({success:ok,...data})}],details:{success:ok},isError:!ok});
+
+/** Resume grants access to confirmation metadata only. Model arguments never expand the lookup. */
+export function createConfirmedHandoutContinuationTool(options:{
+  sessionId:string;taskId:string;prompt:string;state:ReturnType<typeof createTeachingBookVersions>;
+  current:()=>boolean;sanitize:(text:string)=>Promise<string>;teacherSelection:()=>Promise<string|undefined>;
+}):ToolDefinition {
+  const check=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw Error('cancelled');};
+  return {
+    name:READ_TEACHING_HANDOUT,label:'核对已确认的讲义',
+    description:'续做讲义先不传参数核对当前任务绑定的已确认版本。没有明确目标时，请老师亲自指定《完整书名》。只能读当前会话的确认信息。',
+    parameters:{type:'object',additionalProperties:false,properties:{bookId:{type:'string'},title:{type:'string'}}} as ToolDefinition['parameters'],
+    execute:async(_call,raw,signal)=>{
+      try {
+        check(signal);
+        if(!plainStudentInput(raw,['bookId','title'])||Object.keys(raw).length>1||
+          raw.bookId!==undefined&&!handoutBookId(raw.bookId)||
+          raw.title!==undefined&&(typeof raw.title!=='string'||!raw.title.trim()||raw.title.length>200))throw Error('invalid_input');
+        const answer=await options.teacherSelection();
+        const title=continuationTitle(answer??options.prompt);
+        if(answer!==undefined&&!title)throw Error('book_selection_required');
+        const target=title?{title}:{taskOnly:true};
+        const item=await options.state.forExport(options.sessionId,options.taskId,target);
+        if(item.kind!=='found')throw Error('book_selection_required');
+        if(raw.bookId!==undefined&&raw.bookId!==item.version.bookId||
+          typeof raw.title==='string'&&handoutTitleKey(raw.title)!==handoutTitleKey(item.version.title))throw Error('target_mismatch');
+        const safeTitle=await options.sanitize(item.version.title);
+        const ref={bookId:item.version.bookId,versionId:item.version.id,digest:item.version.digest};
+        // Recheck both the target binding and current confirmed version after asynchronous sanitization.
+        const latest=await options.state.forExport(options.sessionId,options.taskId,target);
+        if(latest.kind!=='found'||latest.version.bookId!==ref.bookId||latest.version.id!==ref.versionId||
+          latest.version.digest!==ref.digest)throw Error('version_conflict');
+        if(answer!==await options.teacherSelection())throw Error('book_selection_required');
+        check(signal);
+        return result({...ref,title:safeTitle,revision:item.version.revision,confirmedAt:item.version.createdAt,
+          chapterCount:item.content.chapters.length,teacherConfirmed:true,location:'讲义 → 确认与版本'},true);
+      }catch(error){
+        check(signal);
+        const reason=error instanceof Error?error.message:'';
+        const code=reason==='book_unavailable'?'book_selection_required':Object.hasOwn(messages,reason)?reason:'configuration';
+        return result({error:code,message:messages[code]},false);
+      }
+    },
+  };
+}
 
 function parseHandoutOutput(raw:unknown) {
   if(!plainStudentInput(raw,['bookId','versionId','digest','outputs'])||Object.keys(raw).length!==4||
