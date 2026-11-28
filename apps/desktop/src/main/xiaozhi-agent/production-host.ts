@@ -1,3 +1,4 @@
+import {browserChromeError} from '../../shared/xiaozhi-browser';
 import {createStartupPrewarm} from './startup-prewarm';
 import {persistCurrentToolContract} from './capabilities/queued-contract';
 import type {PermissionOwner} from '../../shared/xiaozhi-permissions';
@@ -1195,7 +1196,7 @@ export function createXiaozhiProductionHost(options: { requestBrowserDock?:(id:s
           const content=result.content.find(item=>item.type==='text');if(!content||content.type!=='text')return false;
           return JSON.parse(content.text).answer==='同意这次操作';})})}:{}),
       ...(web.enabled?{questionWebAnswerTools:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>{
-        webAnswerRuntime=createQuestionWebAnswerTools({repo:store.questionWeb,readApplied:questionContext.readApplied,onNetworkScope:(scope,reset)=>browser.setNetworkScope(id,scope,reset),owner:{sessionId:id,runId},observed:observedEnrichmentQuestions,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),confirm:(question,signal,callId)=>wait(async()=>{
+        webAnswerRuntime=createQuestionWebAnswerTools({repo:store.questionWeb,readApplied:questionContext.readApplied,onNetworkScope:(scope,reset)=>browser.setNetworkScope(id,scope,reset,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),owner:{sessionId:id,runId},observed:observedEnrichmentQuestions,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),confirm:(question,signal,callId)=>wait(async()=>{
           const tool=controls.tools(id,runId).find(item=>item.name==='ask_teacher')!,result=await tool.execute(callId,{question,options:['同意这次操作','拒绝这次操作']},signal,undefined,undefined as never);const content=result.content.find(item=>item.type==='text');return content?.type==='text'&&JSON.parse(content.text).answer==='同意这次操作';
         })});return webAnswerRuntime.tools;
       }}:{}),
@@ -2582,13 +2583,17 @@ export function createXiaozhiProductionHost(options: { requestBrowserDock?:(id:s
     },
     attachments,
     referenceTeachingArtifact:artifactReferences.create,
-    async browserControl(id:unknown, command:unknown, parent:import('electron').BrowserWindow, rect?:import('electron').Rectangle) {
-      if(!validId(id)||typeof command!=='string'||closing)return {ok:false} as const;
+    async browserControl(id:unknown, command:unknown, parent:import('electron').BrowserWindow, rect?:import('electron').Rectangle, value?:unknown) {
+      if(!validId(id)||typeof command!=='string'||closing||(value!==undefined&&typeof value!=='string'))return {ok:false} as const;
       try {
-        if(command==='status')return {ok:true,status:await browser.status(id)} as const;
-        await browser.teacher(id,command,parent,rect);
-        return {ok:true,status:await browser.status(id)} as const;
-      } catch {return {ok:false} as const;}
+        if(command==='new-tab'&&!(await browser.status(id)).open&&(await store.getAiConversationSession(id)).session.archivedAt)
+          throw new Error('permission_denied');
+        if(command!=='status')await browser.teacher(id,command,parent,rect,value);
+        return {ok:true,status:await browser.chromeStatus(id)} as const;
+      } catch(error) {
+        const code=error instanceof Error?error.message:'';
+        return {ok:false,error:browserChromeError(code)||'unavailable',status:await browser.chromeStatus(id)} as const;
+      }
     },
     async showBrowser(raw:unknown):Promise<XiaozhiActionResult>{
       if(!validId(raw))return {ok:false,error:'invalid_input'};

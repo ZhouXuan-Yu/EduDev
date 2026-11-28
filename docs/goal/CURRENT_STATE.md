@@ -1,5 +1,15 @@
 # 当前状态与恢复入口
 
+右栏网页打开保留页内位置，登录标签可打开新站，补答任务结束后可恢复网页导航。见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
+已发送的对话附件可以在问小智右侧打开。Word、Markdown、Excel 和图片可与网页同栏切换。见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
+浏览器新增页内操作指针和统一控制条。接管、交还和操作提示的验证见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
+右侧工作区新增网页和对话文件标签，验收构建见[浏览器专项](BROWSER_CONTROL_R2.md)。
+
+2026-11-28　浏览器模块 C8 已通过完整性能对照（热会话 P50 改善 33.31%）和五个真实 DeepSeek 场景。教师实站签认和最终 main 各自登记。[专项进度](BROWSER_CONTROL_R2.md)
+
 浏览器的三个教师场景已在真实 DeepSeek 对话中通过，保留教师人工复核。见[教师复核与实测记录](BROWSER_TEACHER_ACCEPTANCE.md)
 
 2026-11-27　M10/M12 浏览器支持同页语义定位和条件等待。[实施与验收](BROWSER_DOM_ACCEPTANCE.md)

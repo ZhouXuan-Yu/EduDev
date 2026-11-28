@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { loadSkillsFromDir, stripFrontmatter, parseFrontmatter, type LoadSkillsResult, type ToolDefinition } from '@earendil-works/pi-coding-agent';
 import { noLinks, type createManagedEducationSkills } from './managed-skills';
-import {noLinksAsync,readPackageAsync} from './skill-package-async';
+import {createAncestorStatBatch,noLinksAsync,readPackageAsync} from './skill-package-async';
 import {mapSkillPackages} from './skill-package-batch';
 import { SKILL_LIMITS, validSkillName } from './skill-catalog-state';
 import { skillAuthority, type SkillAuthorityIdentity } from './native-skill-epoch';
@@ -18,8 +18,8 @@ const key = (value: string) => process.platform === 'win32' ? path.resolve(value
 const MAX_REFERENCE = 65536;
 /** Model resources contain only authorized necessary text; original packages remain local. */
 export async function createManagedSkillRuntime(agentDir: string, sessionFile: string, source: ManagedSkillSource, startupSignal?: AbortSignal) {
-  async function capture(signal?:AbortSignal) {
-    signal?.throwIfAborted();const current = await source.resources(signal), identities: SkillAuthorityIdentity[] = [];
+  async function capture(current: Awaited<ReturnType<ManagedSkillSource['resources']>>, signal?:AbortSignal) {
+    const identities: SkillAuthorityIdentity[] = [];
     signal?.throwIfAborted();
     const prepared: { name: string; title: string; texts: Map<string, string> }[] = [];
     for (const { item, bytes } of current.resources) {
@@ -51,14 +51,16 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
     if (JSON.stringify(current.resources.map(resource => resource.item)) !== JSON.stringify(after.resources.map(resource => resource.item))) throw new Error('skill_scope_changed');
     return { identity: identities, authority: skillAuthority(identities), prepared };
   }
-  const initial = await capture(startupSignal), root = path.join(agentDir, 'managed-skills-v2', initial.authority);
+  startupSignal?.throwIfAborted();
+  const initial = await capture(await source.resources(startupSignal), startupSignal);
+  const root = path.join(agentDir, 'managed-skills-v2', initial.authority);
   startupSignal?.throwIfAborted();
   noLinks(root, true); fs.mkdirSync(root, { recursive: true }); noLinks(root);
   const expected = new Map<string, { filePath: string; text: string; name: string; title: string; sha256: string }>();
   const loaded: LoadSkillsResult = { skills: [], diagnostics: [] };
-  async function verifyDirectory(directory: string, texts: Map<string, string>,signal?:AbortSignal) {
+  async function verifyDirectory(directory: string, texts: Map<string, string>,signal?:AbortSignal,ancestorStat?:ReturnType<typeof createAncestorStatBatch>) {
     try {
-      const bytes = await readPackageAsync(directory,signal);
+      const bytes = await readPackageAsync(directory,signal,ancestorStat);
       if (bytes.size !== texts.size || [...texts].some(([relative, text]) => !bytes.has(relative) || bytes.get(relative)!.length!==Buffer.byteLength(text)||sha(bytes.get(relative)!) !== sha(text))) throw new Error();
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
@@ -82,7 +84,8 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       await noLinksAsync(root,signal);
       // The complete package proof already verifies every exact-sized file and
       // rejects extra entries, aliases and links; do not reread the same files.
-      await mapSkillPackages(initial.prepared,item=>verifyDirectory(path.join(root, item.name), item.texts,signal),signal);
+      const ancestorStat = createAncestorStatBatch(signal);
+      await mapSkillPackages(initial.prepared,item=>verifyDirectory(path.join(root, item.name), item.texts,signal,ancestorStat),signal);
     } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
   // The final check below proves every cache file after native parsing and
@@ -92,8 +95,17 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
   startupSignal?.throwIfAborted();
   if (result.diagnostics.length || result.skills.length !== initial.identity.length) throw new Error('skill_source_changed');
   async function check(signal?:AbortSignal) {
-    await checkFiles(signal);
-    const current = await capture(signal);
+    signal?.throwIfAborted();
+    // Independent roots. Drain both reads before inspecting or sanitizing any source
+    // text. The second authority read and the final cache proof still run in order.
+    const [cache, resources] = await Promise.allSettled([
+      checkFiles(signal),
+      Promise.resolve().then(() => source.resources(signal)),
+    ]);
+    signal?.throwIfAborted();
+    if (cache.status === 'rejected') throw cache.reason;
+    if (resources.status === 'rejected') throw resources.reason;
+    const current = await capture(resources.value, signal);
     if (current.authority !== initial.authority) throw new Error('skill_scope_changed');
     await checkFiles(signal);
   }
@@ -118,10 +130,8 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       if (supplied.length > 4096 || supplied.includes('\0') || !path.isAbsolute(supplied)) throw new Error('invalid_input');
       const item = expected.get(key(supplied)); if (!item) throw new Error('permission_denied');
       signal?.throwIfAborted(); await check(signal); signal?.throwIfAborted();
-      // Exact validated in-memory text matches the native immutable model resource.
-      const text = item.text;
-      await check(signal); signal?.throwIfAborted();
-      return { content: [{ type: 'text', text }], details: { success: true, data: { source: `教育技能：${item.title}` } } };
+      // No await between the complete fresh proof and delivery of this immutable text.
+      return { content: [{ type: 'text', text: item.text }], details: { success: true, data: { source: `教育技能：${item.title}` } } };
     } };
   await check(startupSignal);
   return { result, identity: initial.identity, authority: initial.authority, check, validateCommand, matchesCommand, tool };

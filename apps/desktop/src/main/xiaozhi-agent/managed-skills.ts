@@ -3,7 +3,7 @@ import {mapSkillPackages} from './skill-package-batch';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import {answerQualityEnabled} from './answer-quality';
-import {readPackageAsync} from './skill-package-async';
+import {createAncestorStatBatch,readPackageAsync} from './skill-package-async';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
 import { EDUCATION_SKILLS, EDUCATION_SKILLS_V2, EDUCATION_SKILLS_V3, builtinSkillVersion, skillDocument } from './education-skills';
 import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
@@ -157,11 +157,11 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     if(JSON.stringify(filesOf(readPackage(directory)))!==JSON.stringify(item.files))throw Error('skill_source_changed');
     return remember(result);
   }
-  async function verifyRuntime(item:PrivateManagedSkill,signal?:AbortSignal){
+  async function verifyRuntime(item:PrivateManagedSkill,signal?:AbortSignal,ancestorStat?:ReturnType<typeof createAncestorStatBatch>){
     const directory=path.join(root,item.directory);assertInstallTargetInsideRoot(directory,root);
-    const result=parseVerified(item,directory,await readPackageAsync(directory,signal));
+    const result=parseVerified(item,directory,await readPackageAsync(directory,signal,ancestorStat));
     // Only the native parser rereads disk. An immutable cached parse does not.
-    if(!result.cached&&JSON.stringify(filesOf(await readPackageAsync(directory,signal)))!==JSON.stringify(item.files))throw Error('skill_source_changed');
+    if(!result.cached&&JSON.stringify(filesOf(await readPackageAsync(directory,signal,ancestorStat)))!==JSON.stringify(item.files))throw Error('skill_source_changed');
     signal?.throwIfAborted();return remember(result);
   }
   function writeVersion(bytes: PackageBytes, origin: PrivateManagedSkill['origin'], version: number): PrivateManagedSkill {
@@ -216,9 +216,10 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     verifyItem(item: PrivateManagedSkill) { return verify(item); },
     verifyItemAsync(item: PrivateManagedSkill, signal?: AbortSignal) { return verifyRuntime(item, signal); },
     async resourcesForItems(items: PrivateManagedSkill[], signal?: AbortSignal) {
+      const ancestorStat = createAncestorStatBatch(signal);
       const resources = await mapSkillPackages(items, async item => {
         signal?.throwIfAborted();
-        const {loaded, bytes, directory} = await verifyRuntime(item, signal);
+        const {loaded, bytes, directory} = await verifyRuntime(item, signal, ancestorStat);
         return {item: structuredClone(item), directory, skill: loaded.skills[0], bytes};
       }, signal);
       return {revision: 0, resources};
@@ -305,8 +306,9 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     /** Main-only runtime descriptors; UI never receives local source paths. */
     async enabledResources(signal?:AbortSignal) {
       const catalog = await readCatalog();
+      const ancestorStat = createAncestorStatBatch(signal);
       const resources=await mapSkillPackages(catalog.skills.filter(item=>item.enabled&&!item.archived),async item=>{
-        signal?.throwIfAborted();const {loaded,bytes,directory}=await verifyRuntime(item,signal);
+        signal?.throwIfAborted();const {loaded,bytes,directory}=await verifyRuntime(item,signal,ancestorStat);
         return {item:structuredClone(item),directory,skill:loaded.skills[0],bytes};
       },signal);
       return { revision: catalog.revision, resources };

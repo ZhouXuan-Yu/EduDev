@@ -1,9 +1,12 @@
+import type {XiaozhiAttachment} from '../../../shared/xiaozhi-attachments';
+import {DockedAttachmentPreview} from './DockedAttachmentPreview';
+import type {FileTabRequest} from './PiBrowserDock';
 import type { PiSettingsEntry } from './PiSettingsWorkspace';
 import {samePaperExportIntent,copyPaperExportIntent,type PaperExportIntent} from '../../../shared/paper-export';
 import {paperExportSendError} from './paper-export-request';
 import { createPiSessionNavigation } from './pi-session-navigation';
 import {continuationPrompt} from './continue-task';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import {Button} from '@heroui/react';
 import type { AiConversationWorkspace } from '../../../shared/contracts';
@@ -82,9 +85,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [workspace, setWorkspace] = useState<AiConversationWorkspace>({ folders: [], sessions: [], archivedFolders: [], archivedSessions: [] });
   const [id, setId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>();
-  const attachments=usePiAttachments(id,visible,snapshot?.projection.turns.flatMap(turn=>turn.items)||[]);
+  const [fileReveal,setFileReveal]=useState<FileTabRequest & {sessionId:string}>();
+  const openHistoryAttachment=useCallback((item:XiaozhiAttachment)=>{
+    setFileReveal({sessionId:id,id:crypto.randomUUID(),title:item.name,attachment:item});
+  },[id]);
+  const attachments=usePiAttachments(id,visible,snapshot?.projection.turns.flatMap(turn=>turn.items)||[],openHistoryAttachment);
   const [goalOpenSignal,setGoalOpenSignal]=useState<{token:number;sessionId:string;objective?:string}>();
-  const [fileReveal,setFileReveal]=useState<{sessionId:string;id:string;path:string}>();
   const [models, setModels] = useState<XiaozhiSettingsView>(), [modelSelecting, setModelSelecting] = useState(false);
   const [returnHydrating,setReturnHydrating]=useState(false);
   const [loadingEarlier,setLoadingEarlier]=useState(false);
@@ -377,6 +383,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     });
     eventReceiver.current = receiver;
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
+    const unsubscribeBrowser = window.omniEdu?.onXiaozhiBrowserDock?.(target => {
+      if (!live || !visibleRef.current || target !== idRef.current || snapshotRef.current?.browser?.open) return;
+      // The host creates the guest before a running turn publishes its terminal snapshot.
+      hydration.current!.changed();
+      void hydrate(target).catch(() => undefined);
+    });
     const unsubscribeConfig = window.omniEdu?.onXiaozhiConfigChange?.(change => {
       const target = idRef.current;
       if (!live || !visibleRef.current || !target || change.sessionId && change.sessionId !== target) return;
@@ -386,7 +398,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     const settingsChanged=window.settingsHost?.onChanged(()=>{if(live&&idRef.current)void hydrate(idRef.current).catch(()=>undefined);});
     return () => {
       viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false;
-      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeConfig?.();settingsChanged?.();
+      hydration.current!.reset(); receiver.reset(); unsubscribe?.(); unsubscribeBrowser?.(); unsubscribeConfig?.();settingsChanged?.();
     };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation,paperExportIntent?:PaperExportIntent) {
@@ -479,9 +491,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     replyOnly={Boolean(snapshot&&!snapshot.running&&!workspaceTaskScope(snapshot))}
     workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={open=>{if(open)setWorkbenchInitialTab('tasks');setWorkbenchOpen(open);}} onWorkbenchClose={closeWorkbench}
     workbench={<PiRecoveryOverview key={workbenchInitialTab} initialTab={workbenchInitialTab} activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{setHomeActivityRevision(value=>value+1);if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
-    fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
+    fileRequest={fileReveal?.sessionId===id?fileReveal:undefined}
     onLeave={onLeave} onSettings={() => onSettings()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
-    files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
+    files={(close,request,openFile)=>request?.attachment?<DockedAttachmentPreview sessionId={id} item={request.attachment} onClose={close} onDetails={attachments.openDetails}/>:<PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={request?.path?{...request,id:request.requestId||request.id,path:request.path}:undefined} embeddedPreview={Boolean(request?.path||request?.artifactId)} savedRequest={request?.artifactId} onOpenInTab={openFile} onClose={close} onChoose={()=>void (async()=>{
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
     aside={<PiWorkspaceContext key={id} sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}

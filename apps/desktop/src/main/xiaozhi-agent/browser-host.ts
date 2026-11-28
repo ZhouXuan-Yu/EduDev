@@ -1,23 +1,25 @@
 import {createBrowserLayout,type BrowserLayout} from './browser-surface';
 import type {BaseWindow,BrowserWindow,Rectangle,WebContentsView,Session} from 'electron';
 import {randomUUID,createHash} from 'node:crypto';
+import {isIP} from 'node:net';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {setTimeout as delay} from 'node:timers/promises';
-import {officeWebUrl,waitOfficeAbort,type OfficeDnsMode} from '../office-agent/office-network';
+import {isPublicOfficeAddress,officeWebUrl,waitOfficeAbort,type OfficeDnsMode} from '../office-agent/office-network';
 import {createPublicBrowserProxy} from './browser-proxy';
 import {uniqueBrowserRef,waitForBrowserText} from './browser-dom-observation';
 import {SNAPSHOT_SCRIPT} from './vendor/hana/browser/snapshot';
-import {validBrowserInput,type XiaozhiBrowserInput,type XiaozhiBrowserReceipt} from '../../shared/xiaozhi-browser';
+import {browserChromeError,validBrowserInput,type BrowserActivity,type XiaozhiBrowserInput,type XiaozhiBrowserReceipt} from '../../shared/xiaozhi-browser';
 import {BROWSER_CAPTURE_SCHEMA,validBrowserCapture} from '../../shared/xiaozhi-browser-capture';
 import {browserScreenshotFilename} from './vendor/hana/browser/screenshot-filename';
 import {approvedFile} from './workspace-authority';
 import {readBrowserCapture} from './browser-capture-reader';
+import {clearBrowserPointer,showBrowserPointer} from './browser-pointer';
 import {browserExtractScript} from './browser-extract-script';
 
 type NavigationProof = {runId:string; callId:string; revision:number; url:string};
-type Tab={requestedOrigin?:string;profileOrigin?:string;navigation?:NavigationProof;id:string;view:WebContentsView;session:Session;state:'loading'|'ready'|'failed';error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
-type Group={layout:BrowserLayout;needsObservation?:boolean;owner:'teacher'|'agent';control:AbortController;window:BaseWindow;status:WebContentsView;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;profileChange?:Promise<void>;busy:boolean;closing:boolean};
+type Tab={requestedOrigin?:string;profileOrigin?:string;navigation?:NavigationProof;id:string;view:WebContentsView;session:Session;state:'blank'|'loading'|'ready'|'failed';lastAddress?:string;pointerDrawn?:boolean;retired?:boolean;injectingKey?:boolean;error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
+type Group={activity?:BrowserActivity;layout:BrowserLayout;needsObservation?:boolean;owner:'teacher'|'agent';control:AbortController;window:BaseWindow;status:WebContentsView;toolbar:WebContentsView;loadToolbar:()=>void;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;profileChange?:Promise<void>;busy:boolean;closing:boolean};
 const denyDownload=(event:{preventDefault():void})=>event.preventDefault();
 const sensitive=/sk-[\w-]{20,}|(?:api[-_]?key|token|secret|password|authorization)=/i;
 let nativeRuntime:typeof import('electron')|undefined;
@@ -47,12 +49,25 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       if(url&&url.protocol==='https:')return url.origin;
     }catch{/* Opaque and blocked pages have no reusable login. */}
   }
+  function updateWindowTitle(g:Group) {
+    if(g.window.isDestroyed())return;
+    const tab=g.tabs.get(g.active);
+    const pageTitle=tab?.state==='ready' && !tab.view.webContents.isDestroyed() ? tab.view.webContents.getTitle().slice(0,150) : '';
+    const owner=g.owner==='teacher'?'老师操作中':'小智操作中';
+    g.window.setTitle(['小智浏览器',owner,pageTitle].filter(Boolean).join(' · '));
+  }
+  function clearPointer(tab?:Tab){
+    if(!tab?.pointerDrawn)return;
+    tab.pointerDrawn=false;
+    const wc=tab.view.webContents;
+    if(!wc.isDestroyed())void wc.executeJavaScriptInIsolatedWorld(1005,[{code:`(${clearBrowserPointer.toString()})()`}]).catch(()=>{});
+  }
   function setOwner(g:Group, owner:Group['owner']) {
     if (g.owner===owner || (owner==='agent' && g.profileChange)) return;
-    g.owner=owner;g.needsObservation=true;
+    g.owner=owner;g.activity=undefined;g.needsObservation=[...g.tabs.values()].some(tab=>tab.state==='ready');updateWindowTitle(g);
     g.control.abort();
     g.control=new AbortController();
-    for(const tab of g.tabs.values()) {tab.refs.clear();tab.snapshotId=undefined;tab.write=undefined;}
+    for(const tab of g.tabs.values()) {clearPointer(tab);tab.refs.clear();tab.snapshotId=undefined;tab.write=undefined;}
   }
   function beginProfileChange(g:Group) {
     let settle!:()=>void;
@@ -64,16 +79,55 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     if(wc&&!wc.isDestroyed())wc.stop();
   }
   function releaseTab(g:Group, tab:Tab) {
+    tab.retired=true;
     g.tabs.delete(tab.id);
     if(tab.profileOrigin && profileOwners.get(tab.profileOrigin)===tab.id) profileOwners.delete(tab.profileOrigin);
     g.layout.remove(tab.view);
     if(tab.view.webContents && !tab.view.webContents.isDestroyed())tab.view.webContents.close({waitForBeforeUnload:false});
   }
-  const networkScopes=new Map<string,(url:string)=>boolean>();
-  const checkScope=(id:string,url:string)=>{if(networkScopes.has(id)&&!networkScopes.get(id)!(url))throw new Error('permission_denied');};
-  const safeUrl=async(raw:string)=>{const url=officeWebUrl(raw).href;let decoded:string;try{decoded=decodeURIComponent(url);}catch{throw new Error('permission_denied');}if(sensitive.test(decoded)||(await options.sanitize(decoded))!==decoded)throw new Error('permission_denied');return url;};
-  function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});g.window.setTitle('小智 · 浏览器');}
-  function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready')g.status.setVisible(false);else showStatus(g,tab.error||'loading');}
+  const networkScopes=new Map<string,{allows:(url:string)=>boolean;current:()=>boolean}>();
+  const allowedByScope=(id:string,url:string)=>networkScopes.get(id)?.allows(url)!==false;
+  const checkScope=(id:string,url:string)=>{if(!allowedByScope(id,url))throw new Error('permission_denied');};
+  function retireScopedTabs(g?:Group){
+    if(!g)return;
+    if(g.busy||g.closing)throw new Error('busy');
+    // An old page must never regain network access under a different grant.
+    g.proxy.stopConnections();
+    for(const tab of g.tabs.values())releaseTab(g,tab);
+    g.active='';g.needsObservation=false;
+    showStatus(g,'blank');
+  }
+  function retireExpiredScope(id:string){
+    const scope=networkScopes.get(id);
+    if(scope&&!scope.current()){
+      retireScopedTabs(groups.get(id));
+      networkScopes.delete(id);
+      return true;
+    }
+    return false;
+  }
+  async function safeUrl(raw:string,teacherAddress=false){
+    let parsed:URL;
+    try{parsed=new URL(raw);}catch{throw new Error('invalid_input');}
+    if(teacherAddress){
+      if(!['https:','http:'].includes(parsed.protocol))throw new Error('unsupported_address');
+      const host=parsed.hostname.replace(/^\[|\]$/g,'').replace(/\.$/,'');
+      if(host==='localhost'||host.endsWith('.localhost')||/\.(?:local|internal|lan|home)$/.test(host)||
+        (isIP(host)&&!isPublicOfficeAddress(host)))throw new Error('local_address');
+      if(parsed.port&&!['80','443'].includes(parsed.port))throw new Error('unsupported_port');
+      if(parsed.username||parsed.password)throw new Error('protected_url');
+    }
+    const checked=officeWebUrl(raw);
+    checked.hash=parsed.hash;
+    const url=checked.href;
+    let decoded:string;
+    try{decoded=decodeURIComponent(url);}catch{throw new Error('invalid_input');}
+    if(sensitive.test(decoded)||(await options.sanitize(decoded))!==decoded)
+      throw new Error(teacherAddress?'protected_url':'permission_denied');
+    return url;
+  }
+  function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});updateWindowTitle(g);}
+  function showTab(g:Group,tab:Tab){if(g.active!==tab.id)clearPointer(g.tabs.get(g.active));for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready'||tab.state==='blank'&&g.layout.presentation!=='floating'){g.status.setVisible(false);updateWindowTitle(g);}else showStatus(g,tab.error||tab.state);}
   async function closeGroup(id:string){const group=groups.get(id);if(!group)return;
     group.closing=true;group.control.abort();
     if(group.profileChange){
@@ -81,31 +135,54 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       await group.profileChange;
     }
     if(groups.get(id)!==group)return;
-    groups.delete(id);for(const tab of group.tabs.values())releaseTab(group,tab);group.layout.remove(group.status);if(!group.status.webContents.isDestroyed())group.status.webContents.close({waitForBeforeUnload:false});if(!group.window.isDestroyed())group.window.destroy();await group.proxy.close();}
-  async function group(id:string,dnsMode:OfficeDnsMode){
+    groups.delete(id);for(const tab of group.tabs.values())releaseTab(group,tab);group.layout.remove(group.status);if(!group.toolbar.webContents.isDestroyed())group.toolbar.webContents.close({waitForBeforeUnload:false});if(!group.status.webContents.isDestroyed())group.status.webContents.close({waitForBeforeUnload:false});if(!group.window.isDestroyed())group.window.destroy();await group.proxy.close();}
+  async function group(id:string,dnsMode:OfficeDnsMode,autoDock=true){
     if(disposed||!/^aisession_[a-f0-9-]{36}$/i.test(id))throw new Error('permission_denied');
     const existing=groups.get(id);if(existing){if(existing.closing)throw new Error('cancelled');if(!existing.busy&&existing.proxy.setDnsMode(dnsMode))await Promise.all([...existing.tabs.values()].map(t=>t.session.closeAllConnections()));return existing;}const started=pending.get(id);if(started)return started;
     const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode,url=>{checkScope(id,url);return true;});if(disposed){await proxy.close();throw new Error('cancelled');}
-      const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智 · 浏览器',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
+      const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智浏览器 · 小智操作中',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
       const status=new electron.WebContentsView({webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
       status.webContents.setWindowOpenHandler(()=>({action:'deny'}));
-      // Only this main-owned local status view may close its own browser group.
-      // It exposes no preload or general navigation/IPC authority to web pages.
-      status.webContents.on('will-navigate',(event,url)=>{event.preventDefault();if(url==='xiaozhi-browser:close')void closeGroup(id);});
-      const value:Group={layout:createBrowserLayout(window,status),owner:'agent',control:new AbortController(),window,status,tabs:new Map(),active:'',proxy,busy:false,closing:false};
-      try{if(process.env.ELECTRON_RENDERER_URL&&!options.statusFile){const url=new URL('browser-status.html',process.env.ELECTRON_RENDERER_URL+'/');url.hash='loading';await status.webContents.loadURL(url.href);}else await status.webContents.loadFile(options.statusFile||path.resolve(import.meta.dirname,'../renderer/browser-status.html'),{hash:'loading'});}catch(error){status.webContents.close();window.destroy();await proxy.close();throw error;}
-      if(disposed){status.webContents.close();window.destroy();await proxy.close();throw new Error('cancelled');}
+      status.webContents.on('will-navigate',event=>event.preventDefault());
+      const toolbar=new electron.WebContentsView({webPreferences:{preload:path.resolve(import.meta.dirname,'../preload/browser-toolbar.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
+      toolbar.webContents.setWindowOpenHandler(()=>({action:'deny'}));
+      toolbar.webContents.on('will-navigate',event=>event.preventDefault());
+      let toolbarLoaded=false;
+      const loadToolbar=()=>{
+        if(toolbarLoaded||options.statusFile)return;
+        toolbarLoaded=true;
+        const dev=process.env.ELECTRON_RENDERER_URL;
+        const loading=dev?toolbar.webContents.loadURL(new URL('browser-toolbar.html',dev+'/').href):
+          toolbar.webContents.loadFile(path.resolve(import.meta.dirname,'../renderer/browser-toolbar.html'));
+        void loading.catch(()=>{toolbarLoaded=false;});
+      };
+      const value:Group={toolbar,loadToolbar,layout:createBrowserLayout(window,status,toolbar),owner:'agent',control:new AbortController(),window,status,tabs:new Map(),active:'',proxy,busy:false,closing:false};
+      try{if(process.env.ELECTRON_RENDERER_URL&&!options.statusFile){const url=new URL('browser-status.html',process.env.ELECTRON_RENDERER_URL+'/');url.hash='loading';await status.webContents.loadURL(url.href);}else await status.webContents.loadFile(options.statusFile||path.resolve(import.meta.dirname,'../renderer/browser-status.html'),{hash:'loading'});}catch(error){toolbar.webContents.close();status.webContents.close();window.destroy();await proxy.close();throw error;}
+      if(disposed){toolbar.webContents.close();status.webContents.close();window.destroy();await proxy.close();throw new Error('cancelled');}
+      // This renderer belongs to the floating chrome. Only its main frame can send its group commands.
+      toolbar.webContents.on('ipc-message',(event,channel,request,operation,input)=>{
+        if(event.senderFrame!==toolbar.webContents.mainFrame||channel!=='xiaozhi:float-toolbar'||!Number.isSafeInteger(request)||
+          typeof operation!=='string'||(input!==undefined&&typeof input!=='string')||value.layout.presentation!=='floating')return;
+        const supported=['status','new-tab','navigate','select-tab','close-tab','back','forward','reload','stop','teacher','agent','redock'];
+        if(!supported.includes(operation))return;
+        void(async()=>{
+          let error:string|undefined;
+          try{if(operation!=='status')await api.teacher(id,operation,undefined,undefined,input);}catch(cause){error=browserChromeError((cause as Error).message)||'unavailable';}
+          if(!toolbar.webContents.isDestroyed())toolbar.webContents.send('xiaozhi:float-result',request,{ok:!error,error,status:await chromeStatus(id)});
+        })().catch(()=>{});
+      });
+
       groups.set(id,value);
       window.setMenu(electron.Menu.buildFromTemplate([{label:'浏览器控制',submenu:[
-        {label:'放回对话',click:()=>options.requestDock?.(id)},
+        {label:'放回对话',click:()=>{value.layout.park();options.requestDock?.(id);}},
         {label:'我来操作',click:()=>setOwner(value,'teacher')},
         {label:'交还小智',click:()=>setOwner(value,'agent')},
       ]}]));
       window.on('close',event=>{if(!value.closing && value.layout.wasDocked && options.requestDock){event.preventDefault();value.layout.park();options.requestDock(id);}});
       window.on('closed',()=>{void closeGroup(id);});
-      if(options.requestDock){
+      if(autoDock&&options.requestDock){
         options.requestDock(id);
-        const fallback=setTimeout(()=>{if(!value.closing && value.layout.presentation==='initial')value.layout.float();},1800);
+        const fallback=setTimeout(()=>{if(!value.closing && value.layout.presentation==='initial'){value.loadToolbar();value.layout.float();}},1800);
         fallback.unref();
       }
       return value;})();pending.set(id,job);try{return await job;}finally{pending.delete(id);}
@@ -131,29 +208,87 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     const view=new electron.WebContentsView({webPreferences:{session:partition,nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false,devTools:false,spellcheck:false}});
     created=view;
     const tab:Tab={profileOrigin,id:tabId,view,session:partition,refs:new Map(),revision:0,state:'loading'};
-    const wc=view.webContents;wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');wc.setWindowOpenHandler(()=>({action:'deny'}));
+    const wc=view.webContents;wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');wc.setWindowOpenHandler(({url,disposition})=>{
+      if(g.owner==='teacher'&&!g.busy&&g.active===tab.id&&['foreground-tab','background-tab','new-window','default'].includes(disposition))
+        void openManualTab(id,g,url,disposition!=='background-tab').catch(()=>{});
+      return {action:'deny'};
+    });
     wc.on('will-attach-webview',event=>event.preventDefault());
+    wc.on('before-mouse-event',event=>{if(g.owner==='agent')event.preventDefault();});
+    wc.on('before-input-event',event=>{if(g.owner==='agent'&&!tab.injectingKey)event.preventDefault();});
     wc.on('login',(event,details,authInfo,callback)=>{event.preventDefault();if(authInfo.isProxy&&authInfo.host==='127.0.0.1'&&authInfo.port===g.proxy.port)callback(g.proxy.username,g.proxy.password);else callback();});
-    wc.on('did-start-navigation',()=>{tab.revision++;tab.snapshotId=undefined;tab.refs.clear();tab.write=undefined;});
+    wc.on('did-start-navigation',()=>{clearPointer(tab);tab.revision++;tab.snapshotId=undefined;tab.refs.clear();tab.write=undefined;});
     wc.on('did-start-loading',()=>{tab.state='loading';tab.error=undefined;if(g.active===tab.id)showStatus(g,'loading');});
     wc.on('did-finish-load',()=>{if(tab.error)return;const error=g.proxy.failureFor(wc.getURL());if(error){tab.state='failed';tab.error=error;if(g.active===tab.id)showStatus(g,error);return;}tab.state='ready';if(g.active===tab.id)showTab(g,tab);});
-    wc.on('did-fail-load',(_event,code,_description,url,isMainFrame)=>{if(!isMainFrame||code===-3&&tab.error)return;tab.state='failed';tab.error=g.proxy.failureFor(url)||(code===-3?'cancelled':code===-7?'timeout':'network');if(g.active===tab.id)showStatus(g,tab.error);});
-    wc.on('page-title-updated',()=>{if(!g.window.isDestroyed()&&g.active===tab.id)g.window.setTitle('小智 · 浏览器 · '+wc.getTitle().slice(0,150));});
+    wc.on('did-fail-load',(_event,code,_description,url,isMainFrame)=>{if(!isMainFrame||tab.retired)return;tab.state='failed';tab.error=tab.error||g.proxy.failureFor(url)||(code===-3?'cancelled':code===-7?'timeout':'network');if(g.active===tab.id)showStatus(g,tab.error);});
+    wc.on('page-title-updated',()=>{if(!g.window.isDestroyed()&&g.active===tab.id)updateWindowTitle(g);});
     partition.webRequest.onBeforeRequest((request,done)=>{void(async()=>{try{
       const owner=g.owner,control=g.control;
-      const current=()=>{if(disposed||g.closing||wc.isDestroyed()||control.signal.aborted||
-        profileOrigin && (profileOwners.get(profileOrigin)!==tab.id || new URL(request.url).origin!==profileOrigin))
-        throw new Error('permission_denied');checkScope(id,request.url);};
-      current();await safeUrl(request.url);current();
+      const current=()=>{if(disposed||g.closing||tab.retired||wc.isDestroyed()||control.signal.aborted||
+        profileOrigin&&profileOwners.get(profileOrigin)!==tab.id)throw new Error('permission_denied');
+        if(profileOrigin&&new URL(request.url).origin!==profileOrigin)throw new Error('site_scope');
+        if(!allowedByScope(id,request.url))throw new Error('scope_denied');};
+      current();await safeUrl(request.url,owner==='teacher');current();
       if(!['GET','HEAD'].includes(request.method)){
         if(owner==='teacher' && request.webContentsId===wc.id && new URL(request.url).origin===new URL(wc.getURL()).origin){done({cancel:false});return;}
         const permission=tab.write;if(!permission||permission.until<Date.now()||new URL(request.url).origin!==permission.origin||request.webContentsId!==wc.id)throw new Error('permission_denied');
       }done({cancel:false});
-    }catch{done({cancel:true});}})();});
+    }catch(error){if(!tab.retired&&request.resourceType==='mainFrame')tab.error=browserChromeError((error as Error).message)||'network';done({cancel:true});}})();});
     await options.afterTabCreated?.(wc,partition);
     if(g.closing || disposed || control.signal.aborted)throw new Error('cancelled');
     g.tabs.set(tab.id,tab);g.active=tab.id;g.layout.add(view);showTab(g,tab);return tab;
     } catch(error) {if(created && !created.webContents.isDestroyed())created.webContents.close({waitForBeforeUnload:false});if(profileOrigin&&profileOwners.get(profileOrigin)===tabId)profileOwners.delete(profileOrigin);throw error;}
+  }
+  async function manualAddress(id:string,g:Group,tab:Tab,raw:string) {
+    const control=g.control;
+    const url=await safeUrl(raw,true);
+    if(!allowedByScope(id,url))throw new Error('scope_denied');
+    if(g.closing||g.owner!=='teacher'||control.signal.aborted||g.tabs.get(tab.id)!==tab)throw new Error('cancelled');
+    if(tab.profileOrigin&&new URL(url).origin!==tab.profileOrigin)throw new Error('site_scope');
+    tab.lastAddress=url;tab.requestedOrigin=new URL(url).origin;
+    void tab.view.webContents.loadURL(url).catch(()=>{
+      if(!g.closing&&!tab.retired&&!tab.view.webContents.isDestroyed()&&tab.state==='loading'){
+        tab.state='failed';tab.error=g.proxy.failureFor(url)||'network';
+        if(g.active===tab.id)showStatus(g,tab.error);
+      }
+    });
+  }
+  async function openManualTab(id:string,g:Group,url?:string,foreground=true) {
+    if(g.busy)throw new Error('busy');
+    if(g.tabs.size>=16)throw new Error('busy');
+    g.busy=true;
+    const previous=g.tabs.get(g.active);
+    let tab:Tab|undefined;
+    try {
+      const safe=url&&await safeUrl(url,true);
+      if(safe&&!allowedByScope(id,safe))throw new Error('scope_denied');
+      if(g.owner!=='teacher'||g.closing)throw new Error('permission_denied');
+      tab=await createTab(id,g);
+      tab.state='blank';showTab(g,tab);
+      if(safe)await manualAddress(id,g,tab,safe);
+      if(!foreground&&previous)showTab(g,previous);
+    }catch(error){
+      if(tab)releaseTab(g,tab);
+      if(previous&&g.tabs.has(previous.id))showTab(g,previous);
+      throw error;
+    }finally{g.busy=false;}
+  }
+  async function chromeStatus(id:string):Promise<import('../../shared/xiaozhi-agent').XiaozhiBrowserStatus>{
+    const g=groups.get(id);
+    if(!g||g.closing)return {open:false};
+    const tabs=await Promise.all([...g.tabs.values()].map(async tab=>{
+      const wc=tab.view.webContents;
+      const state=tab.state;
+      if(!wc||wc.isDestroyed())return null;
+      const raw=state==='failed'||state==='loading'?tab.lastAddress||wc.getURL():wc.getURL();
+      const title=state==='ready'?wc.getTitle().slice(0,200):'';
+      const history=wc.navigationHistory;
+      const canBack=history.canGoBack(),canForward=history.canGoForward();
+      let url=tab.profileOrigin||'';
+      try{url=await safeUrl(raw);}catch{/* Non-public and sensitive addresses stay out of the toolbar. */}
+      return {tabId:tab.id,title:title&&await options.sanitize(title),url,state,canBack,canForward,active:tab.id===g.active};
+    }));
+    return {open:true,tabs:tabs.filter(t=>t!==null).filter(t=>g.tabs.has(t.tabId)),owner:g.owner,activity:g.activity,presentation:g.layout.presentation,siteOrigin:siteOrigin(g.tabs.get(g.active)),remembered:!!g.tabs.get(g.active)?.profileOrigin};
   }
   async function snapshot(tab:Tab,signal:AbortSignal):Promise<XiaozhiBrowserReceipt>{
     signal=AbortSignal.any([signal,AbortSignal.timeout(15000)]);
@@ -175,7 +310,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     const receipt={tabId:tab.id,title:(await options.sanitize(result.title)).slice(0,200),url:await safeUrl(result.currentUrl),observedAt:new Date().toISOString(),snapshotId:'pisnapshot_'+randomUUID(),text:(await options.sanitize(result.text)).slice(0,30000),untrusted:true as const};
     signal.throwIfAborted();if(tab.revision!==revision||wc.isDestroyed())throw new Error('attachment_changed');tab.refs=new Map(refs.filter(([_ref,html])=>!!html));tab.snapshotId=receipt.snapshotId;return receipt;
   }
-  return {
+  const api = {
     hasLiveNavigation(sessionId:string, runId:string, callId:string) {
       const group = groups.get(sessionId);
       if (!group || group.closing) return false;
@@ -187,8 +322,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       }
       return false;
     },
-    async teacher(id:string,operation:string, parent?:BrowserWindow, rect?:Rectangle){
-      const g=groups.get(id);
+    async teacher(id:string,operation:string, parent?:BrowserWindow, rect?:Rectangle, value?:string){
+      const g=groups.get(id)??(operation==='new-tab'?await group(id,'auto',false):undefined);
       if(disposed||!g||g.closing)throw new Error('permission_denied');
       if(operation==='teacher'||operation==='agent'){if(operation==='agent'&&g.profileChange)throw new Error('busy');setOwner(g,operation);return;}
       if(operation==='dock' && parent && rect){
@@ -196,11 +331,50 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         if(![rect.x,rect.y,rect.width,rect.height].every(Number.isFinite)||rect.x<0||rect.y<0||rect.width<1||rect.height<1||rect.x+rect.width>w+1||rect.y+rect.height>h+1)throw new Error('invalid_input');
         g.layout.dock(parent,rect);return;
       }
-      if(operation==='float'){g.layout.float();return;}
-      if(operation==='cover'){if(g.layout.docked||g.layout.presentation==='initial')g.layout.park();return;}
+      if(operation==='float'){clearPointer(g.tabs.get(g.active));g.loadToolbar();g.layout.float();const tab=g.tabs.get(g.active);if(tab)showTab(g,tab);return;}
+      if(operation==='redock'){clearPointer(g.tabs.get(g.active));g.layout.park();options.requestDock?.(id);return;}
+      if(operation==='cover'){clearPointer(g.tabs.get(g.active));if(g.layout.docked||g.layout.presentation==='initial')g.layout.park();return;}
       if(operation==='leave'){setOwner(g,'teacher');g.layout.park();return;}
+      if (operation==='new-tab') {setOwner(g,'teacher');retireExpiredScope(id);await openManualTab(id,g);return;}
+      if (operation==='select-tab'||operation==='close-tab') {
+        const tab=value&&g.tabs.get(value);
+        if(!tab||g.busy)throw new Error(g.busy?'busy':'invalid_input');
+        setOwner(g,'teacher');
+        if(operation==='select-tab')showTab(g,tab);
+        else {
+          const wasActive=g.active===tab.id;
+          const ordered=[...g.tabs.values()],index=ordered.indexOf(tab);
+          releaseTab(g,tab);
+          const neighbor=ordered[index+1]||ordered[index-1];
+          if(wasActive&&neighbor)showTab(g,neighbor);
+          if(!neighbor)await closeGroup(id);
+        }
+        return;
+      }
+      if(g.owner!=='teacher'||g.busy)throw new Error(g.busy?'busy':'permission_denied');
+      if(operation==='navigate'){
+        if(!value)throw new Error('invalid_input');
+        const url=await safeUrl(value,true);
+        if(g.closing||g.owner!=='teacher'||g.busy||groups.get(id)!==g)throw new Error('cancelled');
+        retireExpiredScope(id);
+        const tab=g.tabs.get(g.active);
+        if(!tab||tab.profileOrigin&&new URL(url).origin!==tab.profileOrigin)await openManualTab(id,g,url);
+        else await manualAddress(id,g,tab,url);
+        return;
+      }
       const current=g.tabs.get(g.active);
-      if(!current || g.owner!=='teacher' || g.busy)throw new Error('permission_denied');
+      if(!current)throw new Error('permission_denied');
+      if(operation==='back'||operation==='forward'||operation==='reload'||operation==='stop'){
+        const wc=current.view.webContents,history=wc.navigationHistory;
+        if(operation==='stop')wc.stop();
+        if(operation==='back'&&history.canGoBack())history.goBack();
+        if(operation==='forward'&&history.canGoForward())history.goForward();
+        if(operation==='reload'){
+          if(current.state==='failed'&&current.lastAddress)await manualAddress(id,g,current,current.lastAddress);
+          else if(current.state!=='blank')wc.reload();
+        }
+        return;
+      }
       const origin=siteOrigin(current);if(!origin)throw new Error('permission_denied');
       const url=new URL(await safeUrl(origin));
       if(disposed||g.closing||url.protocol!=='https:'||groups.get(id)!==g||g.active!==current.id||g.owner!=='teacher'||g.busy)throw new Error('permission_denied');
@@ -243,19 +417,30 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       }
       throw new Error('invalid_input');
     },
+    chromeStatus,
     async status(id:string){const g=groups.get(id);if(!g||g.closing)return {open:false};const tabs=[];for(const tab of g.tabs.values()){if(tab.state!=='ready'||!tab.view.webContents||tab.view.webContents.isDestroyed())continue;try{tabs.push({tabId:tab.id,title:g.owner==='teacher'?'老师操作中':(await options.sanitize(tab.view.webContents.getTitle())).slice(0,200),url:g.owner==='teacher'?new URL(tab.view.webContents.getURL()).origin:await safeUrl(tab.view.webContents.getURL()),active:tab.id===g.active});}catch{/* Blank/blocked pages are not a source. */}}return {open:true,tabs,owner:g.owner,siteOrigin:siteOrigin(g.tabs.get(g.active)),remembered:!!g.tabs.get(g.active)?.profileOrigin};},
-    show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.layout.float();g.window.focus();},
-    setNetworkScope(id:string,scope:(url:string)=>boolean,resetConnections=false){if(networkScopes.get(id)===scope&&!resetConnections)return;networkScopes.set(id,scope);groups.get(id)?.proxy.stopConnections();},
+    show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.loadToolbar();g.layout.float();g.window.focus();},
+    setNetworkScope(id:string,allows:(url:string)=>boolean,resetConnections=false,current=()=>true){
+      const previous=networkScopes.get(id);
+      if(previous?.allows===allows&&!resetConnections)return;
+      if(previous?.allows!==allows)retireExpiredScope(id);
+      networkScopes.set(id,{allows,current});
+      groups.get(id)?.proxy.stopConnections();
+    },
     async execute(id:string,input:XiaozhiBrowserInput,context:{invocation?:{runId:string;callId:string};signal:AbortSignal;dnsMode:OfficeDnsMode;current:()=>boolean;confirm:(question:string,signal:AbortSignal)=>Promise<boolean>}):Promise<XiaozhiBrowserReceipt|{tabs:{tabId:string;title:string;url:string;active:boolean}[]}|{closed:true}> {
       if(!validBrowserInput(input)||disposed)throw new Error('invalid_input');const check=()=>{context.signal.throwIfAborted();if(!context.current())throw new Error('cancelled');};check();
       const before=groups.get(id);
       if(before?.owner==='teacher')throw new Error('teacher_control');
+      if(input.action==='navigate'&&networkScopes.get(id)?.current()===false){
+        await safeUrl(input.url!);check();retireExpiredScope(id);
+      }
       if(before?.needsObservation && input.action!=='snapshot' && input.action!=='tabs')throw new Error('observation_required');
       if(input.action==='close'&&!input.tabId){if(before?.busy||pending.has(id))throw new Error('busy');await closeGroup(id);return {closed:true};}
       const g=await group(id,context.dnsMode);check();if(g.owner==='teacher')throw new Error('teacher_control');if(g.needsObservation && !['snapshot','tabs'].includes(input.action))throw new Error('observation_required');if(g.busy)throw new Error('busy');g.busy=true;
+      g.activity=input.action==='navigate'?'opening':input.action==='wait'?'verifying':'reading';
       context={...context,signal:AbortSignal.any([context.signal,g.control.signal])};
       let tab:Tab|undefined;
-      const stop=()=>{stopPage(tab);g.proxy.stopConnections();if(tab){tab.write=undefined;if(tab.state==='loading'){tab.state='failed';tab.error='cancelled';showStatus(g,'cancelled');}}};context.signal.addEventListener('abort',stop,{once:true});
+      const stop=()=>{stopPage(tab);g.proxy.stopConnections();if(tab){clearPointer(tab);tab.write=undefined;if(tab.state==='loading'){tab.state='failed';tab.error='cancelled';showStatus(g,'cancelled');}}};context.signal.addEventListener('abort',stop,{once:true});
       try{
         if(input.action==='tabs'){const tabs=await Promise.all([...g.tabs.values()].filter(t=>t.state==='ready').map(async t=>({tabId:t.id,title:(await options.sanitize(t.view.webContents.getTitle())).slice(0,200),url:await safeUrl(t.view.webContents.getURL()),active:t.id===g.active})));check();return {tabs};}
         tab=input.tabId?g.tabs.get(input.tabId):g.tabs.get(g.active);if(input.tabId&&!tab)throw new Error('permission_denied');
@@ -283,9 +468,14 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           }
           return receipt;
         }
-        const activate=()=>{showTab(g,tab!);if(g.layout.presentation==='floating'||(!options.requestDock&&g.layout.presentation==='initial'))g.layout.float();};
-        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.requestedOrigin=new URL(url).origin;tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
-        const withRef = async (body: string) => {
+        const activate=()=>{showTab(g,tab!);if(g.layout.presentation==='floating'||(!options.requestDock&&g.layout.presentation==='initial')){g.loadToolbar();g.layout.float();}};
+        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.requestedOrigin=new URL(url).origin;tab!.lastAddress=url;tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['invalid_input','permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
+        function pointerAt(x:string,y:string,phase:'pending'|'action'){
+          if(!tab||g.active!==tab.id||!['docked','floating'].includes(g.layout.presentation))return '';
+          tab.pointerDrawn=true;
+          return `try { (${showBrowserPointer.toString()})(${x},${y},'${phase}'); } catch {}`;
+        }
+        const withRef = async (body: string, phase?:'pending'|'action') => {
           if (input.snapshotId !== tab!.snapshotId) throw new Error('attachment_changed');
           const expected = tab!.refs.get(input.ref!);
           if (!expected) throw new Error('attachment_changed');
@@ -299,6 +489,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
             const y = (Math.max(box.top,0) + Math.min(box.bottom,innerHeight)) / 2;
             if (el.matches(':disabled') || el.closest('[inert],[aria-disabled="true"]') ||
                 !el.contains(document.elementFromPoint(x,y))) return {error:'target_unavailable'};
+            ${phase==='pending'&&input.action==='click'?`if(el.tagName!=='A'){${pointerAt('x','y',phase)}}`:phase?pointerAt('x','y',phase):''}
             return {value:(() => {${body}})()};
           })()`;
           const result = await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005, [{code}]), context.signal);
@@ -308,6 +499,14 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         };
         const conditionRevision=tab.revision;
         const checkConditionPage=()=>{check();if(wc.isDestroyed()||tab!.revision!==conditionRevision||tab!.state!=='ready')throw new Error('attachment_changed');};
+        const verifyNamedClick=async()=>{
+          checkConditionPage();
+          if(input.snapshotId!==tab!.snapshotId)throw new Error('attachment_changed');
+          const signal=AbortSignal.any([context.signal,AbortSignal.timeout(8000)]);
+          const matched=await uniqueBrowserRef(wc,input.role!,input.name!.trim(),signal);
+          checkConditionPage();
+          if(matched!==input.ref || !tab!.refs.has(matched))throw new Error('attachment_changed');
+        };
         const ensureNewResult=async()=>{
           if(!input.expectText)return;
           checkConditionPage();
@@ -316,8 +515,12 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         };
         const approve=async()=>{const url=await safeUrl(wc.getURL()),revision=tab!.revision;
           checkScope(id,url);
+          // Refuse an already-satisfied condition before opening the approval panel.
+          // The second check below still fences DOM changes during teacher review.
+          await ensureNewResult();check();
           const question=await options.sanitize(`允许小智在 ${new URL(url).hostname} 的“${wc.getTitle().slice(0,100)}”页面执行这次“${input.action}”操作${input.ref?`（控件 ${input.ref}）`:''}${input.text!==undefined?`，输入“${input.text.slice(0,200)}”`:input.value!==undefined?`，选择“${input.value.slice(0,200)}”`:input.key?`，按 ${input.key}`:''}吗？页面可能提交内容。`);
-          if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();checkScope(id,url);if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');await ensureNewResult();check();tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
+          g.activity='awaiting-confirmation';
+          if(!await context.confirm(question,context.signal)){clearPointer(tab);throw new Error('permission_denied');}check();checkScope(id,url);if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');await ensureNewResult();if(input.action==='click' && input.name)await verifyNamedClick();check();g.activity='acting';tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
         if(input.action==='extract'){
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision,signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
@@ -335,31 +538,42 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         else if(input.action==='show'){activate();}
         else if(input.action==='close'){releaseTab(g,tab);if(!g.tabs.size){await closeGroup(id);}else{showTab(g,g.tabs.values().next().value!);}return {closed:true};}
         else if(input.action==='click'){
-          const href=await withRef("return el.tagName==='A'?el.href:null;");check();
-          if(typeof href==='string'&&href){if(input.expectText)throw new Error('invalid_input');await navigate(href);}else{await approve();await withRef('el.click();');}
+          if(input.name)await verifyNamedClick();
+          const href=await withRef("return el.tagName==='A'?el.href:null;",'pending');check();
+          if(typeof href==='string'&&href){if(input.expectText)throw new Error('invalid_input');g.activity='opening';await navigate(href);}else{await approve();await withRef('el.click();','action');}
         }else if(input.action==='type'){
           if(sensitive.test(input.text!)||await options.sanitize(input.text!)!==input.text)throw new Error('permission_denied');
           const writable="['INPUT','TEXTAREA'].includes(el.tagName)&&!['password','file','hidden'].includes(el.type)&&!/(?:password|one-time-code|cc-)/i.test(el.autocomplete)&&!el.readOnly&&!el.disabled";
-          if(!await withRef('return '+writable))throw new Error('permission_denied');
+          if(!await withRef('return '+writable,'pending'))throw new Error('permission_denied');
           await approve();
-          const typed=await withRef(`if(!(${writable}))return false;el.focus();if(document.activeElement!==el||!el.isConnected)return false;el.select();if(document.activeElement!==el||!el.isConnected)return false;return document.execCommand('insertText',false,${JSON.stringify(input.text)});`);
+          const typed=await withRef(`if(!(${writable}))return false;el.focus();if(document.activeElement!==el||!el.isConnected)return false;el.select();if(document.activeElement!==el||!el.isConnected)return false;return document.execCommand('insertText',false,${JSON.stringify(input.text)});`,'action');
           if(!typed)throw new Error('target_unavailable');
-        }else if(input.action==='select'){await approve();const selected=await withRef(`if(el.tagName!=='SELECT'||el.disabled)throw new Error('Protected select');const choice=Array.from(el.options).find(option=>option.value===${JSON.stringify(input.value)} && !option.disabled && !option.closest('optgroup:disabled'));if(!choice)return 'missing';el.value=choice.value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));`);if(selected==='missing')throw new Error('target_unavailable');}
+        }else if(input.action==='select'){await withRef('return true;','pending');await approve();const selected=await withRef(`if(el.tagName!=='SELECT'||el.disabled)throw new Error('Protected select');const choice=Array.from(el.options).find(option=>option.value===${JSON.stringify(input.value)} && !option.disabled && !option.closest('optgroup:disabled'));if(!choice)return 'missing';el.value=choice.value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));`,'action');if(selected==='missing')throw new Error('target_unavailable');}
         else if(input.action==='key'){if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');
           const focusCheck=async(remember:boolean)=>waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:`(() => {
             const el=document.activeElement;if(!el || el.matches('input[type=password],input[type=file]') || /password|one-time-code|cc-/i.test(el.getAttribute('autocomplete')||''))return false;
-            if(${remember})globalThis.__xiaozhiKeyFocus=el;return globalThis.__xiaozhiKeyFocus===el;
+            if(${remember})globalThis.__xiaozhiKeyFocus=el;
+            if (globalThis.__xiaozhiKeyFocus!==el) return false;
+            const rect=el.getBoundingClientRect();
+            if(el!==document.body && rect.width>0 && rect.height>0){${pointerAt('rect.left+rect.width/2','rect.top+rect.height/2',remember?'pending':'action')}}
+            return true;
           })()`}]),context.signal);
           if(!await focusCheck(true))throw new Error('permission_denied');
-          await approve();if(input.snapshotId!==tab.snapshotId||!await focusCheck(false))throw new Error('attachment_changed');check();const key=input.key==='Enter'?'Return':input.key!;wc.sendInputEvent({type:'keyDown',keyCode:key});wc.sendInputEvent({type:'keyUp',keyCode:key});}
-        else if(input.action==='scroll'){await waitOfficeAbort(wc.executeJavaScript(`window.scrollBy(0,${(input.direction==='up'?-1:1)*(input.amount||3)*300})`),context.signal);}
+          await approve();if(input.snapshotId!==tab.snapshotId||!await focusCheck(false))throw new Error('attachment_changed');check();const key=input.key==='Enter'?'Return':input.key!;tab.injectingKey=true;
+          try{wc.sendInputEvent({type:'keyDown',keyCode:key});wc.sendInputEvent({type:'keyUp',keyCode:key});}
+          finally{tab.injectingKey=false;}}
+        else if(input.action==='scroll'){
+          g.activity='acting';
+          const scroll=`${pointerAt('innerWidth-75','innerHeight*0.64','action')} window.scrollBy(0,${(input.direction==='up'?-1:1)*(input.amount||3)*300})`;
+          await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:scroll}]),context.signal);
+        }
         else if(input.action==='screenshot'){
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision;
           const samePage=()=>{check();if(wc.isDestroyed()||tab!.state!=='ready'||tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');};
           // Native capture makes the page visible and keeps the system awake.
           // Do not wait on a renderer RAF that can suspend while occluded.
-          activate();samePage();
+          activate();clearPointer(tab);samePage();
           const signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
           // Chromium can briefly lack a compositor frame after a completed navigation.
           let image;
@@ -383,7 +597,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           samePage();return {tabId:tab.id,title:capture.title,url,observedAt:capture.observedAt,untrusted:true,captured:true,capture};
         }
         // Original Hana wait helper only for page stability, never a run timeout.
-        if(input.expectText){await waitForBrowserText(wc,input.expectText,context.signal,checkConditionPage);checkConditionPage();}
+        if(input.expectText){g.activity='verifying';await waitForBrowserText(wc,input.expectText,context.signal,checkConditionPage);checkConditionPage();}
         else if(!['snapshot','show'].includes(input.action)){
           const {waitForBrowserState}=await import('./vendor/hana/browser/browser-wait.cjs');
           await waitOfficeAbort(waitForBrowserState(wc,{state:'stable',timeoutMs:5000}),context.signal);
@@ -394,9 +608,13 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         if (input.action === 'navigate' && context.invocation && wc.getURL() === receipt.url && tab.state === 'ready')
           tab.navigation = {...context.invocation, revision:tab.revision, url:receipt.url};
         return receipt;
-      }finally{if(tab)tab.write=undefined;context.signal.removeEventListener('abort',stop);g.busy=false;}
+      }catch(error){
+        clearPointer(tab);
+        throw error;
+      }finally{if(tab)tab.write=undefined;context.signal.removeEventListener('abort',stop);g.activity=undefined;g.busy=false;}
     },
-    cancel(id:string){const g=groups.get(id);if(g&&g.owner==='agent'){for(const tab of g.tabs.values()){tab.write=undefined;stopPage(tab);}g.proxy.stopConnections();}},
+    cancel(id:string){const g=groups.get(id);if(g&&g.owner==='agent'){for(const tab of g.tabs.values()){clearPointer(tab);tab.write=undefined;stopPage(tab);}g.proxy.stopConnections();}},
     async dispose(){disposed=true;await Promise.allSettled([...pending.values()]);await Promise.all([...groups.keys()].map(closeGroup));},
   };
+  return api;
 }

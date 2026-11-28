@@ -62,6 +62,21 @@ try {
     await wrapped.execute('browser_owned', { taskStepId: 'browser_open', action: 'navigate', url });
     assert.deepEqual(received, { action: 'navigate', url });
   });
+  await check('Browser planning guidance matches the production validator for a filter and teacher review', async () => {
+    const {validTaskPlanInput,TASK_PLAN_SCHEMA}=await import('../../src/shared/xiaozhi-task-plan.ts');
+    const {createPiBrowserTools}=await import('../../src/main/xiaozhi-agent/browser-tools.ts');
+    const [browser]=createPiBrowserTools({sessionId});
+    const steps=[
+      {id:'open',text:'打开教研网页',dependsOn:[],kind:'web',target:url,reported:'pending'},
+      {id:'filter',text:'筛选年级',dependsOn:['open'],kind:'web',target:url,reported:'pending'},
+    ];
+    const plan={schemaVersion:TASK_PLAN_SCHEMA,expectedRevision:0,requirementsVersion:1,reason:'查看筛选结果',steps};
+    assert.equal(validTaskPlanInput(plan),false);
+    const teacher={id:'review',text:'教师核对结果',dependsOn:['filter'],kind:'human',reported:'pending'};
+    assert.equal(validTaskPlanInput({...plan,steps:[...steps,teacher]}),true);
+    assert.match(browser.description,/恰好包含一个 human/);
+    assert.match(browser.parameters.properties.expectText.description,/结果未知时省略/);
+  });
   const report = {
     success: true,
     checks,

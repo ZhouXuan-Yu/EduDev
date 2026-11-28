@@ -10,7 +10,7 @@ import {PiAttachmentList} from './PiAttachmentList';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
 
 /** Local drafts and previews. Actual message delivery is a separate durable operation. */
-export function usePiAttachments(sessionId:string,visible:boolean,history:OfficeProjectedItem[]=[]){
+export function usePiAttachments(sessionId:string,visible:boolean,history:OfficeProjectedItem[]=[],onOpenHistory?:(item:XiaozhiAttachment)=>void){
  const epoch=useRef(0),requests=useRef(new Map<string,XiaozhiAttachmentInput>()),mutation=useRef(false);
  const [items,setItems]=useState<XiaozhiAttachment[]>([]),[thumbnails,setThumbnails]=useState<Record<string,string>>({});
  const [thumbnailErrors,setThumbnailErrors]=useState<Record<string,string>>({});
@@ -126,16 +126,16 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   }catch{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setPreviewError('无法预览附件，请重试。');}
   finally{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setReading(false);}
  }
- const renderList=(values:XiaozhiAttachment[],submitted=false)=><PiAttachmentList
+ const renderList=(values:XiaozhiAttachment[],submitted=false,openInDock=false)=><PiAttachmentList
   items={values.map(item=>({...item,src:thumbnails[`${item.id}:${item.revision}`]}))}
   busy={busy}
   removeLabel="移除附件"
-  onOpen={item=>void open(item)}
+  onOpen={item=>{if(openInDock&&onOpenHistory)onOpenHistory(item);else void open(item);}}
   onRemove={submitted?undefined:item=>void remove(item)}
  />;
  const renderHistory=useCallback((item:OfficeProjectedItem)=>item.attachments?.length?<section className="pi-attachments pi-attachment-history" data-testid="pi-attachment-history" aria-label="本轮已发送附件">
-  {renderList(item.attachments,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
- </section>:undefined,[sessionId,busy,thumbnails]);
+  {renderList(item.attachments,true,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
+ </section>:undefined,[sessionId,busy,thumbnails,onOpenHistory]);
  const metadataSignature=JSON.stringify(history.flatMap(item=>item.attachments||[]));
  const metadata=useMemo<XiaozhiAttachment[]>(()=>JSON.parse(metadataSignature),[metadataSignature]);
  const renderViewed=useCallback((receipts:PublicImageDelivery[])=>{
@@ -168,6 +168,6 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
    <Modal.Footer><Button variant="secondary" data-testid="pi-attachment-preview-close" onPress={closePreview}>关闭</Button></Modal.Footer>
   </Modal.Dialog></Modal.Container>
  </Modal.Backdrop>;
- return {cards,modal,choose,importFiles,busy,refresh,renderHistory,renderViewed,hasAttachments:items.length>0,
+ return {cards,modal,openDetails:open,choose,importFiles,busy,refresh,renderHistory,renderViewed,hasAttachments:items.length>0,
   selections:items.map(item=>({id:item.id,revision:item.revision})),sendBlocked:loading||busy||ocrBusy};
 }

@@ -9,12 +9,12 @@ import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-
 import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
 
-import {PiBrowserDock} from './PiBrowserDock';
+import {PiBrowserDock,type FileTabRequest} from './PiBrowserDock';
 import type {XiaozhiBrowserStatus} from '../../../shared/xiaozhi-agent';
 export function PiWorkspaceShell({ browser, title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, workbench, onWorkbenchClose, workbenchVisible, onWorkbenchVisibleChange, isEmpty = false, replyOnly = false, onPending, notifications = { hasFiles: false, pending: [] } }: {
   browser?:XiaozhiBrowserStatus;title: string; sidebar: ReactNode; aside: ReactNode; children: ReactNode;
   onLeave: () => void; onSkills: () => void; onSettings: () => void;
-  files?: (close: () => void) => ReactNode; visible?: boolean; fileRequest?: string; onNewChat?: () => void; sessionKey?: string;
+  files?: (close: () => void, request?:FileTabRequest, openFile?: (request:FileTabRequest)=>void) => ReactNode; visible?: boolean; fileRequest?: FileTabRequest; onNewChat?: () => void; sessionKey?: string;
   workbench?: ReactNode; onWorkbenchClose?: () => void;
   workbenchVisible?: boolean; onWorkbenchVisibleChange?: (open: boolean) => void;
   isEmpty?: boolean; replyOnly?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
@@ -27,7 +27,6 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
     const synchronize=(event:StorageEvent)=>{if(event.key!==WORKSPACE_PREFERENCES_KEY&&event.key!==null)return;setPreferences(readWorkspacePreferences());};
     window.addEventListener('storage',synchronize);return()=>window.removeEventListener('storage',synchronize);
   },[]);
-  const handledFileRequest = useRef<string | undefined>(undefined);
   const emptyWasVisible = useRef(isEmpty);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [localWorkbenchOpen, setLocalWorkbenchOpen] = useState(false);
@@ -35,7 +34,7 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
   function setWorkbenchOpen(value: boolean) {setLocalWorkbenchOpen(value);onWorkbenchVisibleChange?.(value);}
   const workbenchWasOpen = useRef(false);
   const historyWasOpen = useRef(false);
-  const [panelWidth, setPanelWidth] = useState(() => readColumnWidth('xiaozhi.ui.panelWidth.v1', 340, 300, 680));
+  const [panelWidth, setPanelWidth] = useState(() => readColumnWidth('xiaozhi.ui.panelWidth.v1', 460, 300, 860));
   const [narrow, setNarrow] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 1050px)').matches);
   const [requestedInNarrow, setRequestedInNarrow] = useState(false);
   const [browserVisible,setBrowserVisible]=useState(false);
@@ -43,10 +42,10 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
   useEffect(()=>{setBrowserVisible(browserOpen);},[sessionKey,browserOpen]);
   useEffect(()=>window.omniEdu?.onXiaozhiBrowserDock?.(target=>{if(target===sessionKey)setBrowserVisible(true);}),[sessionKey]);
   useEffect(()=>{
-    if(!sessionKey||!visible||!browserOpen)return;
+    if(!sessionKey||!visible)return;
     return ()=>{void window.omniEdu?.controlXiaozhiBrowser?.(sessionKey,'leave');};
-  },[sessionKey,visible,browserOpen]);
-  const dock=browserVisible&&browserOpen&&visible;
+  },[sessionKey,visible]);
+  const dock=browserVisible&&visible;
   const open = !dock && (preferences.files || preferences.aside) && (!narrow || requestedInNarrow);
   const mode: WorkbenchPanelMode = preferences.files ? 'files' : 'tasks';
   const panelOrigin = useRef<{ element: HTMLElement; session?: string; fileNotice: boolean } | undefined>(undefined);
@@ -113,11 +112,8 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
     workbenchWasOpen.current = workbenchOpen;
   }, [workbenchOpen]);
   useEffect(() => {
-    if (fileRequest && visible && fileRequest !== handledFileRequest.current) {
-      handledFileRequest.current = fileRequest;
-      panel('files');
-    }
-  }, [fileRequest, visible]);
+    if(fileRequest&&visible)setBrowserVisible(true);
+  },[fileRequest,visible]);
   useEffect(() => {
     if (historyWasOpen.current && !historyOpen) document.querySelector<HTMLElement>('[data-testid="pi-sidebar-toggle"]')?.focus();
     historyWasOpen.current = historyOpen;
@@ -128,7 +124,7 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
     return false;
   }, 20);
   const actions = <>
-    {browserOpen&&<Button size="sm" variant="ghost" aria-pressed={dock} onPress={()=>setBrowserVisible(!dock)}>浏览器</Button>}
+    {sessionKey&&<Button size="sm" variant="ghost" data-testid="pi-browser-toggle" aria-pressed={dock} onPress={()=>{if(dock)void window.omniEdu?.controlXiaozhiBrowser(sessionKey,'leave');setBrowserVisible(!dock);}}>浏览器</Button>}
     <Tooltip><Button variant="ghost" isIconOnly aria-label="管理对话记录" data-testid="pi-sidebar-toggle" aria-expanded={historyOpen} onPress={() => {closeWorkbench(); setHistoryOpen(!historyOpen);}}><History size={18} /></Button><Tooltip.Content>管理对话记录</Tooltip.Content></Tooltip>
     {workbench && <Button variant="ghost" size="sm" data-testid="pi-workbench-open" aria-expanded={workbenchOpen} onPress={() => {setHistoryOpen(false); if (workbenchOpen) closeWorkbench(); else setWorkbenchOpen(true);}}><ListTodo size={17}/>恢复与待办</Button>}
     {onNewChat && <Tooltip><Button variant="ghost" isIconOnly aria-label="新建对话" data-testid="pi-new-session" onPress={onNewChat}><SquarePen size={18} /></Button><Tooltip.Content>新建对话</Tooltip.Content></Tooltip>}
@@ -147,7 +143,10 @@ export function PiWorkspaceShell({ browser, title, sidebar, aside, files, childr
         </div>}
         {children}
       </div>
-      {dock && sessionKey && browser && <PiBrowserDock key={sessionKey} id={sessionKey} initial={browser} covered={historyOpen||workbenchOpen} onClose={()=>{setBrowserVisible(false);void window.omniEdu?.controlXiaozhiBrowser(sessionKey,'leave');}}/>}
+      {dock && <ColumnResizeHandle side="right" width={panelWidth} min={300} max={860} label="调整右侧工作区宽度" onResize={setPanelWidth} onReset={()=>setPanelWidth(460)}/>}
+      {sessionKey && <PiBrowserDock key={sessionKey} id={sessionKey} initial={browser} visible={dock} width={panelWidth}
+        covered={historyOpen||workbenchOpen} fileRequest={fileRequest} files={files}
+        onClose={()=>{setBrowserVisible(false);void window.omniEdu?.controlXiaozhiBrowser(sessionKey,'leave');}}/>}
       {open && <ColumnResizeHandle side="right" width={panelWidth} min={300} max={680} label="调整右侧任务栏宽度" onResize={setPanelWidth} onReset={() => setPanelWidth(340)} />}
       {open && <WorkbenchContextPanel mode={mode} onModeChange={panel} onClose={() => panel('closed')} focusRequest={panelFocus.session === sessionKey ? panelFocus.request : 0} tasks={aside} files={files?.(() => panel('closed'))} />}
     </div>

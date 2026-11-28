@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceFingerprint": "ec55ff04f4f7885b7fcd2dd5021bf64254f6c43435f2df46a218fcac6cbcf326",
+  "sourceFingerprint": "8b6bb37e3e18695ad33563a4e3d2582529c7a9ae519419ad65d3282c8c6caa7b",
   "definitions": [
     {
       "name": "analyze_geometry_figure",
@@ -2364,6 +2364,7 @@
             "type": "string"
           },
           "expectText": {
+            "description": "只填有依据、操作前尚未出现的结果文字。列表结果未知时省略此项，点击后重新观察列表。控件已有的标签不能作为预期结果。",
             "maxLength": 500,
             "type": "string"
           },

@@ -202,7 +202,7 @@ export function registerXiaozhiIpc(options: {
   options.ipcMain.handle('xiaozhi:events', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.listEvents(input); });
   options.ipcMain.handle('xiaozhi:plan-history',(event,input)=>fromMain(event)?host.planHistory(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:goal-mutate',(event,input)=>fromMain(event)?host.mutateGoal(input):{ok:false,error:'permission_denied'});
-  options.ipcMain.handle('xiaozhi:browser-control',(event,id,command,rect)=>{
+  options.ipcMain.handle('xiaozhi:browser-control',(event,id,command,rect,value)=>{
     const main=options.window();
     if(!main||event.sender!==main.webContents||event.senderFrame!==main.webContents.mainFrame)return {ok:false};
     if(command==='dock'){
@@ -210,7 +210,7 @@ export function registerXiaozhiIpc(options: {
       const zoom=main.webContents.getZoomFactor();
       rect={x:Math.round(rect.x*zoom),y:Math.round(rect.y*zoom),width:Math.floor(rect.width*zoom),height:Math.floor(rect.height*zoom)};
     }
-    return host.browserControl(id,command,main,rect);
+    return host.browserControl(id,command,main,rect,value);
   });
   options.ipcMain.handle('xiaozhi:browser-show',(event,id)=>fromMain(event)?host.showBrowser(id):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:browser-capture-preview',(event,input)=>fromMain(event)?host.previewBrowserCapture(input):{ok:false,error:'permission_denied'});

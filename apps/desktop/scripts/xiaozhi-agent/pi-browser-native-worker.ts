@@ -24,6 +24,24 @@ const ref=(p:XiaozhiBrowserReceipt,name:string)=>{const line=p.text!.split('\n')
 const until=async(fn:()=>unknown)=>{for(let i=0;i<100;i++){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,50));}throw new Error('Native status did not arrive');};
 try{
  let got=0;const accessor=Object.defineProperty({action:'snapshot'},'text',{get(){got++;return 'x';},enumerable:true});assert(!validBrowserInput(accessor));assert.equal(got,0);assert(!validBrowserInput({action:'snapshot',url:'x'}));assert(!validBrowserInput({action:'type',ref:1}));check('Strict browser boundary rejects accessors, extra action fields and missing ref epoch');
+ const scopedId='aisession_'+randomUUID();
+ let scopedRun=true;
+ host.setNetworkScope(scopedId,url=>scopedRun&&new URL(url).origin==='https://fixture.invalid',true,()=>scopedRun);
+ await host.teacher(scopedId,'new-tab');
+ await host.teacher(scopedId,'navigate',undefined,undefined,'https://fixture.invalid/approved');
+ await until(async()=>(await host.chromeStatus(scopedId)).tabs?.[0].state==='ready');
+ const restricted=contents!;
+ await assert.rejects(host.teacher(scopedId,'navigate',undefined,undefined,'https://example.com/'),/scope_denied/);
+ assert(!restricted.isDestroyed());
+ scopedRun=false;
+ await assert.rejects(host.teacher(scopedId,'navigate',undefined,undefined,'http://127.0.0.1:15175/'),/local_address/);
+ assert(!restricted.isDestroyed());
+ await host.teacher(scopedId,'navigate',undefined,undefined,'https://fixture.invalid/after#lesson');
+ await until(async()=>(await host.chromeStatus(scopedId)).tabs?.some(tab=>tab.url.endsWith('/after#lesson')&&tab.state==='ready'));
+ assert(restricted.isDestroyed());
+ assert.notEqual(contents,restricted);
+ assert.equal((await host.chromeStatus(scopedId)).tabs?.length,1);
+ check('A live question grant constrains manual browsing; subsequent browsing retires the scoped page and connection before opening a fresh page');
  const navigation = {runId:randomUUID(), callId:randomUUID()};
  let p=page(await host.execute(id,{action:'navigate',url:'https://fixture.invalid'},{...context,invocation:navigation}));
  assert(host.hasLiveNavigation(id,navigation.runId,navigation.callId));
@@ -33,6 +51,16 @@ try{
  check('Navigation proof matches only its owning live session, run and call');
  assert(p.text!.includes('教研资料'));assert(!p.text!.includes('synthetic-secret'));const wc=contents!;assert.deepEqual(await wc.executeJavaScript('({node:typeof process,ipc:typeof window.omniEdu})'),{node:'undefined',ipc:'undefined'});check('Actual native view renders fixture, original Hana snapshot has refs, password value omitted and Node/business IPC absent');
  const latest = () => ({tabId:p.tabId,snapshotId:p.snapshotId});
+ await wc.executeJavaScript(`{
+   window.browserKeyHits=0;
+   const input=document.querySelector('#q');
+   input.addEventListener('keydown',event=>{if(event.key==='Enter')window.browserKeyHits++;});
+   input.focus();
+ }`);
+ p=page(await call({action:'key',key:'Enter',...latest()}));
+ assert.equal(await wc.executeJavaScript('window.browserKeyHits'),1);
+ check('An authorized Pi key reaches the focused page through the normal Electron dispatcher');
+
  await wc.executeJavaScript(`{
    const button=document.createElement('button');
    button.setAttribute('aria-label','筛选年级');
@@ -78,7 +106,13 @@ try{
  const requested=Promise.withResolvers<void>(),decision=Promise.withResolvers<boolean>();
  const previous={...latest(),ref:ref(p,'处理')};
  const inFlight=host.execute(id,{action:'click',...previous},{...context,confirm:async()=>{requested.resolve();return decision.promise;}});
- await requested.promise;await host.teacher(id,'teacher');
+ await requested.promise;
+ assert.equal((await host.chromeStatus(id)).activity,'awaiting-confirmation');
+ await host.teacher(id,'teacher');
+ await until(async()=>!(await wc.executeJavaScript("document.querySelector('[data-xiaozhi-pointer]') !== null")));
+ assert.equal((await host.chromeStatus(id)).activity,undefined);
+ const floating=electron.BaseWindow.getAllWindows().find(w=>w.contentView.children.some(v=>(v as electron.WebContentsView).webContents===wc))!;
+ assert.match(floating.getTitle(),/老师操作中/,'Floating browser must identify the active controller');
  for(const action of ['snapshot','tabs','close','screenshot'] as const)await assert.rejects(call({action}),/teacher_control/);
  decision.resolve(true);await assert.rejects(inFlight);
  const stopPage=wc.stop.bind(wc);let stoppedManual=0;
@@ -86,15 +120,47 @@ try{
  try{host.cancel(id);assert.equal(stoppedManual,0);}finally{wc.stop=stopPage;}
 
  assert.equal(await wc.executeJavaScript("document.querySelector('#result').textContent"),'尚未处理');
- await host.teacher(id,'agent');await assert.rejects(call({action:'click',...previous}),/observation_required/);
+ await host.teacher(id,'agent');assert.match(floating.getTitle(),/小智操作中/);await assert.rejects(call({action:'click',...previous}),/observation_required/);
  p=page(await call({action:'snapshot'}));await assert.rejects(call({action:'click',...previous}),/attachment_changed/);
  check('Teacher takeover cancels pending authorization, forbids reading and screenshots, and requires fresh observation');
+ const namedClick={action:'click' as const,...latest(),ref:ref(p,'处理'),role:'button' as const,name:'处理'};
+ assert(validBrowserInput(namedClick),'Consistent role and name may further constrain the latest click reference');
+ const namedBefore=confirmations;
+ await assert.rejects(call({...namedClick,name:'不存在的按钮'}),/target_missing/);
+ assert.equal(confirmations,namedBefore);
+ await assert.rejects(call({...namedClick,ref:ref(p,'学科')}),/attachment_changed/);
+ assert.equal(confirmations,namedBefore);
+ const namedDenied=await host.execute(id,namedClick,{...context,confirm:async()=>false}).then(()=>false,e=>e.message==='permission_denied');
+ assert(namedDenied);
+ assert.equal(await wc.executeJavaScript("document.querySelector('#result').textContent"),'尚未处理');
+ await assert.rejects(host.execute(id,namedClick,{...context,confirm:async()=>{
+   await wc.executeJavaScript("document.querySelector('button').setAttribute('aria-label','更新名称')");
+   return true;
+ }}),/target_missing/);
+ assert.equal(await wc.executeJavaScript("document.querySelector('#result').textContent"),'尚未处理');
+ await wc.executeJavaScript("document.querySelector('button').removeAttribute('aria-label')");
+ const namedResult=page(await call(namedClick));
+ assert(namedResult.text?.includes('已处理数学教研'));
+ await wc.executeJavaScript("document.querySelector('#result').textContent='尚未处理';void 0");
+ p=page(await call({action:'snapshot'}));
+ check('Semantic hints must match the same fresh click reference and preserve rejection');
  const copied=ref(p,'处理');
  await wc.executeJavaScript("const old=document.querySelector('button');old.replaceWith(old.cloneNode(true));");
  await assert.rejects(call({action:'click',...latest(),ref:copied}),/attachment_changed/);
  p=page(await call({action:'snapshot'}));
  await assert.rejects(call({action:'select',...latest(),ref:ref(p,'学科'),value:'not-present'}),/target_unavailable/);
+ const beforeAlreadyVisible=confirmations;
  await assert.rejects(call({action:'click',...latest(),ref:ref(p,'处理'),expectText:'教研资料'}),/result_already_visible/);
+ assert.equal(confirmations,beforeAlreadyVisible,'Do not ask a teacher to approve a result already visible on the page');
+ const appearedDuringApproval='审批期间列表已更新';
+ await assert.rejects(host.execute(id,{action:'click',...latest(),ref:ref(p,'处理'),expectText:appearedDuringApproval},{
+   ...context,confirm:async()=>{
+     await wc.executeJavaScript("document.querySelector('#result').textContent='审批期间列表已更新';void 0");
+     return true;
+   }
+ }),/result_already_visible/);
+ assert.equal(await wc.executeJavaScript("document.querySelector('#result').textContent"),appearedDuringApproval);
+ await wc.executeJavaScript("document.querySelector('#result').textContent='尚未处理';void 0");
  check('Identical replacement, missing option and previously visible expected result are rejected');
  const initial=p;await assert.rejects(call({action:'snapshot',tabId:p.tabId},other),/permission_denied/);check('Cross-conversation tab identity denied');
  allow=false;await assert.rejects(call({action:'click',ref:ref(p,'处理'),snapshotId:p.snapshotId}),/permission_denied/);assert.equal(await wc.executeJavaScript("document.getElementById('result').textContent"),'尚未处理');check('Teacher rejection produces no button effect');
@@ -134,9 +200,46 @@ try{
   const window=electron.BaseWindow.getAllWindows().find(w=>w.contentView.children.some(view=>(view as electron.WebContentsView).webContents===status))!;assert(window);
   for(const [width,height] of [[1366,768],[1920,1080]]){window.setContentSize(width,height);await until(async()=>await status.executeJavaScript('innerWidth')===width);fs.writeFileSync(path.join(output,`visible-dns-failure-${width}.png`),(await status.capturePage()).toPNG());}check('Actual HTTP virtual DNS denial shows original Pro state at two sizes; failure is not source or DOM success');
   const receipt=page(await actual.execute(id,{action:'navigate',url:'https://example.com'},{...context,dnsMode:'auto'}));assert(receipt.text!.includes('Example Domain'));check('Same existing browser group switches from explicit system to auto and loads real HTTPS');const domestic=page(await actual.execute(id,{action:'navigate',url:'https://www.moe.gov.cn'},{...context,dnsMode:'auto'}));assert(domestic.text!.includes('教育'));check('Actual domestic education site renders and returns real DOM snapshot');
-  await assert.rejects(actual.execute(id,{action:'navigate',url:'https://xiaozhi-test.invalid'},{...context,dnsMode:'auto'}),/permission_denied/);const failed=status;await until(()=>failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]')!==null"));await failed.executeJavaScript("location.href='xiaozhi-browser:unknown'");assert((await actual.status(id)).open);await failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]').click()");await until(async()=>!(await actual.status(id)).open);assert((await host.status(id)).open);check('Trusted local return action closes only its browser; unknown action refused and independent group preserved');
+  await assert.rejects(actual.execute(id,{action:'navigate',url:'https://xiaozhi-test.invalid'},{...context,dnsMode:'auto'}),/permission_denied/);
+  await until(()=>status.executeJavaScript("document.querySelector('[data-state=permission_denied]')!==null"));
+  await status.executeJavaScript("location.href='xiaozhi-browser:close'");
+  assert((await actual.status(id)).open);
+  assert((await status.executeJavaScript('document.body.innerText')).includes('刷新当前页'));
+  const failedTab=(await actual.chromeStatus(id)).tabs?.find(tab=>tab.active);
+  assert(failedTab && failedTab.state==='failed');
+  await actual.teacher(id,'close-tab',undefined,undefined,failedTab.tabId);
+  assert(!(await actual.status(id)).open);
+  assert((await host.status(id)).open);
+  check('Failed page stays open until its trusted tab command; special scheme cannot close either group');
 
  }finally{await actual.dispose();}
+ // A second active tab and a late dialog use a separate conversation so receipt checks above remain independent.
+ const manualChat='aisession_'+randomUUID();
+ const firstTab=page(await call({action:'navigate',url:'https://fixture.invalid/first'},manualChat));
+ const manualTab=page(await call({action:'navigate',url:'https://fixture.invalid/second',newTab:true},manualChat));
+ const manualPage=contents!;
+ const opened=Promise.withResolvers<void>(),oldChoice=Promise.withResolvers<boolean>();
+ const oldClick={action:'click' as const,tabId:manualTab.tabId,snapshotId:manualTab.snapshotId,ref:ref(manualTab,'处理')};
+ const held=host.execute(manualChat,oldClick,{...context,confirm:async()=>{opened.resolve();return oldChoice.promise;}});
+ await opened.promise;
+ await host.teacher(manualChat,'teacher');
+ for(const action of ['snapshot','screenshot'] as const){
+   await assert.rejects(call({action,tabId:firstTab.tabId},manualChat),/teacher_control/);
+ }
+ await assert.rejects(call({action:'show'},manualChat),/teacher_control/);
+ await assert.rejects(call(oldClick,manualChat),/teacher_control/);
+ await manualPage.executeJavaScript("document.querySelector('#q').value='教师手动筛选';document.querySelector('#result').textContent='手动筛选完成';void 0");
+ host.cancel(manualChat);
+ if(process.env.OMNI_EDU_BROWSER_LONG_HANDOFF==='1')await new Promise(r=>setTimeout(r,120000));
+ oldChoice.resolve(true);await assert.rejects(held);
+ assert.equal(await manualPage.executeJavaScript("document.querySelector('#result').textContent"),'手动筛选完成');
+ await host.teacher(manualChat,'agent');
+ await assert.rejects(call(oldClick,manualChat),/observation_required/);
+ const refreshed=page(await call({action:'snapshot',tabId:manualTab.tabId},manualChat));
+ assert(refreshed.text?.includes('手动筛选完成'));
+ await assert.rejects(call(oldClick,manualChat),/attachment_changed/);
+ await call({action:'close'},manualChat);
+ check('Two tabs preserve the manual result across a late approval and require fresh observation after handback');
  const profileChat='aisession_'+randomUUID();
  await call({action:'navigate',url:'https://fixture.invalid'},profileChat);
  await host.teacher(profileChat,'teacher');
