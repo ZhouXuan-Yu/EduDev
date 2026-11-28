@@ -383,6 +383,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         const observation={phase:globalThis.r3FixedABStage,model:payload.model,reasoning:payload.reasoning_effort??null,maxTokens:payload.max_tokens,
           hasSubmittedPrompt:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes(prompt)),
           observedToolCalls:payload.messages.flatMap(message=>(message.tool_calls??[]).map(call=>call.function?.name).filter(Boolean)),
+          ...(confirmedVersion?{offeredTools:(payload.tools??[]).map(tool=>tool.function?.name).filter(Boolean)}:{}),
           ...(confirmedVersion?{confirmedHandoutRead:payload.messages.some(message=>message.role==='tool'&&
             payload.messages.some(previous=>previous.tool_calls?.some(call=>call.id===message.tool_call_id&&
               call.function?.name==='education_read_teaching_handout'))&&JSON.stringify(message.content).includes(confirmedVersion)&&
@@ -645,7 +646,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       result.continuation.afterDigest=after.digest;
       result.continuation.taskId=last.task?.id??null;
       result.continuation.effects=read(data,'SELECT effect_id,operation FROM xiaozhi_effects_v1 WHERE run_id=?',last.id);
-      assert.equal(after.id,artifact.version.id,'No unapproved edit to the confirmed book');
+      result.continuation.persistedLatestTask=read(data,"SELECT json_extract(value_json,'$.taskId') AS id FROM app_settings WHERE key=?",'xiaozhi.task.v1:session:'+sessionId)[0]?.id??null;
     }
     if(examChoice){
       for(const paper of result.paperChoices){
@@ -792,6 +793,11 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     if(continuationCase){
       assert(result.continuation.sameOriginTask,'The continued task must have the original handout Task ID');
       assert(result.continuation.hostReceiptDelivered,'The confirmed handout version must be verified by the host');
+      assert.equal(result.continuation.persistedLatestTask,result.continuation.originTask,'The restored Task must be durable');
+      assert.equal(result.continuation.afterVersion,result.continuation.confirmedVersion,'The confirmed version must be unchanged');
+      assert.equal(result.continuation.afterDigest,result.continuation.confirmedDigest,'The book content and sources must be unchanged');
+      assert.deepEqual(result.continuation.effects,[],'Resuming the confirmed version must not replay writes');
+      if(namedHandoutControl)for(const item of result.realModel)assert.deepEqual(item.offeredTools,['education_read_teaching_handout']);
     }
     if(semesterSource){
       if(result.historyAccess.state==='confirmed_for_comparison'){

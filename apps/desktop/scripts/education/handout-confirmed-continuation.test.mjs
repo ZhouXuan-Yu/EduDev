@@ -64,3 +64,25 @@ test('a joint instruction to defer editing and export cannot create an export ca
     assert.equal(handouts.handoutExportRequest(prompt),false);
   assert.equal(handouts.handoutExportRequest('请继续现有讲义，暂不修改，直接导出。'),true);
 });
+
+test('a pinned read revalidates the exact artifact and scope before marking a successful receipt',async()=>{
+  const ref={bookId:book.bookId,versionId:book.id,digest:book.digest};
+  for(const change of [undefined,'scope','version']){
+    let accepted=0,reads=0,allowed=true;
+    const tool=handouts.createConfirmedHandoutContinuationTool({
+      sessionId:'s',taskId:'t',prompt:ordinary,current:()=>true,
+      pinned:{...ref,assertScope:async()=>{if(!allowed)throw Error('source_changed');},onRead:()=>{accepted++;}},
+      teacherSelection:async()=>{throw Error('A pinned read cannot retarget through a clarification');},
+      sanitize:async text=>{if(change==='scope')allowed=false;return text;},
+      state:{forExport:async(sessionId,taskId,target)=>{
+        assert.equal(sessionId,'s');assert.equal(taskId,'t');assert.deepEqual(target,ref);
+        if(++reads===2&&change==='version')throw Error('version_conflict');
+        return {kind:'found',version:book,content:{chapters:[]}};
+      }},
+    });
+    const result=JSON.parse((await tool.execute('read',{})).content[0].text);
+    assert.equal(result.success,change===undefined);
+    assert.equal(accepted,change===undefined?1:0);
+    assert.equal(reads,2);
+  }
+});

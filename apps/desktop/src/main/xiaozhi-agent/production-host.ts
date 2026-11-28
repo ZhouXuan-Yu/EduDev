@@ -1323,7 +1323,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           }}:{})}),
         ...(owner.confirmedHandoutResume?{confirmedHandoutResume:true}:{}),
       }:{}),
-      ...(owner?.task&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
+      ...(owner?.task&&!owner.confirmedHandoutResume&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutExportRequest(cleanPrompt)?{
         handoutExportTools:wait=>createTeachingHandoutExportTools({sessionId:id,taskId:owner.task!.id,prompt:cleanPrompt,state:store.teachingBookVersions,
           current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),
           publish:(files,args)=>{
@@ -1332,7 +1332,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
             return officeArtifacts.runOffice(id,runId,wait,args[0],proposal,args[2]);
           }}),
       }:{}),
-      ...(owner?.task&&owner.publisher&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
+      ...(owner?.task&&owner.publisher&&!owner.confirmedHandoutResume&&!studentId&&!owner.classroomPlan&&!owner.resumeDeliveryId&&handoutEditRequest(cleanPrompt)?{
         handoutEditTools:wait=>handoutEdits.tools({sessionId:id,runId,prompt:cleanPrompt,
           teacherSelection:currentQuestionAnswer,
           owner:()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,

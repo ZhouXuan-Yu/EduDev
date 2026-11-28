@@ -12,7 +12,7 @@ export type HandoutExportFile=OfficeArtifactProposal&{kind:'office';fileId:strin
 export function handoutExportRequest(prompt:string){
   const text=prompt.normalize('NFKC');
   if(!/(?:讲义|学案|学生版|教师版)/u.test(text))return false;
-  if(handoutContinuationRequest(text)&&/(?:暂不|不要|不用|无需|不必|不需要|先不)(?:再|立即)?(?:导出|另存|保存|交付|生成文件)/u.test(text))return false;
+  if(handoutContinuationRequest(text)&&/(?:暂不|不要|不用|无需|不必|不需要|先不)(?:再|立即)?(?:(?:更改|修改|编辑|修订)\s*(?:或|和|及)\s*)?(?:导出|另存|保存|交付|生成文件)/u.test(text))return false;
   const explicitExport=/(?:导出|另存)/u.test(text);
   const existingHandout=/(?:已确认|已有|现有|当前|刚才|这份|上述)/u.test(text);
   return explicitExport||existingHandout&&/(?:保存|交付|生成文件|Word|DOCX)/iu.test(text);
