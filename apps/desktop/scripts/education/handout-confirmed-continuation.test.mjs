@@ -22,7 +22,7 @@ function run({answer,taskBook,afterLookup}={}){
 test('continuing an existing handout exposes only confirmed-version readback',async()=>{
   const {tools,read}=run({taskBook:true});
   assert.deepEqual(tools.map(t=>t.name),['education_read_teaching_handout']);
-  const row=await read({});assert.equal(row.versionId,book.id);assert.equal(row.confirmedAt,book.createdAt);
+  const row=await read({});assert.equal(row.category,'artifact_reference');assert.equal(row.versionId,book.id);assert.equal(row.confirmedAt,book.createdAt);
 });
 test('model-provided titles cannot search outside the task; a direct teacher designation can',async()=>{
   let statement;

@@ -92,6 +92,8 @@ async function launch(cold=false){
         if(index===0)call={name:'education_read_teaching_handout',args:{title}};
         else if(index===1){
           if(!previous.success||!previous.teacherConfirmed)throw Error('Confirmed handout was unavailable: '+JSON.stringify(previous));
+          if(previous.category!=='artifact_reference')throw Error('Confirmed handout did not identify its version authority');
+          state.artifactCategory=previous.category;
           state.ref={bookId:previous.bookId,versionId:previous.versionId,digest:previous.digest};
           const grouped=lane.outputs.length===2;
           call={name:'update_task_plan',args:{schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:task.requirementsVersion,
@@ -99,6 +101,9 @@ async function launch(cold=false){
               dependsOn:[],reported:'pending',kind:grouped?'saved_bundle':'saved_office',target:grouped?'current':lane.outputs[0].path},
             {id:'review',text:'教师核对讲义与受众',dependsOn:['deliver'],reported:'pending',kind:'human'}]}};
         }else if(index===2&&phase!=='changed'){
+          if(!previous.adopted||previous.requirementsCategory!=='task_requirement'||previous.requirementsVersion!==task.requirementsVersion)
+            throw Error('The adopted task plan did not return the current requirements version');
+          state.requirements={category:previous.requirementsCategory,version:previous.requirementsVersion,taskId:previous.taskId};
           const outputs=phase==='bundle'
             ?lane.outputs.map((file,index)=>({...file,path:lane.outputs[1-index].path}))
             :lane.outputs.map(file=>({...file,audience:'teacher'}));
@@ -194,6 +199,7 @@ try{
   await approve.click();
   await until(()=>ledger().filter(row=>row.state==='saved').length===2);
   const bundleWire=await settle();
+  if(!liveExport)report.authorities={artifact:{category:bundleWire.artifactCategory,...bundleWire.ref},task:bundleWire.requirements};
   if(liveExport){
     report.paidRequests=bundleWire.requests.length;
     assert(report.paidRequests>0&&bundleWire.requests.every(request=>request.status===200));

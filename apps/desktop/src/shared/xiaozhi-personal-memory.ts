@@ -11,6 +11,7 @@ export const teacherMemoryCategories = {
   artifact_reference: {layer:'L2', family:'episodic', authority:'artifact_version', label:'历史成果关联'},
   reusable_method: {layer:'L4', family:'procedural', authority:'verified_method', label:'可复用工作方法'},
 } as const;
+export type TeacherMemoryCategory = keyof typeof teacherMemoryCategories;
 
 /** Read-only evidence about the current task. A method requires independent validation. */
 export type MethodReviewEvidence = {

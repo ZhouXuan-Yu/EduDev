@@ -1,3 +1,4 @@
+import type {TeacherMemoryCategory} from '../../shared/xiaozhi-personal-memory';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {READ_TEACHING_HANDOUT,EXPORT_TEACHING_HANDOUT,handoutAudience,handoutBookId,handoutDigest,handoutVersionId,
   type TeachingHandoutVersionRef,type TeachingHandoutOfficeOutput} from '../../shared/teaching-handout-export';
@@ -89,7 +90,7 @@ export function createConfirmedHandoutContinuationTool(options:{
           latest.version.digest!==ref.digest)throw Error('version_conflict');
         if(answer!==await options.teacherSelection())throw Error('book_selection_required');
         check(signal);
-        return result({...ref,title:safeTitle,revision:item.version.revision,confirmedAt:item.version.createdAt,
+        return result({...ref,category:'artifact_reference' satisfies TeacherMemoryCategory,title:safeTitle,revision:item.version.revision,confirmedAt:item.version.createdAt,
           chapterCount:item.content.chapters.length,teacherConfirmed:true,location:'讲义 → 确认与版本'},true);
       }catch(error){
         check(signal);
@@ -161,7 +162,7 @@ export function createTeachingHandoutExportTools(options:{
         if(scope.title!==undefined&&bookId!==undefined&&item.version.bookId!==bookId)throw Error('target_mismatch');
         const safeTitle=await options.sanitize(item.version.title);check(signal);
         observed={bookId:item.version.bookId,versionId:item.version.id,digest:item.version.digest};
-        return result({...observed,title:safeTitle,revision:item.version.revision,chapterCount:item.content.chapters.length,
+        return result({...observed,category:'artifact_reference' satisfies TeacherMemoryCategory,title:safeTitle,revision:item.version.revision,chapterCount:item.content.chapters.length,
           location:'讲义 → 确认与版本',teacherConfirmed:true},true);
       } catch(rawError){return error(rawError,signal);}
     },

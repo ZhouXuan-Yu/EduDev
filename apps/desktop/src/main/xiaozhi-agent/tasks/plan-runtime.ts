@@ -1,3 +1,4 @@
+import type {TeacherMemoryCategory} from '../../../shared/xiaozhi-personal-memory';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {Sql} from '../session-state';
 import type {createEventPublisher} from '../events/publisher';
@@ -67,7 +68,8 @@ export function createTaskPlanRuntime(options:Options){
  async function latest(){fence();const task=await state().latest(owner.sessionId);fence();if(!task||task.id!==options.taskId||task.state!=='active'||task.binding?.runId!==owner.runId||task.binding?.generation!==owner.generation)throw new TaskAdmissionError('task_owner_stale');await preflight(()=>state().validateCurrent(owner,task.id,task.revision));return task;}
  function publicState(task:TaskView){
   const sourceSubtasks=taskSourceSubtasks(task);
-  return{schemaVersion:TASK_PLAN_SCHEMA,taskId:task.id,requirementsVersion:task.requirementsVersion,revision:task.planRevision,...(task.planning?{planning:task.planning}:{}),...(sourceSubtasks.length?{sourceSubtasks}:{}),steps:task.steps.map(s=>({...s,state:taskStepState(task,s.id)})),criteria:task.criteria.map(c=>({id:c.id,text:c.text,kind:c.kind,version:c.version})),note:'reported是模型报告；state来自当前主进程核验。human只能教师确认。'};
+  return{schemaVersion:TASK_PLAN_SCHEMA,taskId:task.id,requirementsCategory:'task_requirement' satisfies TeacherMemoryCategory,
+   requirementsVersion:task.requirementsVersion,revision:task.planRevision,...(task.planning?{planning:task.planning}:{}),...(sourceSubtasks.length?{sourceSubtasks}:{}),steps:task.steps.map(s=>({...s,state:taskStepState(task,s.id)})),criteria:task.criteria.map(c=>({id:c.id,text:c.text,kind:c.kind,version:c.version})),note:'reported是模型报告；state来自当前主进程核验。human只能教师确认。'};
  }
  async function refresh(){await latest();const proofs=await options.proofs();await latest();if(!proofs.length)return;
   await publisher.checkpointTask(async work=>{const tasks=createTaskState(inline(work),{sanitize:async()=>{throw Error('invalid_input');},recheck:async()=>proofs}),task=await tasks.get(options.taskId);if(!task)throw Error('task_missing');return tasks.recheck(owner,task.id,task.revision);});fence();
