@@ -167,6 +167,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         const normalized=source.text.normalize('NFKC').toLowerCase();
         const score=terms.reduce((sum,term)=>sum+(normalized.includes(term)?term.length:0),0);
         const row={sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
+          ...(source.temporal.comparisonTargetTerm?{用途:'教师已确认的同班上学期历史对比。上学期以当前任务的 comparisonTargetTerm 为准。'}:{}),
           excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal};
         const receipt:ReceivedReference={id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
           reason:comparisonFor(pin)?'turn':extra.scope,estimatedTokens:Math.min(1024,Buffer.byteLength(JSON.stringify(row)))};
@@ -212,7 +213,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
-        history?: {sourceId:string; sourceVersion:string; truncated:boolean; nextOffset:number|null; temporal:{teachingTerm:string|null;recordedAt:string|null}};
+        history?: {sourceId:string; sourceVersion:string; truncated:boolean; nextOffset:number|null; temporal:{teachingTerm:string|null;recordedAt:string|null;comparisonTargetTerm?:string}};
         personal?:{sourceId:string; sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
       if (saved.enabled) for (const item of inRequestOrder(saved.selections,personalIds)) {
         signal?.throwIfAborted();

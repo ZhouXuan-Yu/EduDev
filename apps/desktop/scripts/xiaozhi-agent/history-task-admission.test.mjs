@@ -469,3 +469,51 @@ test('comparison cannot be copied into a Session, moved to another class or reus
     assert.equal(pinTargetApplies(...args),false);
   }
 });
+
+test('only the previewed same-class previous semester source can reach one Turn, carrying both teaching terms independently of the recording date',async t=>{
+  const f=await fixture(t);
+  const {createHistoryMemory}=await import('../../src/main/xiaozhi-agent/history/memory.ts');
+  const {teacherRequestSourceVersion}=await import('../../src/main/xiaozhi-agent/request-sources.ts');
+  const h=createHistoryMemory({xiaozhiState:{sql:f.sql},sanitizeProblemText:async text=>({sanitizedText:text})});
+  const bindings=createTaskHistoryUse(f.sql,h);
+  const scope=async(session,folderId,term)=>{
+    await f.sql.run('UPDATE ai_conversation_sessions SET folder_id=? WHERE id=?',[folderId,session]);
+    assert(await f.state.saveMemoryScope(session,0,{enabled:false,selections:[]},{folderId,term}));
+  };
+  await scope(f.target,f.a,'2026-spring');
+  async function seed(folderId,term){
+    const session=request().sessionId,message='message_'+randomUUID(),run='run_'+randomUUID();
+    const text='合成讲义标记 '+randomUUID();
+    await f.sql.run("INSERT INTO ai_conversation_sessions(id,title) VALUES(?,'合成讲义')",[session]);
+    await scope(session,folderId,term);
+    await f.sql.run("INSERT INTO ai_conversation_messages(id,session_id,role,content,metadata_json,created_at) VALUES(?,?,'user',?,?,?)",
+      [message,session,text,JSON.stringify({agentRunId:run,piVersion:'xiaozhi.pi.education.v1'}),'2026-11-28T02:00:00Z']);
+    const ref={sessionId:session,kind:'history_request',recordId:message,sourceVersion:teacherRequestSourceVersion(message,run,text)};
+    return h.change(ref,0,'allow');
+  }
+  const previous=await seed(f.a,'2025-fall'),current=await seed(f.a,'2026-spring');
+  await seed(f.b,'2025-fall');await seed(f.a,'2025-spring');
+  const discover=async prior=>(await h.discover(f.target,'合成讲义',undefined,false,prior)).candidates;
+  assert.deepEqual((await discover(false)).map(i=>i.sourceId),[current.sourceId]);
+  const found=await discover(true);assert.deepEqual(found.map(i=>i.sourceId),[previous.sourceId]);
+  const ticket=found[0].ticket;
+  assert.equal(h.candidate(f.target,1,ticket),undefined);
+  await assert.rejects(bindings.stage(f.target,1,ticket),/command_conflict/);
+  await assert.rejects(h.preview(current.ref,0,true,ticket),/permission_denied/);
+  const preview=await h.preview(previous.ref,0,true,ticket);
+  assert.equal(preview.source.sourceId,previous.sourceId);
+  const {token}=await bindings.stage(f.target,1,ticket),proof=await bindings.prepare(f.target,[token]);
+  await f.sql.transaction(sql=>bindings.attachTask(sql,f.task,f.owner,proof));
+  assert.deepEqual(await f.grants(),[]);
+  const turn=await bindings.turn(f.owner.runId,f.target,proof);
+  const [pin]=turn.selections;
+  assert.equal((await h.selectedFor(f.target,pin)).temporal.comparisonTargetTerm,'2026-spring');
+  assert.equal((await h.selectedFor(f.target,pin)).temporal.teachingTerm,'2025-fall');
+  assert.equal((await h.selectedFor(f.target,pin)).temporal.recordedAt,'2026-11-28T02:00:00Z');
+  await assert.rejects(h.selectedFor(f.target,{...pin}),/permission_denied/);
+  assert.equal(await bindings.forRun(f.task,f.owner),undefined);
+  bindings.consume([token]);await assert.rejects(bindings.prepare(f.target,[token]),/memory_scope_changed/);
+  await h.change(previous.ref,previous.accessRevision,'revoke');
+  assert.equal(await bindings.eligibleTurn(turn,f.target),undefined);
+  assert.deepEqual(await discover(true),[]);
+});

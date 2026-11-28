@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import {execFileSync} from 'node:child_process';
 import {DatabaseSync} from 'node:sqlite';
 import {createHash,randomUUID} from 'node:crypto';
 import {_electron} from 'playwright';
@@ -23,12 +24,16 @@ const read=(query,...args)=>{
   try{return db.prepare(query).all(...args);}finally{db.close();}
 };
 const report={build:hash(main),original:before,root,checks:[],ok:false};
-let app;
-try{
+const interrupt=process.argv.includes('--interrupt-after-admission');
+let app,page;
+async function launch(){
   app=await _electron.launch({args:[main,'--user-data-dir='+profile],cwd:desktop,env});
   await assertIsolatedPiMain(app,main,profile);
-  const page=await app.firstWindow();
+  page=await app.firstWindow();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
+}
+try{
+  await launch();
   const sourceId=read("SELECT session_id FROM ai_conversation_messages WHERE role='user' GROUP BY session_id ORDER BY count(*) DESC LIMIT 1")[0].session_id;
   const runId=read('SELECT id FROM ai_agent_runs WHERE session_id=? ORDER BY rowid LIMIT 1',sourceId)[0].id;
   const old=await page.locator('.office-composer-container').getAttribute('data-session-id');
@@ -73,12 +78,61 @@ try{
   const forged=await invoke('startXiaozhi',{sessionId:target,commandId:'xicmd_'+randomUUID(),prompt,
     taskId:'xitask_'+randomUUID(),historyIntents:authorized});
   assert.equal(forged.ok,false);assert.deepEqual(bindings(),[]);assert.deepEqual(saved(),[row]);
+  if(interrupt){
+    await app.evaluate(({net})=>{
+      const fetch=net.fetch.bind(net);
+      globalThis.heldAdmissionRequests=0;
+      net.fetch=(input,init)=>{
+        const url=new URL(typeof input==='string'?input:input.url);
+        if(url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')return fetch(input,init);
+        globalThis.heldAdmissionRequests++;
+        return new Promise(()=>{});
+      };
+    });
+  }
   const competing=await Promise.all([start(authorized),start(authorized)]);
   assert.equal(competing.filter(result=>result.ok).length,1,JSON.stringify(competing));
   const rejection=competing.find(result=>!result.ok);
   report.checks.push('The host rejects a client-selected Task and admits one of two simultaneous sends');
   report.concurrentDenial=rejection.error;
   const deadline=Date.now()+120000;
+  if(interrupt){
+    while(await app.evaluate(()=>globalThis.heldAdmissionRequests)===0){
+      assert(Date.now()<deadline,'Provider dispatch barrier was never reached');
+      await new Promise(resolve=>setTimeout(resolve,150));
+    }
+    const admitted=bindings();
+    assert.equal(admitted.length,1);
+    const runs=()=>read('SELECT id,status FROM ai_agent_runs WHERE session_id=?',target);
+    const effects=()=>read('SELECT run_id FROM xiaozhi_effects_v1 WHERE session_id=? ORDER BY rowid',target);
+    const prior=runs(),priorEffects=effects();
+    assert.equal(prior.length,1);
+    assert.equal(priorEffects.length,0);
+    report.interruption={runId:prior[0].id,statusBefore:prior[0].status,heldRequests:await app.evaluate(()=>globalThis.heldAdmissionRequests)};
+    const pid=await app.evaluate(({app},profile)=>{
+      if(process.type!=='browser'||app.getPath('userData')!==profile)throw Error('Unexpected crash target');
+      return process.pid;
+    },path.resolve(profile));
+    if(process.platform==='win32')execFileSync('taskkill.exe',['/PID',String(pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});
+    else process.kill(pid,'SIGKILL');
+    const exitDeadline=Date.now()+30000;
+    for(;;){
+      try{process.kill(pid,0);}catch(error){if(error.code==='ESRCH')break;throw error;}
+      assert(Date.now()<exitDeadline,'Isolated Electron main did not exit');
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    app=undefined;
+    await launch();
+    await snap();
+    assert.deepEqual(bindings(),admitted);
+    assert.deepEqual(saved(),[row]);
+    const after=runs();assert.equal(after.length,1);assert.equal(after[0].id,prior[0].id);
+    assert.deepEqual(effects(),priorEffects);
+    assert.equal(report.interruption.statusBefore,'running');
+    assert.equal(after[0].status,'blocked','Cold recovery must require an explicit teacher action');
+    report.interruption.statusAfter=after[0].status;
+    report.checks.push('Killing the isolated Electron process at provider dispatch preserves the single admitted Run and Task binding without a duplicate effect');
+  }
   for(;;){
     const state=await snap();if(!state.running && bindings().length===1)break;
     assert(Date.now()<deadline,'Timed out waiting for Task admission and completion');await new Promise(r=>setTimeout(r,200));

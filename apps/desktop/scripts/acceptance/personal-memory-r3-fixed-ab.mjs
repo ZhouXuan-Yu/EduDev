@@ -812,6 +812,13 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       }
     }
     if(semesterCase && last.status==='completed'){
+      if(result.historyAccess.state==='confirmed_for_comparison'){
+        await app.evaluate(()=>{globalThis.r3FixedABStage='same_session_subsequent';});
+        const next=await seedPrompt(page,input,snapshot,'仅介绍本学期一次函数的定义，一句话即可。');
+        const requests=await app.evaluate(()=>globalThis.r3FixedABRequests.filter(item=>item.phase==='same_session_subsequent'));
+        result.sameSessionSubsequent={runId:next.id,requests};
+        assert(requests.some(item=>item.status===200)&&requests.every(item=>!item.includesProtectedSource));
+      }
       const preferenceBefore=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
       await app.evaluate(()=>{globalThis.r3FixedABStage='subsequent';});
       await page.getByTestId('pi-new-session').click();
@@ -834,7 +841,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     if(semesterSource){
       if(result.historyAccess.state==='confirmed_for_comparison'){
         result.selectedForSemester=read(data,"SELECT source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=? AND reason='turn'",result.terminal.runId).map(row=>row.source_id);
-        assert.equal(read(data,"SELECT count(*) n FROM app_settings,json_each(app_settings.value_json,'$.selections') p WHERE key GLOB 'xiaozhi.memory-use.task.v1:*' AND (p.value->>'$.id')=?",semesterSource.source_id)[0].n,0);
+        assert.equal(read(data,"SELECT count(*) n FROM app_settings,json_each(app_settings.value_json,'$.selections') p WHERE app_settings.key GLOB 'xiaozhi.memory-use.task.v1:*' AND (p.value->>'$.id')=?",semesterSource.source_id)[0].n,0);
       }
       if(result.historyAccess.state==='excluded_by_host'){
         assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));

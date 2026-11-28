@@ -283,7 +283,9 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
       const current=await access.get(selection.id);
       if(!current?.allowed||current.status!=='active'||current.generation!==saved.generation||current.ref.sourceVersion!==saved.ref.sourceVersion)
         throw Error('source_changed');
-      return {...source,temporal:{teachingTerm:after.term,recordedAt:source.recordedAt}};
+      const comparison=comparisonFor(selection);
+      return {...source,temporal:{teachingTerm:after.term,recordedAt:source.recordedAt,
+        ...(comparison?{comparisonTargetTerm:comparison.destinationTerm}:{})}};
     },
   };
 }
