@@ -1,7 +1,7 @@
 import {captureTeacherAction, sizeTeacherJourney} from './teacher-journey-viewport.mjs';
 import {confirmTeachingTarget} from './confirm-teaching-target.mjs';
 import assert from 'node:assert/strict';
-import {createHash} from 'node:crypto';
+import {createHash,randomUUID} from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import {DatabaseSync} from 'node:sqlite';
@@ -15,7 +15,16 @@ const reportedQuote=process.argv.includes('--reported-quote');
 const multiRevoke=process.argv.includes('--multi-revoke');
 const semesterRules=process.argv.includes('--semester-rules');
 const amendClass=process.argv.includes('--change-class');
-const teachingScope={classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
+const frozenResumeIndex=process.argv.indexOf('--frozen-resume');
+const frozenResumeBytes=frozenResumeIndex>=0?fs.readFileSync(process.argv[frozenResumeIndex+1]):undefined;
+const frozenResumeHash=frozenResumeBytes&&createHash('sha256').update(frozenResumeBytes).digest('hex');
+const frozenResume=frozenResumeBytes&&JSON.parse(frozenResumeBytes).cases.find(row=>row.id==='R3-FX-005');
+if(frozenResumeBytes){
+  assert.equal(frozenResumeHash,'53000255841392a5d3ef6cae264623d89e2326cfab6ac6fb114a19c28b4ade20');
+  assert.equal(frozenResume?.expectedBehavior,'task_authority');
+  assert(process.argv.includes('--paused-task'));
+}
+const teachingScope=frozenResume?.taskScope??{classRef:'B',termRef:'2026F',subject:'数学',grade:'八年级'};
 const exclusion=process.argv.includes('--task-exclusion');
 const suspendedTask=process.argv.includes('--paused-task')?'paused':process.argv.includes('--interrupted-task')?'interrupted':null;
 const recoveryIndex=process.argv.indexOf('--recover-from');
@@ -30,7 +39,7 @@ const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--va
 const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle=textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenResume?'r3-frozen-task-resume-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
@@ -43,6 +52,12 @@ const alternateSource=textbookVersions?'温度计实验教材记录。八年级�
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
+if(frozenResume){
+  report.fixture={id:frozenResume.id,sha256:frozenResumeHash,request:frozenResume.teacherRequest,scope:teachingScope};
+  assert.equal(report.buildHash,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
+  assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/);
+  report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
+}
 let app,page;
 
 function read(sql,...args){
@@ -394,7 +409,7 @@ async function runHistoryJourney(){
     await manage.getByRole('button',{name:'关闭',exact:true}).click();
   };
   if(namedHistory||textbookVersions)await renameSource(sourceSession);
-  if(amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
+  if(frozenResume||amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,sourceSession,teachingScope);
   if(checkPreference||amendClass){
     await send(sourceSession,'请记住，以后讲解都分步骤。请简短确认。');
     const saved=await page.evaluate(()=>window.omniEdu.getTeacherMemorySettings());
@@ -420,7 +435,7 @@ async function runHistoryJourney(){
   }
   await page.getByTestId('pi-new-session').click();
   const target=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sourceSession&&id!==alternative?.sessionId?id:null;});
-  if(amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,target,teachingScope);
+  if(frozenResume||amendClass||semesterRules||textbookVersions)await confirmTeachingTarget(until,app,page,target,teachingScope);
   const opening=app.waitForEvent('window');
   await page.getByRole('button',{name:'设置',exact:true}).click();
   const settings=await opening;
@@ -553,7 +568,9 @@ async function runHistoryJourney(){
     pass('Only the explicitly previewed history reaches the real model, with no additional confirmation or Session grant',
       {runId:accepted.runId,taskId:binding?.taskId??null,sourceId:allowed.source_id});
   }else if(suspendedTask){
-    const request='请整理温度计实验复核要点，保留老师的复核口令。请先用提问工具请我确定用于三年级还是五年级，再根据我选择的年级写三条。等我回答，只用聊天回复。';
+    const request=frozenResume
+      ?'请整理八年级 B 班温度计读数的复核要点，保留老师的复核口令。请先提问，确认要练习整数刻度还是半度刻度；等我回答，只用聊天回复。'
+      :'请整理温度计实验复核要点，保留老师的复核口令。请先用提问工具请我确定用于三年级还是五年级，再根据我选择的年级写三条。等我回答，只用聊天回复。';
     await stage(row.id,request);
     if(suspendedTask==='paused')await app.evaluate(()=>{globalThis.waitForHistoryPause=true;});
     await composer().fill(request);
@@ -571,7 +588,8 @@ async function runHistoryJourney(){
     assert.deepEqual(bindings(target),[binding]);
     pass('Teacher interruption or pause preserves the Task binding at the controlled boundary',{state:suspendedTask,taskId:binding.taskId});
     await close();await launch();
-    if(await session()!==target)await page.getByTestId('workbench-session-'+target).click();
+    if(await session()!==target)await page.getByTestId('workbench-session-'+target).filter({visible:true}).first().click();
+    await until(async()=>await session()===target);
     const cold=await snapshot(target);
     assert.equal(cold.task.state,suspendedTask);assert(!cold.running);
     assert.deepEqual(bindings(target),[binding]);assert.equal((await provider()).length,0);
@@ -580,7 +598,8 @@ async function runHistoryJourney(){
     const separate=await until(async()=>{const id=await session();return id&&id!==target?id:null;});
     const unrelated=await send(separate,'请用一句话解释什么是磁力，只在聊天中回答。');
     assert(unrelated.sent.every(call=>!call.sourceRoles.length));
-    await page.getByTestId('workbench-session-'+target).click();
+    await page.getByTestId('workbench-session-'+target).filter({visible:true}).first().click();
+    await until(async()=>await session()===target);
     const original=await snapshot(target);
     assert.equal(original.task.state,suspendedTask);assert.equal(original.task.id,binding.taskId);
     const review=page.getByTestId('pi-task-review');
@@ -588,6 +607,35 @@ async function runHistoryJourney(){
     await until(()=>review.getByTestId('pi-task-review-refresh').isEnabled());
     assert(await review.getByTestId('pi-task-review-accept').isDisabled());
     pass('Cold recovery waits for the teacher; another session gets no source and cannot complete the stopped task',{state:original.task.state,unrelatedRunId:unrelated.runId});
+    if(frozenResume){
+      const fileCount=()=>read('SELECT count(*) AS n FROM document_artifacts WHERE session_id=?',target)[0].n;
+      const grants=()=>read('SELECT version,payload_json FROM xiaozhi_pi_memory_scopes WHERE conversation_id=?',target);
+      const beforeFiles=fileCount(),beforeGrants=grants();
+      const resumed=await send(target,frozenResume.teacherRequest,{answer:'练习半度刻度，按原要求只在聊天给三条。'});
+      const after=await snapshot(target);
+      const [message]=read("SELECT content FROM ai_conversation_messages WHERE session_id=? AND role='user' ORDER BY rowid DESC LIMIT 1",target);
+      assert.equal(message.content,frozenResume.teacherRequest);
+      const latest=read('SELECT value_json FROM app_settings WHERE key=?','xiaozhi.task.v1:session:'+target)[0];
+      report.frozenResume={stateBefore:original.task.state,taskBefore:original.task.id,taskAfter:after.task?.id,
+        originalRequirementsVersion:original.task.requirementsVersion,requirementsVersion:after.task?.requirementsVersion,
+        sqliteTask:JSON.parse(latest.value_json).taskId,runId:resumed.runId,provider:resumed.sent};
+      assert.equal(after.task?.id,original.task.id,'The explicit continuation must resume the paused Task');
+      assert.equal(report.frozenResume.sqliteTask,original.task.id,'SQLite must retain the original Task pointer');
+      assert.equal(after.task.requirementsVersion,original.task.requirementsVersion);
+      assert.deepEqual(bindings(target),[binding]);
+      assert.deepEqual(grants(),beforeGrants);
+      assert.equal(fileCount(),beforeFiles);
+      assert(resumed.sent.some(call=>call.status===200&&call.sourceRoles.includes('user')));
+      pass('The original teacher words resume the same Task and use its valid source after restart');
+      const runsBefore=read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',separate)[0].n;
+      assert(!(await snapshot(separate)).task,'Use the ordinary question session as the no-Task control');
+      const rejected=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{
+        sessionId:separate,commandId:'xicmd_'+randomUUID(),prompt:frozenResume.teacherRequest,
+      });
+      assert.deepEqual(rejected,{ok:false,error:'task_context_changed'});
+      assert.equal(read('SELECT count(*) AS n FROM ai_agent_runs WHERE session_id=?',separate)[0].n,runsBefore);
+      pass('An explicit continuation without a current Task opens no new Run or Task');
+    }
   }else if(terminalTask){
     await stage(row.id,taskRequest);
     const first=await send(target,taskRequest);
