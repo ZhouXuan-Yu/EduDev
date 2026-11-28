@@ -107,7 +107,7 @@ export const XIAOZHI_EDUCATION_PROMPT = `你是小智，本地优先的教师教
 
 export interface PiXiaozhiOptions {
   answerOnly?: boolean;
-  clarifyHistorySource?:boolean;
+  sourceChoice?:'history'|'paper';
   sourceAvailability?: () => Promise<ChatSourceAvailability>;
   stateRoot: string;
   workspace: string;
@@ -991,8 +991,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         return { content: [{ type: 'text' as const, text: JSON.stringify(modelResult) }], details: publicDetails, isError: !result.success };
     },
   })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.equationTools||[]),...(options.quantityTools||[]),...(options.solutionTools||[]),...(options.buoyancyTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...teachingLessonExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
-    if(options.clarifyHistorySource||options.handoutContinuationTool){
-      args[1]=sourceClarificationQuestion(options.clarifyHistorySource?'history':'handout');
+    if(options.sourceChoice||options.handoutContinuationTool){
+      args[1]=sourceClarificationQuestion(options.sourceChoice??'handout');
     }
     return budget!.wait(()=>def.execute(...args));
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint,
@@ -1068,13 +1068,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     prompt += '\n教师要求保存可复用流程或已验证的稳定方法时，使用skill_create自动验证并发布个人纯说明技能。只保存通用方法，不保存学生信息、教师私有原文、凭据、脚本或外链。技能声明不能授予权限；宿主在下一安全Run激活合格版本。';
   }
   const lessonRevisionNames=new Set<string>(['education_read_classroom_plan','education_propose_classroom_outline','ask_teacher']);
-  const domainDefinitions=options.answerOnly?[]:options.clarifyHistorySource?definitions.filter(tool=>tool.name==='ask_teacher'):
+  const domainDefinitions=options.answerOnly?[]:options.sourceChoice?definitions.filter(tool=>tool.name==='ask_teacher'):
     options.lessonRevision?definitions.filter(tool=>lessonRevisionNames.has(tool.name))
     :taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
   if(options.answerOnly)names.length=0;
-  if(options.clarifyHistorySource){
+  if(options.sourceChoice){
     names.splice(0,names.length,'ask_teacher');
-    prompt+='\n老师要求先确认同名记录。用 ask_teacher 请老师指定班级和目标，不推测标题、不读取或写入内容。回答后说明如何通过当前聊天的历史引用入口预览和确认来源。';
+    if(options.sourceChoice==='paper')prompt+='\n当前请求没有唯一指定同名试卷。先用 ask_teacher 询问目标和修改位置，等老师在原对话或试卷编辑器明确选定后再操作。';
+    else prompt+='\n老师要求先确认同名记录。用 ask_teacher 请老师指定班级和目标，不推测标题、不读取或写入内容。回答后说明如何通过当前聊天的历史引用入口预览和确认来源。';
   }
   if(options.lessonRevision){
     names.splice(0,names.length,...domainDefinitions.map(tool=>tool.name));
@@ -1083,7 +1084,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const allowedPaperThinking=options.thinkingPolicy?.requested;
   const pinPaperTool=options.directOriginalPaper&&(!allowedPaperThinking||allowedPaperThinking==='auto'||allowedPaperThinking==='off')
     &&domainDefinitions.some(def=>def.name===PAPER_TOOLS[0]);
-  const toolCatalog=quality&&!options.answerOnly&&!options.clarifyHistorySource&&!options.lessonRevision?createEducationToolCatalog(prompt,domainDefinitions,
+  const toolCatalog=quality&&!options.answerOnly&&!options.sourceChoice&&!options.lessonRevision?createEducationToolCatalog(prompt,domainDefinitions,
     options.naturalLessonDraft?[NATURAL_LESSON_TOOL,...(options.naturalLessonDraft.basis?['office_read_material']:[])]:pinPaperTool?[...PAPER_TOOLS]:[]):undefined;
   if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
   const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;

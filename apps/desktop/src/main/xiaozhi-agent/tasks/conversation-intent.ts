@@ -19,7 +19,13 @@ export function requestsHistoryClarification(prompt:string){
     /^(?:请)?(?:先)?(?:给我确认|让我(?:先)?选|问我(?:要)?用|我先选|跟我确认|向我确认)(?:一下)?(?:目标|哪一份|哪个班级|哪个班|哪份|一份|哪段对话)$/u.test(request);
 }
 
-export function sourceClarificationQuestion(kind:'history'|'handout'){
+export function requestsPaperClarification(prompt:string){
+  const text=prompt.normalize('NFKC').trim();
+  return /^(?:请(?:帮我)?|帮我)?(?:修改|调整|编辑|修订)(?:一下)?(?:另(?:外)?一(?:份|张|套)|那(?:份|张|套))的?(?:同名|重名)(?:的)?(?:试卷|测验卷|练习卷|模拟卷)[。！!\s]*$/u.test(text);
+}
+
+export function sourceClarificationQuestion(kind:'history'|'handout'|'paper'){
+  if(kind==='paper')return {question:'请填写要改的试卷及修改位置。同名时可用题目、知识点或原对话区分。',options:['先到原对话核对','暂不修改']};
   return kind==='handout'
     ?{question:'请填写要继续的讲义完整书名，例如“请继续《完整书名》”。',options:['先到讲义编辑器核对','暂不继续']}
     :{question:'请填写要参考的班级及记录。选定后可在聊天的历史引用入口预览来源。',options:['先核对原对话','暂不使用历史']};

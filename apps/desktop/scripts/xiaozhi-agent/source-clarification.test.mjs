@@ -18,3 +18,13 @@ test('clarifications show no inferred source names and offer a real defer option
     assert(control.question.includes(kind==='history'?'班级':'书名'));
   }
 });
+
+test('ambiguous exam changes request a specific target before any paper operation',()=>{
+  for(const prompt of ['请修改另一份同名试卷。','调整另外一张重名的测验卷。'])
+    assert.equal(intent.requestsPaperClarification(prompt),true,prompt);
+  for(const prompt of ['请修改《光的反射》这份试卷。','不要修改另一份同名试卷。','学生说：“请修改另一份同名试卷”。','修改另一份同名试卷的标题为《新的名字》。'])
+    assert.equal(intent.requestsPaperClarification(prompt),false,prompt);
+  const control=intent.sourceClarificationQuestion('paper');
+  assert(control.question.includes('试卷'));
+  assert(control.options.includes('暂不修改'));
+});

@@ -33,7 +33,7 @@ import type {MaterialSource} from '../../shared/materials';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
 import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyUseRequest,type RunHistory} from './memory-use/history-binding';
-import {isStandaloneAnswer,requestsHistoryClarification} from './tasks/conversation-intent';
+import {isStandaloneAnswer,requestsHistoryClarification,requestsPaperClarification} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
 import {createClassroomPlanTools} from '../education/classroom-plan-tools';
@@ -1543,7 +1543,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const lifecycleWork = run.lifecycleWork ??= createLifecycleWorkTracker();
       run.agent = await createPiXiaozhiSession({ ...base,teacherPreferenceGuidance:presentation.text,taskRuntime,capabilityTools,trackLifecycleWork:lifecycleWork.track,
         ...(run.directOriginalPaper&&run.task?{directOriginalPaper:true,paperReceiptSummary:run.paperReceiptSummary}:{}),
-        ...(run.task&&requestsHistoryClarification(cleanPrompt)&&!run.classroomPlan?{clarifyHistorySource:true}:{}),
+        ...(run.task&&!run.classroomPlan?{sourceChoice:requestsHistoryClarification(cleanPrompt)?'history':requestsPaperClarification(cleanPrompt)?'paper':undefined}:{}),
         ...(run.answerOnly?{answerOnly:true,sourceAvailability:undefined,protectedContext:undefined}:{}),
         ...(run.task && run.publisher ? {toolGovernance: {register: async (definitions,signal) => {
           await startupPrewarm.wait();signal.throwIfAborted();
