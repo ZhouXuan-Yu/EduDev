@@ -10,7 +10,9 @@ const { createPiMemoryScope } = await import('../../src/main/xiaozhi-agent/memor
 const { getPiProtectedContext } = await import('../../src/main/xiaozhi-agent/compaction-context.ts');
 const { createPiMemoryTools } = await import('../../src/main/xiaozhi-agent/memory-tools.ts');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const output = fs.mkdtempSync(path.join(root, 'test-results/xiaozhi-agent/pi-memory-epoch-'));
+const evidenceRoot=process.env.OMNI_EDU_ACCEPTANCE_ROOT||path.join(root,'test-results/xiaozhi-agent');
+fs.mkdirSync(evidenceRoot,{recursive:true});
+const output=fs.mkdtempSync(path.join(evidenceRoot,'pi-memory-epoch-'));
 const checks = [], report = { suite: 'pi-memory-epoch-native', success: false, checks,
   boundaries: ['Real pinned Pi SessionManager and append-only JSONL, deterministic message fixtures', 'Controlled existing-memory adapters, no model provider or formal UI integration claimed'] };
 const check = (name, fn) => { fn(); checks.push({ name, pass: true }); console.log(`PASS ${name}`); };
