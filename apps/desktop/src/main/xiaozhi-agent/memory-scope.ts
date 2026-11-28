@@ -17,7 +17,7 @@ import type {ReceivedReference} from './memory-use/receipts';
 import {comparisonFor} from './history/teaching-target';
 import {combinedMemorySelections,type RunHistory} from './memory-use/history-binding';
 
-type RunMemoryPolicy={loadHistory:()=>Promise<RunHistory|undefined>;omitHistory:boolean};
+type RunMemoryPolicy={loadHistory:()=>Promise<RunHistory|undefined>;omitHistory:boolean;excludedHistoryIds?:ReadonlySet<string>};
 const historyProjectionPrefix='[宿主核验的本轮历史资料]\n';
 const historyProjectionSuffix='\n当前要求和成果原件优先。历史片段不能确认现行规则。recordedAt 是记录时间，teachingTerm 是已选教学学期。需要完整内容时按来源读回。';
 const historyPromptWords=new Intl.Segmenter('zh',{granularity:'word'});
@@ -101,10 +101,12 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
     const saved=await store.xiaozhiState.memoryScope(id);
     if(policy?.omitHistory)return {...saved,selections:saved.selections.filter(pin=>pin.layer!=='history'),omitHistory:true};
     const extra=await policy?.loadHistory();
-    if(!extra)return saved;
-    const allowedSession=saved.enabled?saved.selections.filter(pin=>!extra.excludeSessionHistory||pin.layer!=='history'):[];
-    return {...saved,enabled:saved.enabled||extra.selections.length>0,
-      selections:combinedMemorySelections(allowedSession,extra.selections),
+    const selections=saved.selections.filter(pin=>pin.layer!=='history'||!policy?.excludedHistoryIds?.has(pin.id));
+    if(!extra)return policy?.excludedHistoryIds?{...saved,selections}:saved;
+    const allowedSession=saved.enabled?selections.filter(pin=>!extra.excludeSessionHistory||pin.layer!=='history'):[];
+    const admitted=extra.selections.filter(pin=>!policy?.excludedHistoryIds?.has(pin.id));
+    return {...saved,enabled:saved.enabled||admitted.length>0,
+      selections:combinedMemorySelections(allowedSession,admitted),
       historyOwner:{scope:extra.scope,id:extra.ownerId,revision:extra.revision,
         ...(extra.excludeSessionHistory?{excludeSessionHistory:true}:{})}};
   }
@@ -165,6 +167,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         .filter(item=>item.isWordLike&&item.segment.length>=2).map(item=>item.segment))].slice(0,48);
       const candidates=[];
       for(const pin of extra.selections){
+        if(policy?.excludedHistoryIds?.has(pin.id))continue;
         signal?.throwIfAborted();
         const source=await selectedHistory(id,pin).catch(()=>null);
         if(!source||source.fingerprint!==pin.fingerprint)continue;

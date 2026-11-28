@@ -33,7 +33,7 @@ import {resolveNaturalLessonBasis,resolveOrdinaryLessonBasis} from '../education
 import type {MaterialSource} from '../../shared/materials';
 import {originalPaperReceiptOnly} from '../education/paper-request-constraints';
 import {startsWithOriginalPaperBlueprint} from '../education/paper-admission';
-import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyUseRequest,type RunHistory} from './memory-use/history-binding';
+import {combinedMemorySelections,createTaskHistoryUse,historyOmissionScope,historyOmissionTitle,historyUseRequest,type RunHistory} from './memory-use/history-binding';
 import {isStandaloneAnswer,requestsHistoryClarification,requestsPaperClarification} from './tasks/conversation-intent';
 import {copyPaperExportIntent,type PaperExportIntent} from '../../shared/paper-export';
 import {readPaperExportIntent,PAPER_EXPORT_SOURCE_CHANGED} from '../education/paper-export-intent';
@@ -298,6 +298,7 @@ type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSe
 type Active = {
   turnHistory?:RunHistory;
   omitHistory?:boolean;
+  excludedHistoryIds?:ReadonlySet<string>;
   answerOnly?: boolean;
   naturalLessonDraft?: NaturalLessonRequirements;
   naturalLessonSources?: MaterialSource[];
@@ -1193,12 +1194,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(!turn||!task)return turn??task;
       return {...task,selections:combinedMemorySelections(task.selections,turn.selections)};
     };
-    const memoryPolicy={loadHistory:loadRunHistory,omitHistory:owner?.omitHistory===true};
+    const memoryPolicy={loadHistory:loadRunHistory,omitHistory:owner?.omitHistory===true,excludedHistoryIds:owner?.excludedHistoryIds};
     const methodTasks=namedReview ? createTaskState(store.xiaozhiState.sql,{sanitize:async text=>text}) : undefined;
     const methodHistory=namedReview && methodTasks ? async()=>{
       const admitted=memoryPolicy.omitHistory ? undefined : await loadRunHistory();
       return readMethodHistoryEvidence({
-        method:namedReview,sessionId:id,selected:admitted?.selections??[],
+        method:namedReview,sessionId:id,selected:admitted?.selections.filter(pin=>!memoryPolicy.excludedHistoryIds?.has(pin.id))??[],
         targetFor:sessionId=>currentTeachingTarget(store.xiaozhiState.sql,sessionId),
         source:pin=>history.selectedFor(id,pin),
         reviewedTask:(sessionId,sourceId)=>methodTasks.completedForOrigin(sessionId,sourceId),
@@ -2590,7 +2591,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id))return{ok:false,error:'busy'};
       const omission=historyOmissionScope(input.prompt);
-      const omitHistory=omission!==undefined;
+      let omitHistory=omission!==undefined;
       let historyProof:Awaited<ReturnType<typeof taskHistory.prepare>>|undefined;
       if(input.historyIntents&&!omitHistory){
         try{historyProof=await phase(()=>taskHistory.prepare(id,input.historyIntents!));}
@@ -2605,10 +2606,25 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           if(!historyProof)return {ok:false,error:'history_confirmation_required',historyQuery:request.query};
         }
       }
+      const omittedTitle=omitHistory?undefined:historyOmissionTitle(input.prompt);
+      let excludedHistoryIds:ReadonlySet<string>|undefined;
+      if(omittedTitle){
+        try{
+          const current=await phase(()=>tasks.committed(id));
+          const excluded=await phase(()=>taskHistory.omittedSources(id,omittedTitle,current,historyProof));
+          excludedHistoryIds=excluded;
+          // If the recalled source cannot be resolved, omit history for this Turn.
+          omitHistory=excluded.size===0;
+          if(historyProof){
+            const kept=omitHistory?[]:historyProof.selections.filter(pin=>!excluded.has(pin.id));
+            historyProof=kept.length?{...historyProof,selections:kept}:undefined;
+          }
+        }catch{return {ok:false,error:controller.signal.aborted?'cancelled':'memory_scope_changed'};}
+      }
       if(controller.signal.aborted||admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if(closing||active.has(id)||configuring.has(id))return{ok:false,error:'busy'};
       const answerOnly=operation==='prompt'&&!goalId&&!taskResume&&!legacyApprovalId&&!handoutProof&&!requestedLessonRevision&&isStandaloneAnswer(input);
-      const run: Active = { ...(omitHistory?{omitHistory}:{}),...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials,requestedAgenda:inferredLesson.requestedAgenda}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      const run: Active = { ...(omitHistory?{omitHistory}:{}),...(excludedHistoryIds?.size?{excludedHistoryIds}:{}),...(inferredLesson?{naturalLessonDraft:{requestedMinutes:inferredLesson.requestedMinutes,requestedMaterials:inferredLesson.requestedMaterials,requestedAgenda:inferredLesson.requestedAgenda}}:{}),...(directOriginalPaper?{directOriginalPaper:true as const}:{}),...(paperReceiptSummary?{paperReceiptSummary:true as const}:{}),...(input.mockExamExportIntent?{mockExamExportIntent:input.mockExamExportIntent}:{}),...(input.paperExportIntent?{paperExportIntent:copyPaperExportIntent(input.paperExportIntent)}:{}),...(input.resumeDeliveryId?{resumeDeliveryId:input.resumeDeliveryId}:{}), ...(input.classroomPlan?{classroomPlan:input.classroomPlan}:{}),runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         ...(answerOnly?{answerOnly}:{}),...(requestedLessonRevision?{lessonRevision:requestedLessonRevision}:{}),
         ...(handoutProof?{confirmedHandoutResume:handoutProof}:{}),
         ...(recoveryInspection?{recoveryInspection}:{}),

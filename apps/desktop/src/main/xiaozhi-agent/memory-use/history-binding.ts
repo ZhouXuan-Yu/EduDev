@@ -29,6 +29,19 @@ export function historyOmissionScope(prompt:string) {
 }
 
 
+function historyTitleKey(value:string) {
+  const title=value.normalize('NFKC').trim();
+  const previous=/^(?:上(?:一)?节课|上(?:一)?个课时)(?:的)?(?:课堂)?(总结|小结|纪要|回顾)$/u.exec(title);
+  return previous?'上一节课的'+previous[1]:title;
+}
+
+/** A temporary exclusion applies to an explicit selected title, never a guessed event date. */
+export function historyOmissionTitle(prompt:string) {
+  const text=prompt.normalize('NFKC').replace(/“[^”]*”|「[^」]*」|『[^』]*』|"[^"]*"/gu,' ');
+  const match=/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(?:本次|这次|本轮|这一轮)?\s*(?:(?:不要|不要再|别|无需|不必)\s*(?:引用|参考|使用|读取|沿用|用)|不引用|不参考|不使用|不读取|不用)\s*(?:历史(?:记录|资料|对话|来源)?\s*《([^《》\n]{1,80})》|((?:上(?:一)?节课|上(?:一)?个课时)(?:的)?(?:课堂)?(?:总结|小结|纪要|回顾)))\s*(?=[，。；！？,;!?\n]|$)/u.exec(text);
+  return match ? historyTitleKey(match[1]??match[2]) || undefined : undefined;
+}
+
 export function historyUseRequest(prompt:string) {
   const text=prompt.normalize('NFKC');
   const named=[...text.matchAll(/(?:^|[，。；！？,;!?\n])\s*(?:请\s*)?(逐字\s*)?(参考|引用|沿用|使用)\s*历史(?:记录|资料|对话|来源)?\s*[:：]?\s*《([^《》\n]{1,80})》/gu)]
@@ -247,6 +260,22 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
       ...(binding.excludeSessionHistory?{excludeSessionHistory:true}:{})};
   }
 
+  async function omittedSources(sessionId:string,title:string,task:TaskView|null|undefined,proof?:Prepared) {
+    const {saved,target}=await historyTeachingContext(sql,sessionId);
+    const bound=task?.sessionId===sessionId ? await forTask(task) : undefined;
+    const sessionPins=saved.enabled?saved.selections.filter(pin=>pin.layer==='history'):[];
+    const pins=[...sessionPins,...(bound?.selections??[]),...(proof?.selections??[])];
+    const ids=[...new Set(pins.map(pin=>pin.id))];
+    const omitted=new Set<string>();
+    if(!ids.length)return omitted;
+    const rows=await sql.all(
+      'SELECT a.source_id,s.title FROM memory_source_access a JOIN ai_conversation_sessions s ON s.id=a.session_id WHERE a.source_id IN ('+
+      ids.map(()=>'?').join(',')+')',ids);
+    const matched=new Set(rows.filter(row=>typeof row.title==='string'&&historyTitleKey(row.title)===title).map(row=>row.source_id));
+    for(const pin of pins)if(matched.has(pin.id)&&!omitted.has(pin.id)&&await currentPin(sql,pin,target,sessionId,saved.version))omitted.add(pin.id);
+    return omitted;
+  }
+
   async function forRun(task:TaskView,owner:TaskOwner,includeInvalidated=false) {
     if(!ownsTask(task,owner))return;
     return forTask(task,includeInvalidated);
@@ -318,5 +347,5 @@ export function createTaskHistoryUse(sql:Sql,history:Pick<ReturnType<typeof crea
     return selections.length?{...history,selections}:undefined;
   }
 
-  return {stage,prepare,prepareNamed,attachTask,excludeForTask,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
+  return {stage,prepare,prepareNamed,attachTask,excludeForTask,omittedSources,forRun,forTask,view,remove,turn,eligibleTurn,discard,consume:(tokens:readonly string[])=>{for(const token of tokens)pending.delete(token);}};
 }

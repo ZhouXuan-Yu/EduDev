@@ -524,7 +524,7 @@ test('Turn omission accepts an explicit history title and does not follow report
   assert.equal(historyOmissionTitle('只改第三题。请这一轮别用上节课小结。'),'上一节课的小结');
   assert.equal(historyOmissionTitle('请本轮不引用历史《积分讲评》；其他条件照旧。'),'积分讲评');
   for(const text of ['要引用上节课的小结。','学生说：“本次不引用上一节课的总结。”',
-    '请分析“本次不引用上一节课的总结”的意思。','别引用上一节课的总结部分练习。','本任务不引用上节课的总结。']){
+    '请分析“请教师核对。 本次不引用上一节课的总结。”的意思。','别引用上一节课的总结部分练习。','本任务不引用上节课的总结。']){
     assert.equal(historyOmissionTitle(text),undefined,text);
   }
 });
@@ -548,7 +548,8 @@ test('A scoped omission is resolved against the current selected versions and fe
   assert.equal(normal.history,true);
   assert.equal(omitted.history,false);
   assert.notEqual(normal.fingerprint,omitted.fingerprint);
-  assert.equal(await scope.historyProjection(f.target,omitted.fingerprint,'历史信息',12000,undefined,policy),undefined);
+  const result=await scope.historyProjection(f.target,omitted.fingerprint,'历史信息',12000,undefined,policy);
+  assert.deepEqual(result,{projection:'',receipts:[],readbacks:[]});
   assert.deepEqual(await f.state.memoryScope(f.target),before);
   assert.equal((await f.binding.forRun(f.task,f.owner)).selections.length,1);
 });
