@@ -134,12 +134,20 @@ const localQuery='查询冰水共存及冰融化实验温度平台的观察要�
 const firstPreference='请记住，以后我的讲义答案统一放最后。请简单确认。';
 const nextPreference='请记住，今后学案每道题后附参考答案。请简单确认。';
 
-async function seedPrompt(page,input,snapshot,text){
+async function seedPrompt(page,input,snapshot,text,answer){
+  let answered;
   const prior=(await snapshot()).projection.turns.at(-1)?.id;
   await input.fill(text);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   const turn=await until(async()=>{
     const value=await snapshot(),last=value.projection.turns.at(-1);
+    const question=value.controls?.find(item=>item.kind==='question'&&item.state==='pending'&&item.runId===last?.id);
+    if(answer&&question&&last?.id!==prior&&!answered){
+      const card=page.getByTestId('pi-composer-pending-panel').locator('[data-control-id="'+question.id+'"]');
+      await card.getByTestId('pi-question-answer').fill(answer);
+      await card.getByTestId('pi-question-submit').click();
+      answered=question.id;
+    }
     return !value.running&&last?.id!==prior&&['completed','failed','interrupted'].includes(last?.status)?last:null;
   });
   assert.equal(turn.status,'completed',turn.error);
@@ -496,7 +504,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     let semesterSource;
     if(semesterCase){
       await seedClass(app,page,sessionId,{...task.taskScope,termRef:'2025F'});
-      await seedPrompt(page,input,snapshot,priorHandout);
+      await seedPrompt(page,input,snapshot,priorHandout,'本次只记录上述讲义的原话，留作历史比较。请确认收到即可。');
       semesterSource=await allowHistoryDiscovery(app,page,data,sessionId,priorHandout);
       result.previousSemester={sessionId,sourceId:semesterSource.source_id,generation:semesterSource.generation,term:'2025-fall'};
       await page.getByTestId('pi-new-session').click();

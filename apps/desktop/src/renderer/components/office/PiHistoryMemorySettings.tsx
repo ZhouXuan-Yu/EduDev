@@ -108,8 +108,11 @@ export function PiHistoryMemorySettings() {
           {!item.allowed&&item.state==='active'&&preview?.source.sourceId===item.sourceId&&
             <Button size="sm" variant="secondary" data-testid="history-settings-allow" isDisabled={busy}
               onPress={()=>void change(item,'allow')}>允许查找</Button>}
-          {item.state==='disabled'&&preview?.source.sourceId===item.sourceId&&
-            <Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>void change(item,'restore')}>恢复参考</Button>}
+          {(item.state==='disabled'||item.state==='forgotten')&&preview?.source.sourceId===item.sourceId&&
+            preview.source.accessRevision===item.accessRevision&&preview.source.ref.sourceVersion===item.ref.sourceVersion&&
+            <Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>void change(item,'restore')}>
+              {item.state==='forgotten'?'重新允许查找':'恢复参考'}
+            </Button>}
           {item.accessRevision>0&&item.state!=='forgotten'&&<Button size="sm" variant="ghost" isDisabled={busy}
             onPress={()=>setConfirm(item.sourceId)}>不再记住</Button>}
         </SettingsInline>

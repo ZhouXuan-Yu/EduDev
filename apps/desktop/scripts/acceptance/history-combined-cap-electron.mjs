@@ -113,7 +113,8 @@ try{
       if(process.type!=='browser'||app.getPath('userData')!==profile)throw Error('Unexpected crash target');
       return process.pid;
     },path.resolve(profile));
-    if(process.platform==='win32')execFileSync('taskkill.exe',['/PID',String(pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});
+    report.interruption.processBoundary=process.platform==='win32'&&!process.argv.includes('--main-only')?'application_tree':'main_only';
+    if(report.interruption.processBoundary==='application_tree')execFileSync('taskkill.exe',['/PID',String(pid),'/T','/F'],{windowsHide:true,stdio:'ignore'});
     else process.kill(pid,'SIGKILL');
     const exitDeadline=Date.now()+30000;
     for(;;){

@@ -102,7 +102,7 @@ try {
   await memoryPage(); await settings.getByTestId('memory-draft-l2').click(); await settings.getByTestId('memory-adopt-l2-0').click();
   await until(async () => (await page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat')))?.entries.length > 0);
   let entry = (await page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'))).entries[0];
-  const marker = `本地教学偏好${randomUUID().slice(0, 8)}`, text = `${marker}：分数课先让学生比较纸条。测试电话13800138000。`;
+  const marker = `本地教学偏好${randomUUID().slice(0, 8)}`, text = `偏好代号为“${marker}”。分数课先让学生比较纸条。测试电话13800138000。`;
   await settings.getByTestId(`memory-l2-text-${entry.id}`).fill(text); await settings.getByTestId(`memory-save-l2-${entry.id}`).click();
   await until(async () => (await page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'))).entries.find(item => item.id === entry.id).version > entry.version);
   entry = (await page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'))).entries.find(item => item.id === entry.id);
