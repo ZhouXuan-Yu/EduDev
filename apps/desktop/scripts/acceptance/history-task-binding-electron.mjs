@@ -10,14 +10,17 @@ import {assertIsolatedPiMain,testMain} from './build-root.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..'), main=testMain(desktop);
 const acceptance=process.env.OMNI_EDU_ACCEPTANCE_ROOT;
-const frozenAmbiguityIndex=process.argv.indexOf('--frozen-ambiguity');
-const frozenAmbiguityBytes=frozenAmbiguityIndex>=0?fs.readFileSync(process.argv[frozenAmbiguityIndex+1]):undefined;
-const frozenAmbiguityHash=frozenAmbiguityBytes&&createHash('sha256').update(frozenAmbiguityBytes).digest('hex');
-const frozenAmbiguity=frozenAmbiguityBytes&&JSON.parse(frozenAmbiguityBytes).cases.find(row=>row.id==='SCP-08');
-if(frozenAmbiguityBytes){
-  assert.equal(frozenAmbiguityHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
-  assert.equal(frozenAmbiguity?.kind,'ambiguous_history');
-  assert.equal(frozenAmbiguity.expectedRule,'Clarification');
+const frozenScopeIndex=process.argv.findIndex(arg=>['--frozen-ambiguity','--frozen-question'].includes(arg));
+const frozenScopeBytes=frozenScopeIndex>=0?fs.readFileSync(process.argv[frozenScopeIndex+1]):undefined;
+const frozenScopeHash=frozenScopeBytes&&createHash('sha256').update(frozenScopeBytes).digest('hex');
+const scopeCaseId=process.argv[frozenScopeIndex]==='--frozen-question'?'SCP-07':'SCP-08';
+const scopeCase=frozenScopeBytes&&JSON.parse(frozenScopeBytes).cases.find(row=>row.id===scopeCaseId);
+const frozenQuestion=scopeCase?.id==='SCP-07'?scopeCase:undefined;
+const frozenAmbiguity=scopeCase?.id==='SCP-08'?scopeCase:undefined;
+if(frozenScopeBytes){
+  assert.equal(frozenScopeHash,'763f44440314290f393874176f402f5d5c2cf4228e12a01ab630607f298d0be5');
+  assert.equal(scopeCase?.kind,frozenQuestion?'question_no_task':'ambiguous_history');
+  assert.equal(scopeCase.expectedRule,frozenQuestion?'Run only':'Clarification');
 }
 const textbookVersions=Boolean(frozenAmbiguity)||process.argv.includes('--textbook-versions');
 const reportedQuote=process.argv.includes('--reported-quote');
@@ -48,22 +51,22 @@ const vagueChoice=textbookVersions||checkPreference||process.argv.includes('--va
 const namedHistory=multiRevoke||receiptFailure||receiptVerified||keyboardHistory||compactionMemory||process.argv.includes('--named-history');
 const declaredTitle=frozenAmbiguity?'温度计实验讲义':textbookVersions?'温度计实验教材记录':'温度计实验观察档案';
 assert(acceptance&&process.env.DEEPSEEK_API_KEY,'Use an isolated acceptance root and a configured DeepSeek account.');
-const lane=frozenResume?'r3-frozen-task-resume-':frozenAmbiguity?'r3-frozen-ambiguity-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
+const lane=frozenResume?'r3-frozen-task-resume-':frozenQuestion?'r3-frozen-question-':frozenAmbiguity?'r3-frozen-ambiguity-':textbookVersions?'history-textbook-versions-':reportedQuote?'history-reported-quote-':multiRevoke?'history-multi-revoke-':semesterRules?'history-semester-rules-':amendClass?'history-amended-class-':recoveryIndex>=0?'history-recovered-':suspendedTask?'history-'+suspendedTask+'-':terminalTask?'history-'+terminalTask+'-':unknownHistory?'history-unknown-answer-':checkPreference?'history-preference-consent-':vagueChoice?'history-vague-choice-':receiptFailure?'history-receipt-failure-':receiptVerified?'history-receipt-verified-'
   :keyboardHistory?'history-keyboard-':compactionMemory?'history-compaction-'
   :namedHistory?'history-named-':exclusion?'history-exclusion-':'history-task-';
 const root=fs.mkdtempSync(path.join(acceptance,lane));
 const data=path.join(root,'data'),profile=path.join(root,'profile');
 const marker='星桥读数法先蓝后绿';
-const source=frozenAmbiguity?declaredTitle+'。讲义修订版，复核口令：'+marker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
+const source=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'，修订版，复核口令：'+marker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材修订版，固定复核口令：'+marker+'。':reportedQuote?'同事说：“温度计实验的固定复核口令是'+marker+'。”':semesterRules?'秋季 B 班温度计实验采用新的复核口令：'+marker+'。这里只登记教学学期，未记录规则生效的具体日期。':'这是合成教师教学记录。温度计实验的固定复核口令：'+marker+'。请简短回复收到。';
 const search='温度计实验 固定复核口令 星桥读数法';
 const alternateMarker='冬砂比对先橙后红';
-const alternateSource=frozenAmbiguity?declaredTitle+'。讲义初版，复核口令：'+alternateMarker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
+const alternateSource=frozenAmbiguity?'请用一句话说明你已收到这条合成记录。正文：'+declaredTitle+'，初版，复核口令：'+alternateMarker+'。':textbookVersions?'温度计实验教材记录。八年级实验教材初版，固定复核口令：'+alternateMarker+'。':semesterRules?'春季 B 班温度计实验采用当时的复核口令：'+alternateMarker+'。原文没有具体日期。':'这是另一条合成教师教学记录。温度计实验的固定复核口令：'+alternateMarker+'。请简短回复收到。';
 const taskRequest='请整理温度计实验复核要点成三条清单。只在聊天中回复，引用已选的老师原话。';
 const question='请简述之前的温度计实验采用什么复核口令？';
 const report={root,buildHash:createHash('sha256').update(fs.readFileSync(main)).digest('hex'),checks:[],provider:[],ok:false};
-if(frozenResume||frozenAmbiguity){
+if(frozenResume||scopeCase){
   report.fixture=frozenResume?{id:frozenResume.id,sha256:frozenResumeHash,request:frozenResume.teacherRequest,scope:teachingScope}
-    :{id:frozenAmbiguity.id,sha256:frozenAmbiguityHash,scenario:frozenAmbiguity.teacherUtterance,scope:teachingScope};
+    :{id:scopeCase.id,sha256:frozenScopeHash,scenario:scopeCase.teacherUtterance,...(frozenAmbiguity?{scope:teachingScope}:{})};
   assert.equal(report.buildHash,process.env.OMNI_EDU_R3_EVAL_BUILD_SHA256);
   assert.match(process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA??'',/^[a-f0-9]{40}$/);
   report.source=process.env.OMNI_EDU_R3_EVAL_PRODUCT_SHA;
@@ -274,7 +277,7 @@ async function launch(){
       if(spent+globalThis.historyTaskWire.length>=12)throw Error('Frozen history task evaluation exceeds 12 provider calls');
       const body=JSON.parse(init.body);
       const hasMarker=content=>JSON.stringify(content??'').includes(marker);
-      const record={model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens,status:0,
+      const record={model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens,status:0,toolCount:body.tools?.length??0,
         stepPreference:body.messages.some(message=>message.role==='user'&&JSON.stringify(message.content).includes('当前教师表达偏好')&&JSON.stringify(message.content).includes('分步骤讲解')),
         sourceRoles:body.messages.filter(m=>hasMarker(m.content)).map(m=>m.role),
         attributed:body.messages.some(m=>m.role==='user'&&(typeof m.content==='string'?[m.content]:m.content.map(p=>p.text??'')).some(t=>t.includes('"evidence":"third_party"')&&t.includes('"sourceOccurredAt":null'))),
@@ -390,6 +393,30 @@ async function recoverBoundTask(){
   pass('Teacher resumes the exact bound Task from My Tasks after a cold launch without executing an old effect or approving its result',{
     previousState:original.state,taskId:binding.taskId,runId:turn.id,teacherAnswered:answered,priorEffectCount:before.length});
 }
+async function runDefinitionJourney(){
+  await launch();
+  const id=await until(async()=>{const selected=await session();return selected?.startsWith('aisession_')?selected:null;});
+  const readTaskPointers=()=>read('SELECT value_json FROM app_settings WHERE key=?','xiaozhi.task.v1:session:'+id);
+  const readHistoryBindings=()=>bindings(id);
+  assert.deepEqual(readTaskPointers(),[]);
+  const prompt='请用一句话解释什么是磁力，只在聊天中回答。';
+  const answer=await send(id,prompt);
+  const state=await snapshot(id);
+  const turn=state.projection.turns.find(item=>item.id===answer.runId);
+  report.definition={prompt,runId:answer.runId,taskId:state.task?.id??null,provider:answer.sent};
+  assert(!state.task&&!state.running);
+  assert.deepEqual(readTaskPointers(),[]);
+  assert.deepEqual(readHistoryBindings(),[]);
+  assert(answer.sent.some(call=>call.status===200));
+  assert(answer.sent.every(call=>call.toolCount===0));
+  assert(turn?.items.some(item=>item.role==='assistant'&&item.text?.includes('磁')));
+  await close();await launch();
+  assert(!(await snapshot(id)).task);
+  assert.deepEqual(readTaskPointers(),[]);
+  assert.deepEqual(readHistoryBindings(),[]);
+  pass('The exact classroom definition question completes a real tool-free Run without creating or restoring a Task');
+}
+
 async function runHistoryJourney(){
   await launch();
   const sourceSession=await until(async()=>{const id=await session();return id?.startsWith('aisession_')?id:null;});
@@ -934,6 +961,7 @@ async function runHistoryJourney(){
 }
 try{
   if(recoveryIndex>=0)await recoverBoundTask();
+  else if(frozenQuestion)await runDefinitionJourney();
   else await runHistoryJourney();
   report.ok=true;
 }catch(error){
