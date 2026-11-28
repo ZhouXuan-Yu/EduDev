@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import type {FileHandle} from 'node:fs/promises';
+import {TEACHING_DEPARTURE,TEACHING_ISOLATION,validTeachingDeparture,validTeachingIsolation} from '../native-teaching-epoch';
 
 export type NativeTailBinding={file:string;offset:number;anchor:string};
 export type NativeRunBinding=NativeTailBinding & {markerId:string;sessionId:string;runId:string;generation:number};
@@ -71,15 +72,21 @@ export function toolResultDigest(tool:string,content:unknown,failed:boolean){
 async function confirmedIsolationBoundary(rows:Record<string,any>[],index:number,start:number,
   binding:NativeRunBinding,root:string,sql:Sql,previous:string) {
   const isolation=rows[index],data=isolation.data;
-  if(isolation.type!=='custom'||!['xiaozhi.skills.isolation.v1','xiaozhi.memory.isolation.v1'].includes(isolation.customType)
-    ||!data||Object.keys(data).length!==3||data.fromLeaf!==previous||!/^[a-f0-9]{64}$/.test(data.authority)
+  const teaching=isolation.customType===TEACHING_ISOLATION;
+  if(isolation.type!=='custom'||(!teaching&&!['xiaozhi.skills.isolation.v1','xiaozhi.memory.isolation.v1'].includes(isolation.customType))
+    ||!data||(!teaching&&Object.keys(data).length!==3)||data.fromLeaf!==previous||!/^[a-f0-9]{64}$/.test(data.authority)
     ||!Array.isArray(data.blockedRunIds)||data.blockedRunIds.length>4096||!data.blockedRunIds.every(identity)
     ||new Set(data.blockedRunIds).size!==data.blockedRunIds.length||!data.blockedRunIds.includes(binding.runId))return false;
   const old=rows.slice(start,index);
   const safeIndex=old.findIndex(entry=>entry.id===isolation.parentId);
   const begin=old[safeIndex+1];
   const taintType=isolation.customType.replace('isolation.v1','taint.v1');
-  if(safeIndex<0||begin?.type!=='custom'||begin.customType!=='xiaozhi.memory.run.v1'
+  if(teaching){
+    const departure=old.at(-1);
+    if(!validTeachingIsolation(data)||data.safeLeaf!==isolation.parentId||safeIndex>=0
+      ||departure?.type!=='custom'||departure.customType!==TEACHING_DEPARTURE||!validTeachingDeparture(departure.data)
+      ||departure.data.safeLeaf!==data.safeLeaf||departure.data.authority!==data.authority||departure.data.scoped!==data.scoped)return false;
+  }else if(safeIndex<0||begin?.type!=='custom'||begin.customType!=='xiaozhi.memory.run.v1'
     ||begin.data?.runId!==binding.runId||Object.keys(begin.data).length!==1
     ||!old.slice(safeIndex+2).some(entry=>entry.type==='custom'&&entry.customType===taintType
       &&entry.data?.safeLeaf===isolation.parentId&&entry.data?.runId===binding.runId&&Object.keys(entry.data).length===3

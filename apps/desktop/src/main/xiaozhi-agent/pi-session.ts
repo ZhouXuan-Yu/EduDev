@@ -58,6 +58,8 @@ import { createPiInstructionQueue } from './instruction-queue';
 import { privateWorkspaceFingerprintCwd } from './private-workspace-identity';
 import { resolveCreationPromptIdentity,resolveControlPromptIdentity } from './creation-prompt-identity';
 import { createPiMemoryEpoch } from './native-memory-epoch';
+import { createPiTeachingEpoch } from './native-teaching-epoch';
+import type { NativeModelAuthorities } from './native-model-switch';
 import {protectedMemoryReadback} from './memory-use/protected-readback';
 import { createPiMemoryTools, type PiMemoryRuntime } from './memory-tools';
 import { createEducationSkillRuntime } from './skill-runtime';
@@ -221,7 +223,7 @@ export interface PiXiaozhiOptions {
   /** Main-owned compatibility mode; production observes usage without run quotas. */
   limitsEnforced?: boolean;
   /** Rebuild authoritative own-session facts; never accepted from renderer. */
-  protectedContext?: (excludedRunIds?: readonly string[]) => Promise<string>;
+  protectedContext?: (excludedRunIds?: readonly string[], allowedRuns?: ReadonlySet<string>) => Promise<string>;
   /** Main-owned presentation guidance for this run's request only. */
   teacherPreferenceGuidance?:string;
   contextFacts?: () => Promise<ContextFacts>;
@@ -230,7 +232,7 @@ export interface PiXiaozhiOptions {
   computationTools?:ToolDefinition[];
   deliveryCheckTools?:ToolDefinition[];
   computationReportTools?: (wait: (action: () => Promise<boolean>) => Promise<boolean>) => ToolDefinition[];
-  teacherRequestTools?:(excluded:()=>readonly string[])=>ToolDefinition[];
+  teacherRequestTools?:(excluded:()=>readonly string[], allowedRuns?:()=>ReadonlySet<string>)=>ToolDefinition[];
   capabilities?: XiaozhiModelCapabilities;
   thinkingPolicy?:import('../../shared/xiaozhi-thinking').ThinkingDecision;
   /** Main-owned current task hint for Hana's local tool selection, never new authority. */
@@ -249,8 +251,8 @@ export interface PiXiaozhiOptions {
   /** Main-only native/SQLite identity admission; renderer never supplies origin or entries. */
   modelHistory?: {
     authorize: (manager: SessionManager) => Promise<{ originModel: string; model: string }>;
-    beforeLoad: (manager: SessionManager, authorities: { memory?: string; skills?: string }) => Promise<void>;
-    align: (session: Awaited<ReturnType<typeof createAgentSession>>['session'], authorities: { memory?: string; skills?: string }) => Promise<void>;
+    beforeLoad: (manager: SessionManager, authorities: NativeModelAuthorities) => Promise<void>;
+    align: (session: Awaited<ReturnType<typeof createAgentSession>>['session'], authorities: NativeModelAuthorities) => Promise<void>;
   };
   /** Official main-owned target for a short-lived idle switch, never a second run. */
   switchTarget?: XiaozhiModelCapabilities;
@@ -368,6 +370,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const memorySnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.memory.'));
   if (memorySnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.memory.v1') || memorySnapshots.length && !options.memory) throw new Error('configuration');
   const initialAuthority = await phase('pi_read_memory_authority',async()=>options.memory?.authority());
+  const teachingEpoch = initialAuthority?.teaching ? createPiTeachingEpoch(manager, initialAuthority.teaching) : undefined;
   const memoryEpoch = initialAuthority ? createPiMemoryEpoch(manager, initialAuthority.fingerprint) : undefined;
   if (options.memory) {
     names.push('read_education_memory', 'read_session_process');
@@ -857,7 +860,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   // Fixed full-control SDK example, with explicit education prompt and no discovery.
   const getProtectedContext = async (currentPersonalIds:readonly string[]=[]) => {
     const excluded = [...new Set([...(memoryEpoch?.blockedRunIds() || []), ...(skillEpoch?.blockedRunIds() || [])])];
-    const facts = (await phase('pi_read_protected_context',async()=>options.protectedContext?.(excluded)) || '')+(taskRuntime?await phase('pi_read_task_context',()=>taskRuntime.context()):'');
+    const facts = (await phase('pi_read_protected_context',async()=>options.protectedContext?.(excluded, teachingEpoch?.allowedRuns?.())) || '')+(taskRuntime?await phase('pi_read_task_context',()=>taskRuntime.context()):'');
     // Protect only facts already delivered by the explicit model tool. Rebuild from
     // the current main authority; never keep a second copy or revive revoked text.
     if (!options.memory || !memoryEpoch?.hasDelivery()) return facts;
@@ -992,13 +995,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         }
         return { content: [{ type: 'text' as const, text: JSON.stringify(modelResult) }], details: publicDetails, isError: !result.success };
     },
-  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.equationTools||[]),...(options.quantityTools||[]),...(options.solutionTools||[]),...(options.buoyancyTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...teachingLessonExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
+  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.equationTools||[]),...(options.quantityTools||[]),...(options.solutionTools||[]),...(options.buoyancyTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...teachingLessonExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])],teachingEpoch?.allowedRuns)||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
     if(options.sourceChoice||options.handoutContinuationTool){
       args[1]=sourceClarificationQuestion(options.sourceChoice??'handout');
     }
     return budget!.wait(()=>def.execute(...args));
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint,
-    () => memoryEpoch.beforeDelivery(),options.memory.personalReferences?()=>projectedPersonalIds:undefined) : []), ...(skills ? [skills.tool] : [])]
+    () => memoryEpoch.beforeDelivery(),options.memory.personalReferences?()=>projectedPersonalIds:undefined,teachingEpoch?.allowedRuns) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
   if (options.teachingHandoutTool) definitions.push(options.teachingHandoutTool);
@@ -1147,7 +1150,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       await checkMemory(); signal?.throwIfAborted(); return result;
     },
   }));
-  const modelAuthorities={memory:initialAuthority?.fingerprint,skills:skillEpoch?.authority};
+  const modelAuthorities={memory:initialAuthority?.fingerprint,skills:skillEpoch?.authority,teaching:initialAuthority?.teaching?.authority};
   await phase('pi_prepare_model_history',async()=>options.modelHistory?.beforeLoad(manager,modelAuthorities));
   const { session, modelFallbackMessage } = await phase('pi_create_session',()=>createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'low',
     modelRuntime: auth, settingsManager: settings, sessionManager: manager,
@@ -1212,7 +1215,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     try {
       const current = await phase('pi_verify_memory_scope',()=>options.memory!.authority());
       memoryEpoch.check(current.fingerprint);
-      if (!current.valid) throw new Error('memory_scope_changed');
+      if (!current.valid || current.teaching?.authority !== initialAuthority?.teaching?.authority) throw new Error('memory_scope_changed');
     } catch (error) {
       if (interrupted||phaseController.signal.aborted||options.lifecycleSignal?.aborted) throw error;
       memoryFailure = classifyError(error) === 'memory_scope_changed' ? 'memory_scope_changed' : 'configuration';
@@ -1223,7 +1226,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     } finally { authorityChecks--; }
   }
   function watchMemory() {
-    if (!skills && (!options.memory || !initialAuthority?.enabled)) return;
+    if (!skills && !initialAuthority?.enabled && !initialAuthority?.teaching?.scoped) return;
     memoryTimer = setInterval(() => {
       // A foreground check already performs full source/privacy validation. Do not
       // launch a second disk scan over it; every delivery gate still checks afresh.
@@ -1718,6 +1721,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       let failure: XiaozhiAgentError | undefined,outputLimited=false;
       try {
         if(memoryFailure)throw Error(memoryFailure);
+        if (teachingEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: teachingEpoch.excludedRuns, reason: 'teaching_target' });
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
         if (skillEpoch) {
@@ -1775,6 +1779,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       let failure: XiaozhiAgentError | undefined;
       let transaction:Awaited<ReturnType<typeof contextAdapter.begin>>|undefined;
       try {
+        if (teachingEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: teachingEpoch.excludedRuns, reason: 'teaching_target' });
         if (memoryEpoch?.isolated) emit({ kind: 'memory_isolation', excludedRuns: memoryEpoch.blockedRunIds().length, reason: memoryEpoch.isolationReason });
         if (options.memory) memoryEpoch?.beginRun(options.memory.runId);
         if (skillEpoch) {

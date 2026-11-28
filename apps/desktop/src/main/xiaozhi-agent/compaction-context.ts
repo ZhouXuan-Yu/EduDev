@@ -3,7 +3,7 @@ import type { OmniEduStore } from '../db';
 import type {TaskView} from '../../shared/xiaozhi-task';
 
 /** Main-owned, same-conversation facts. A summary never grants new authority. */
-export async function getPiProtectedContext(store: OmniEduStore, sessionId: string, excludedRunIds: readonly string[] = [], task?:TaskView|null, sanitizeRequest?:(text:string)=>Promise<string>): Promise<string> {
+export async function getPiProtectedContext(store: OmniEduStore, sessionId: string, excludedRunIds: readonly string[] = [], task?:TaskView|null, sanitizeRequest?:(text:string)=>Promise<string>, allowedRuns?: ReadonlySet<string>): Promise<string> {
   const clean=sanitizeRequest||(async(text:string)=>(await store.sanitizeProblemText(text)).sanitizedText);
   const [controls, approvals, detail, changes, artifacts] = await Promise.all([
     store.xiaozhiState.controls(sessionId), store.xiaozhiState.approvals(sessionId), store.getAiConversationSession(sessionId),
@@ -11,28 +11,29 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
     store.xiaozhiState.officeArtifacts?.list(sessionId)||[],
   ]);
   const excluded = new Set(excludedRunIds);
-  const plans = controls.filter(item => item.kind === 'plan' && !excluded.has(item.runId));
-  const safeApprovals = approvals.filter(item => !excluded.has(item.runId));
-  const safeChanges = changes.filter(item => !excluded.has(item.runId));
-  const safeArtifacts=artifacts.filter(item=>!excluded.has(item.runId));
+  const canReplay = (runId: string) => !excluded.has(runId) && (!allowedRuns || allowedRuns.has(runId));
+  const plans = controls.filter(item => item.kind === 'plan' && canReplay(item.runId));
+  const safeApprovals = approvals.filter(item => canReplay(item.runId));
+  const safeChanges = changes.filter(item => canReplay(item.runId));
+  const safeArtifacts=artifacts.filter(item=>canReplay(item.runId));
   const taskSources=new Set(task?.sources.flatMap(source=>source.messageId?[source.messageId]:[])||[]);
-  const allRequests=teacherRequestSources(detail.messages,controls,excludedRunIds,task);
+  const allRequests=teacherRequestSources(detail.messages,controls,excludedRunIds,task,allowedRuns);
   const recent=new Set(allRequests.filter(s=>s.kind==='request').slice(-6).map(s=>s.sourceId));
   const requests=allRequests.filter(s=>recent.has(s.messageId||s.afterMessageId||'')||taskSources.has(s.messageId||s.afterMessageId||''))
     .sort((a,b)=>(a.sequence||0)-(b.sequence||0)||(a.kind==='request'?0:1)-(b.kind==='request'?0:1)||(a.appliedOrder||0)-(b.appliedOrder||0));
   const titles = new Set<string>();
   for (const message of detail.messages) {
-    if (excluded.has(String(message.metadata.agentRunId))) continue;
+    if (!canReplay(String(message.metadata.agentRunId))) continue;
     if (message.metadata.piVersion !== 'xiaozhi.pi.education.v1' || !Array.isArray(message.metadata.publicItems)) continue;
     for (const item of message.metadata.publicItems) {
       if (!item || item.kind !== 'tool' || !Array.isArray(item.sources)) continue;
       for (const source of item.sources) if (typeof source?.title === 'string') titles.add(source.title.slice(0, 200));
     }
   }
-  const learning=detail.session.studentId?(await store.learningReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId)):[];
-  const papers=(await store.papers?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId));
-  const practices=detail.session.studentId?(await store.practiceReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId)):[];
-  const questions=[...(await store.questionReviews?.list(sessionId).catch(()=>[])||[]),...(await store.originalQuestions?.list(sessionId).catch(()=>[])||[])].filter(item=>!excluded.has(item.runId));
+  const learning=detail.session.studentId?(await store.learningReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>canReplay(item.runId)):[];
+  const papers=(await store.papers?.list(sessionId).catch(()=>[])||[]).filter(item=>canReplay(item.runId));
+  const practices=detail.session.studentId?(await store.practiceReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>canReplay(item.runId)):[];
+  const questions=[...(await store.questionReviews?.list(sessionId).catch(()=>[])||[]),...(await store.originalQuestions?.list(sessionId).catch(()=>[])||[])].filter(item=>canReplay(item.runId));
   if (!requests.length&&!plans.length && !safeApprovals.length && !safeChanges.length && !safeArtifacts.length && !titles.size&&!learning.length&&!questions.length&&!practices.length&&!papers.length) return '';
   const lines = [
     '[小智本会话本地记录，非新增授权]',

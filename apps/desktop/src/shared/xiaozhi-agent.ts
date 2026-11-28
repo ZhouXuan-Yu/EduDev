@@ -69,7 +69,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind: 'usage'; usage: XiaozhiUsage }
   | { kind: 'verification'; verification: import('./xiaozhi-verification').TaskVerification }
   | { kind: 'compaction'; state: 'running' | 'completed' | 'failed'; id?: number; automatic?: boolean; error?: XiaozhiAgentError; tokensBefore?: number; estimatedTokensAfter?: number }
-  | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' }
+  | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' | 'teaching_target' }
   | { kind: 'skill_isolation'; excludedRuns: number; reason?: 'skill_authority' | 'interrupted_tool' }
   | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError; finishedAt?:number }
 ) & { /** SDK capture order, independent of asynchronous reasoning sanitization. */ traceOrder?:number; capturedAt?:number; schemaVersion?: 1; generation?: number; revision?: number; durability?: 'committed' | 'unavailable' };

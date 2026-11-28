@@ -212,8 +212,8 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
       text: `旧技能说明及其后续模型上下文已隔离（${event.excludedRuns} 轮）。原对话仍可查看；必要时请重述未完成事项，新写入仍需确认。` });
   } else if (event.kind === 'memory_isolation') {
     const id = `${turn.id}:memory-isolation`;
-    if (!next.items.some(item => item.id === id)) next.items.push({ id, kind: 'memory_isolation',traceSequence:event.sequence, label: event.reason === 'interrupted_tool' ? '中断的工具上下文已隔离' : '旧记忆上下文已隔离', status: 'completed',
-      text: `${event.reason === 'interrupted_tool' ? '未收到工具结果的旧运行' : '旧记忆引用之后的模型上下文'}已隔离（${event.excludedRuns} 轮）。原对话仍可查看；请在必要时重述未完成事项。新写入仍需确认。` });
+    if (!next.items.some(item => item.id === id)) next.items.push({ id, kind: 'memory_isolation',traceSequence:event.sequence, label: event.reason === 'interrupted_tool' ? '中断的工具上下文已隔离' : event.reason === 'teaching_target' ? '原授课对象的上下文已隔离' : '旧记忆上下文已隔离', status: 'completed',
+      text: `${event.reason === 'interrupted_tool' ? '未收到工具结果的旧运行' : event.reason === 'teaching_target' ? '原授课对象的模型上下文' : '旧记忆引用之后的模型上下文'}已隔离（${event.excludedRuns} 轮）。原对话仍可查看；请在必要时重述未完成事项。新写入仍需确认。` });
   } else if (event.kind === 'compaction') {
     const id = `${turn.id}:compaction${event.id === undefined ? '' : `:${event.id}`}`;
     let item = next.items.find(value => value.id === id);

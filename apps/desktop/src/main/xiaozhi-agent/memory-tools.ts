@@ -13,10 +13,10 @@ export type PiMemoryRuntime = {
   referenceRead?: PiMemoryRuntime['referenceReceived'];
   readHistoryPage?: (authority:string,request:HistoryPageRequest,signal?:AbortSignal) =>
     ReturnType<ReturnType<typeof createPiMemoryScope>['readHistoryPage']>;
-  trace: () => ReturnType<ReturnType<typeof createPiMemoryScope>['trace']>;
+  trace: (allowedRuns?: ReadonlySet<string>) => ReturnType<ReturnType<typeof createPiMemoryScope>['trace']>;
 };
 export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string, beforeDelivery: () => void,
-  personalIds?:()=>readonly string[]): ToolDefinition[] {
+  personalIds?:()=>readonly string[], allowedRuns?:()=>ReadonlySet<string>): ToolDefinition[] {
   const empty = { type: 'object', properties: {}, additionalProperties: false } as ToolDefinition['parameters'];
   const hex={type:'string',pattern:'^[a-f0-9]{64}$'};
   const parameters=runtime.readHistoryPage?{
@@ -58,7 +58,7 @@ export function createPiMemoryTools(runtime: PiMemoryRuntime, authority: string,
     { name: 'read_session_process', label: '查看本会话过程', description: '查看本会话最近运行的有界安全过程记录；不接受参数，不包含原问题正文、私人推理或其它会话记录。没有记录时如实返回空。', parameters:empty,
       execute: async (_callId, args, signal) => {
         if (!valid(args)) throw new Error('invalid_input');
-        signal?.throwIfAborted(); const trace = await runtime.trace(); signal?.throwIfAborted();
+        signal?.throwIfAborted(); const trace = await runtime.trace(allowedRuns?.()); signal?.throwIfAborted();
         return { content: [{ type: 'text', text: JSON.stringify({ trace }) }], details: { success: true } };
       } },
   ];

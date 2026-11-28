@@ -11,9 +11,10 @@ export const teacherRequestSourceVersion=(id:string,runId:string,text:string,rev
 /** Index existing local facts, never a second request ledger. Instructions follow
  * their owning run's user message; enqueue order is not application order. */
 export function teacherRequestSources(messages:Awaited<ReturnType<OmniEduStore['getAiConversationSession']>>['messages'],
-  controls:readonly PrivateControl[],excludedRunIds:readonly string[]=[],task?:TaskView|null):TeacherRequestSource[]{
+  controls:readonly PrivateControl[],excludedRunIds:readonly string[]=[],task?:TaskView|null,allowedRuns?: ReadonlySet<string>):TeacherRequestSource[]{
   const excluded=new Set(excludedRunIds),anchors=new Set(task?.sources.flatMap(s=>s.messageId?[s.messageId]:[])||[]);
   const teachers=messages.filter(m=>m.role==='user'&&m.metadata.piVersion==='xiaozhi.pi.education.v1'
+    &&(!allowedRuns || allowedRuns.has(String(m.metadata.agentRunId)))
     &&(!excluded.has(String(m.metadata.agentRunId))||anchors.has(m.id)));
   const requests:TeacherRequestSource[]=teachers.map((m,i)=>({sourceId:m.id,messageId:m.id,runId:String(m.metadata.agentRunId),
     kind:'request',sequence:i+1,text:m.content,sourceVersion:teacherRequestSourceVersion(m.id,String(m.metadata.agentRunId),m.content)}));

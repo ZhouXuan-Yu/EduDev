@@ -1268,7 +1268,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,paperExportIntent:owner?.paperExportIntent,sessionId:id,runId,wait,taskRuns:()=>paperTaskRuns(id,runId),runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       contextFacts:async()=>readTaskContextFacts(store,id,await tasks.committed(id)),
-      sanitizeFileText:async text=>(await createStudentContextSanitizer(store))(text),protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await (await createStudentContextSanitizer(store))(await deliveries.context(id,owner?.resumeDeliveryId,source=>prepareScienceLessonRefresh(store,source,questionAliases))))
+      sanitizeFileText:async text=>(await createStudentContextSanitizer(store))(text),protectedContext:async (excluded,allowedRuns)=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store),allowedRuns))+(await (await createStudentContextSanitizer(store))(await deliveries.context(id,owner?.resumeDeliveryId,source=>prepareScienceLessonRefresh(store,source,questionAliases),allowedRuns)))
         +(owner&&admittedPrompt?await preparePaperAdaptationContext(store.paperAdaptations,{sessionId:id,studentId,runId,prompt:admittedPrompt},questionAliases,owner.abort.signal,()=>!closing&&!owner.stopped&&active.get(id)===owner):'')
         +(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
       computationTools:managedComputationTools({service:owner?.computationScope||managedTools,capture:owner?.computationResults?.capture,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:async text=>(await createStudentContextSanitizer(store))(text)}),
@@ -1327,8 +1327,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         mockExamTool:mockExam.tool(()=>({sessionId:id,taskId:owner.task!.id,runId,generation:owner.publisher!.owner.generation,
           requirementsVersion:owner.task!.requirementsVersion}),()=>!closing&&active.get(id)===owner&&!owner.stopped,cleanPrompt),
       }:{}),
-      teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
-        load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
+      teacherRequestTools:(excluded,allowedRuns)=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+        load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task,allowedRuns?.());},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
       memory:{runId,authority:()=>memory.authority(id,memoryPolicy),
         personalReferences:(authority,requestId,query,tokens,signal)=>memory.personalReferences(id,authority,requestId,query,tokens,signal,memoryPolicy),
@@ -1337,7 +1337,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         readHistoryPage:(authority,request,signal)=>memory.readHistoryPage(id,authority,request,signal,memoryPolicy),
         referenceReceived:(scopeVersion,items)=>store.xiaozhiState.recordReferenceDelivery(id,runId,scopeVersion,items),
         referenceRead:(scopeVersion,items)=>store.xiaozhiState.recordReferenceReadback(id,runId,scopeVersion,items),
-        trace:()=>memory.trace(id)},
+        trace:allowedRuns=>memory.trace(id,allowedRuns)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId,{recoverableQuestion:!!owner&&!owner.goalId,checkCopyRefusal:async()=>{
         if (!active.get(id)?.turn.items.some(item=>item.kind==='tool'&&item.toolName==='office_copy_file')) return false;
         const [task,approvals]=await Promise.all([tasks.committed(id),store.xiaozhiState.permissions.approvalSnapshot(id)]);

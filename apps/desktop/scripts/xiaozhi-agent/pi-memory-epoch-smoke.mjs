@@ -5,6 +5,8 @@ import assert from 'node:assert/strict';
 import { randomUUID, createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
+const { createPiTeachingEpoch, teachingAuthority } = await import('../../src/main/xiaozhi-agent/native-teaching-epoch.ts');
+const {teacherRequestSources} = await import('../../src/main/xiaozhi-agent/request-sources.ts');
 const { createPiMemoryEpoch } = await import('../../src/main/xiaozhi-agent/native-memory-epoch.ts');
 const { createPiMemoryScope } = await import('../../src/main/xiaozhi-agent/memory-scope.ts');
 const { getPiProtectedContext } = await import('../../src/main/xiaozhi-agent/compaction-context.ts');
@@ -131,6 +133,81 @@ try {
   check('Protected SQLite projections cannot reintroduce tainted plans, titles or approval text; original facts persist', () => {
     assert(protectedText.includes('保留安全计划')); assert(protectedText.includes('保留安全资料')); assert(protectedText.includes('安全目标.txt')); assert(!protectedText.includes('秘密Q2'));
     assert.equal(JSON.stringify({ plans, approvals, messages }), beforeFacts);
+  });
+  check('A new teaching target isolates the full former model history and survives switching back and cold reopen', () => {
+    const springA = teachingAuthority('folder-a', '2026-spring');
+    const springB = teachingAuthority('folder-b', '2026-spring');
+    const fallA = teachingAuthority('folder-a', '2026-fall');
+    let native = newManager();
+    const originalRun = uuid();
+    createPiTeachingEpoch(native, springB);
+    let current = createPiMemoryEpoch(native, A);
+    current.beginRun(originalRun);
+    const oldUser = native.appendMessage({role:'user',content:'旧班任务',timestamp:Date.now()});
+    native.appendMessage(assistant('旧班普通工具的派生标题'));
+    native.appendCompaction('旧班压缩内容',oldUser,5000);
+    const original = fs.readFileSync(native.getSessionFile());
+
+    native = reopen(native);
+    const stable = createPiTeachingEpoch(native, springB);
+    assert(!stable.isolated);
+    assert(stable.allowedRuns().has(originalRun));
+    assert(context(native).includes('旧班压缩内容'));
+
+    const switched = createPiTeachingEpoch(native, springA);
+    assert(switched.isolated);
+    assert.equal(switched.excludedRuns,1);
+    assert.deepEqual([...switched.allowedRuns()],[]);
+    assert.equal(context(native),'[]');
+    assert(fs.readFileSync(native.getSessionFile()).subarray(0,original.length).equals(original));
+
+    native = reopen(native);
+    assert(!createPiTeachingEpoch(native,springA).isolated);
+    current = createPiMemoryEpoch(native,B);
+    const springRun = uuid();
+    current.beginRun(springRun);
+    native.appendMessage({role:'user',content:'新班春季任务',timestamp:Date.now()});
+    assert(createPiTeachingEpoch(native,fallA).isolated);
+    assert.equal(context(native),'[]');
+
+    const returned = createPiTeachingEpoch(reopen(native),springB);
+    assert(returned.isolated);
+    assert.equal(returned.excludedRuns,2);
+    assert(!returned.allowedRuns().has(originalRun));
+  });
+  check('Legacy unbound continuity remains available; an existing unclassified model history is never adopted into a confirmed class', () => {
+    const native = newManager();
+    native.appendMessage({role:'user',content:'未标注的旧班请求',timestamp:Date.now()});
+    native.appendMessage(assistant('旧资料结果'));
+    const older = context(native);
+    assert(!createPiTeachingEpoch(native,teachingAuthority(undefined,undefined)).isolated);
+    assert.equal(context(native),older);
+    const upgraded = createPiTeachingEpoch(reopen(native),teachingAuthority('folder-c','2026-spring'));
+    assert(upgraded.isolated);
+    assert.equal(upgraded.allowedRuns().size,0);
+    assert.equal(context(reopen(native)),'[]');
+    const alreadyBoundLegacy = newManager();
+    alreadyBoundLegacy.appendMessage({role:'user',content:'已绑定旧库中的未标注文本',timestamp:Date.now()});
+    assert(createPiTeachingEpoch(reopen(alreadyBoundLegacy),teachingAuthority('folder-c','2026-spring')).isolated);
+    assert.equal(context(reopen(alreadyBoundLegacy)),'[]');
+  });
+  const storedRequests = [safeId,taintedId].map(runId => ({
+    id:runId,role:'user',content:runId === safeId ? '当前班级要求' : '另一班级私有要求',
+    metadata:{agentRunId:runId,piVersion:'xiaozhi.pi.education.v1'},
+  }));
+  const oldTask = {sources:[{messageId:taintedId}]};
+  check('A Task source link cannot make another teaching branch readable through the request tool', () => {
+    const readable=teacherRequestSources(storedRequests,[],[taintedId],oldTask,new Set([safeId]));
+    assert.deepEqual(readable.map(request=>request.sourceId),[safeId]);
+    assert.equal(teacherRequestSources(storedRequests,[],[taintedId],oldTask).length,2);
+  });
+  const classProjectionStore={...projectionStore,getAiConversationSession:async()=>({session:{},messages:[...storedRequests,...messages]})};
+  const classContext=await getPiProtectedContext(classProjectionStore,sessionId,[],oldTask,undefined,new Set([safeId]));
+  check('Protected context uses the same current branch proof for task anchors, titles and receipts', () => {
+    assert(classContext.includes('当前班级要求'));
+    assert(classContext.includes('保留安全资料'));
+    assert(!classContext.includes('另一班级私有要求'));
+    assert(!classContext.includes('秘密Q2'));
   });
   report.success = true;
 } catch (error) { report.failure = String(error.stack).slice(0, 2200); process.exitCode = 1; }

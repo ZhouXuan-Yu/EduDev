@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { teachingAuthority } from './native-teaching-epoch';
 import type { OmniEduStore } from '../db';
 import type { XiaozhiMemoryCatalogInput, XiaozhiMemoryCatalogResult, XiaozhiMemoryPreview,
   XiaozhiMemoryScope, XiaozhiMemoryScopeInput, XiaozhiMemorySource, XiaozhiMemoryTrace } from '../../shared/xiaozhi-memory';
@@ -54,7 +55,9 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
   }
   async function availableSession(id: string, allowArchived = false) {
     if (!validMemorySession(id)) throw new Error('invalid_input');
-    if ((await store.getAiConversationSession(id)).session.archivedAt && !allowArchived) throw new Error('permission_denied');
+    const { session } = await store.getAiConversationSession(id);
+    if (session.archivedAt && !allowArchived) throw new Error('permission_denied');
+    return session;
   }
   async function scope(id: string): Promise<XiaozhiMemoryScope> {
     if (!validMemorySession(id)) throw Error('invalid_input');
@@ -107,7 +110,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
   }
 
   async function authority(id: string,policy?:RunMemoryPolicy) {
-    await availableSession(id);
+    const session = await availableSession(id);
     const saved = await scopeForRun(id,policy);
     const current: Array<{ id: string; fingerprint: string | null; state: string }> = [];
     const cache = new Map<string, MemoryFact[] | null>();
@@ -129,7 +132,9 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         : fact.status !== 'active' ? 'disabled' : fact.version !== item.version || fact.fingerprint !== item.fingerprint ? 'changed' : 'ready' });
     }
     if (JSON.stringify(saved) !== JSON.stringify(await scopeForRun(id,policy))) throw new Error('memory_scope_changed');
-    return { fingerprint: createHash('sha256').update(JSON.stringify({ saved, current })).digest('hex'),
+    if (saved.teachingTarget && (session.folderId !== saved.teachingTarget.folderId || session.studentId)) throw Error('memory_scope_changed');
+    const teaching = teachingAuthority(saved.teachingTarget?.folderId, saved.teachingTarget?.term);
+    return { teaching, fingerprint: createHash('sha256').update(JSON.stringify({ saved, current })).digest('hex'),
       enabled: saved.enabled, valid: current.every(item => ['ready','history_unavailable','personal_unavailable'].includes(item.state)), version: saved.version,
       history: saved.enabled&&saved.selections.some(item=>item.layer==='history'&&current.some(row=>row.id===item.id&&row.state==='ready')),
       personal:saved.enabled&&saved.selections.some(item=>item.layer==='personal'&&current.some(row=>row.id===item.id&&
@@ -288,9 +293,9 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           total: list.length, hasMore: input.offset + entries.length < list.length, entries } };
       } catch (error) { return { ok: false, error: error instanceof Error && error.message === 'permission_denied' ? 'permission_denied' : 'configuration' }; }
     },
-    async trace(id: string): Promise<XiaozhiMemoryTrace | null> {
+    async trace(id: string, allowedRuns?: ReadonlySet<string>): Promise<XiaozhiMemoryTrace | null> {
       await availableSession(id);
-      const row = (await store.xiaozhiState.runs(id)).at(-1);
+      const row = (await store.xiaozhiState.runs(id)).findLast(run => !allowedRuns || allowedRuns.has(String(run.id)));
       if (!row) return null; // Never fall back to another conversation's latest run.
       const result = await store.getAiMemoryTrace(String(row.id), 30);
       return { runId: String(row.id), status: result.status, events: result.events.map(event => ({

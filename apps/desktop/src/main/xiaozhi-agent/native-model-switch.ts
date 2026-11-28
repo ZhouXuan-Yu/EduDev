@@ -3,6 +3,7 @@ import path from 'node:path';
 import type { AgentSession, SessionManager } from '@earendil-works/pi-coding-agent';
 import { assertHanaModelSwitchContext } from './vendor/hana/core/model-switch-context';
 import { validateNativeAuthorityEntries } from './native-authority-epoch';
+import {TEACHING_ISOLATION,validTeachingIsolation} from './native-teaching-epoch';
 import { validModelIdentity, type createModelSwitchState, type ModelIdentity, type ModelTransition } from './model-switch-state';
 
 const PROVIDER = 'xiaozhi_deepseek';
@@ -76,17 +77,20 @@ function proof(manager: SessionManager, value: ModelTransition): { intent: Entry
   if (value.status === 'committed' && (value.modelEntryId !== change.id || value.receiptEntryId !== receipt?.id)) throw new Error('configuration');
   return { intent, change, receipt };
 }
+export type NativeModelAuthorities = { memory?: string; skills?: string; teaching?: string };
+
 function isolation(manager: SessionManager, leaf?: string) {
   const branch = manager.getBranch(leaf);
-  const anchor = [...branch].reverse().find(entry => entry.type === 'custom' && ['xiaozhi.memory.isolation.v1','xiaozhi.skills.isolation.v1'].includes(entry.customType));
+  const anchor = [...branch].reverse().find(entry => entry.type === 'custom' && ['xiaozhi.memory.isolation.v1','xiaozhi.skills.isolation.v1',TEACHING_ISOLATION].includes(entry.customType));
   if (!anchor) return null;
   const tail = branch.slice(branch.indexOf(anchor)+1);
   if (tail.some(entry => !['custom','thinking_level_change','model_change'].includes(entry.type))) throw new Error('configuration');
   return anchor;
 }
-function verifiedIsolation(manager: SessionManager, authorities: { memory?: string; skills?: string }) {
+function verifiedIsolation(manager: SessionManager, authorities: NativeModelAuthorities) {
   const anchor=isolation(manager); if (!anchor || anchor.type!=='custom') throw new Error('configuration');
-  const namespace=anchor.customType==='xiaozhi.memory.isolation.v1'?'memory':'skills';
+  const namespace=anchor.customType===TEACHING_ISOLATION?'teaching':anchor.customType==='xiaozhi.memory.isolation.v1'?'memory':'skills';
+  if(namespace==='teaching'&&(!validTeachingIsolation(anchor.data)||anchor.data.authority!==authorities.teaching))throw Error('configuration');
   if (!authorities[namespace] || manager.getBranch().some(entry=>entry.type==='custom' && ['xiaozhi.memory.taint.v1','xiaozhi.skills.taint.v1'].includes(entry.customType)
     && (entry.data as {authority:string}).authority!==authorities[entry.customType==='xiaozhi.memory.taint.v1'?'memory':'skills'])) throw new Error('configuration');
   return anchor;
@@ -204,7 +208,7 @@ export function createNativeModelSwitch(options: { state: State; root: string;
   return {
     recover,
     authorize: (manager: SessionManager,id: string) => recover(manager,id,true),
-    async beforeAuthorityLoad(manager: SessionManager,current: ModelIdentity,authorities: {memory?:string;skills?:string}) {
+    async beforeAuthorityLoad(manager: SessionManager,current: ModelIdentity,authorities: NativeModelAuthorities) {
       options.assertIdle(); assertIdentity(manager,current,options.root);
       const rows=await options.state.activeTransitions(current);
       audit(manager,current,rows,true,await options.state.baseline(current.sessionId));
@@ -222,7 +226,7 @@ export function createNativeModelSwitch(options: { state: State; root: string;
       await options.state.seed(value,baseline); audit(manager,value,await options.state.activeTransitions(value),false,baseline);
       return value;
     },
-    async alignAuthorityBranch(session: AgentSession, current: ModelIdentity, authorities: { memory?: string; skills?: string }) {
+    async alignAuthorityBranch(session: AgentSession, current: ModelIdentity, authorities: NativeModelAuthorities) {
       options.assertIdle(); const manager=session.sessionManager; assertIdentity(manager,current,options.root);
       const rows=await options.state.activeTransitions(current), baseline=await options.state.baseline(current.sessionId); audit(manager,current,rows,true,baseline);
       let pending=restores(manager,current,rows,new Set());

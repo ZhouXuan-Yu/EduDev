@@ -21,7 +21,9 @@ const filePrefix=physics?'浮力与物体浮沉':'等式变形学案';
 const generatedFixture=process.argv.includes('--generated-fixture');
 const liveExport=process.argv.includes('--live-export');
 const partialEdit=process.argv.includes('--partial-then-edit');
-const classSwitch=process.argv.includes('--switch-before-export');
+const sameSession=process.argv.includes('--two-class-tasks');
+const classSwitch=sameSession||process.argv.includes('--switch-before-export');
+const alternateRule='青杉复核先圈后算';
 if(classSwitch)assert(liveExport && baseline.authority?.confirmedVersion && baseline.authority.taskScope.classRef==='B');
 if(partialEdit)assert(baseline.authority?.confirmedVersion,'This lane requires the confirmed teacher-edited fixture');
 const apiKey=liveExport||partialEdit?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
@@ -63,7 +65,7 @@ async function launch(cold=false,settleOnOriginal=true){
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{cold,liveExport,title,partialPath,classSwitch,protectedTerms})=>{
+  await app.evaluate(({net},{cold,liveExport,title,partialPath,classSwitch,protectedTerms,alternateRule})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
     if(partialPath&&!cold){
       const disk=process.getBuiltinModule('node:fs'),link=disk.linkSync;
@@ -90,7 +92,18 @@ async function launch(cold=false,settleOnOriginal=true){
         if(liveExport||state.liveEdit){
           if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
           const request={phase,index,status:0};
-          if(classSwitch && phase==='alternate')request.containsOriginal=protectedTerms.some(term=>JSON.stringify(body.messages).includes(term));
+          if(classSwitch && (phase==='alternate'||phase==='class-a-document')){
+            const messages=JSON.stringify(body.messages);
+            request.containsOriginal=protectedTerms.some(term=>messages.includes(term));
+            if(request.containsOriginal)request.priorSourceMatches=body.messages.flatMap((message,index)=>{
+              const text=JSON.stringify(message.content);
+              return protectedTerms.flatMap((term,termIndex)=>{
+                const offset=text.indexOf(term);
+                return offset<0?[]:[{index,role:message.role,termIndex,excerpt:text.slice(Math.max(0,offset-55),offset+term.length+25)}];
+              });
+            });
+            request.containsAlternate=messages.includes(alternateRule);
+          }
           state.requests.push(request);
           const response=await remote(input,init);
           request.status=response.status;
@@ -144,7 +157,7 @@ async function launch(cold=false,settleOnOriginal=true){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport,title,classSwitch,protectedTerms:classSwitch?[title,baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
+  },{cold,liveExport,title,classSwitch,alternateRule,protectedTerms:classSwitch?[title,baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -248,7 +261,8 @@ async function switchClassAndReopen(version){
   const target=await confirmTeachingTarget(until,app,page,alternate,{...baseline.authority.taskScope,classRef:'A'});
   assert.notEqual(target.folder,baseline.authority.teachingTarget.folderId);
   await app.evaluate(()=>Object.assign(globalThis.handoutExportTest,{phase:'alternate',index:0}));
-  await page.getByTestId('office-prompt-input').fill('给 A 班写两句课前口算热身提示。直接在聊天里给出，不创建文件。');
+  const alternatePrompt='给 A 班写两句课前口算热身提示。直接在聊天里给出，不创建文件。'+(sameSession?'我们班的口算约定是“'+alternateRule+'”。':'');
+  await page.getByTestId('office-prompt-input').fill(alternatePrompt);
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   const alternative=await until(async()=>{
     const state=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),alternate);
@@ -277,9 +291,79 @@ async function switchClassAndReopen(version){
   const current=await snapshot();
   assert.deepEqual(current.memoryScope.selections.map(ref=>ref.id).sort(),[...baseline.authority.selectedIds].sort());
   assert.equal(version.id,baseline.authority.confirmedVersion);
-  report.classSwitch={alternateSession:alternate,alternateTask:alternative.task.id,originalSession:sessionId,
+  const alternateMessage=sql("SELECT id FROM ai_conversation_messages WHERE session_id=? AND role='user' AND content=?",[alternate,alternatePrompt])[0];
+  assert(alternateMessage);
+  report.classSwitch={alternateSession:alternate,alternateMessage:alternateMessage.id,alternateTask:alternative.task.id,originalSession:sessionId,
     originalTask:current.task?.id,version:version.id,sourceCount:current.memoryScope.selections.length,alternateRequests:wire};
   check('An independent A-class task received no protected B material; cold return restores the original selected sources and version');
+}
+
+async function verifyTwoClassTasks(){
+  const {alternateSession,alternateMessage}=report.classSwitch;
+  await app.close();app=undefined;await launch();
+  const before=(await snapshot()).task;
+  assert.equal(before.state,'review_required');
+  const relation=async taskId=>{
+    const result=await page.evaluate(query=>window.omniEdu.getXiaozhiWorkbenchSummary(query),{schemaVersion:1,kind:'task_artifacts',sessionId,taskId});
+    assert(result.ok && !result.value.partial);
+    return result.value.items.filter(item=>item.relation==='produced').map(item=>({id:item.artifactId,version:item.version})).sort((x,y)=>x.id.localeCompare(y.id));
+  };
+  const bFiles=facts(),bRelations=await relation(before.id);
+  assert.equal(bFiles.length,2);
+  assert.deepEqual(bRelations.map(row=>row.id),bFiles.map(row=>row.id).sort());
+  const review=page.getByTestId('pi-task-review').last(),toggle=review.getByTestId('pi-task-review-toggle');
+  if(await toggle.getAttribute('aria-expanded')!=='true')await toggle.click();
+  await review.getByTestId('pi-task-cancel').click();
+  await review.getByTestId('pi-task-confirm-cancel').click();
+  await until(async()=>(await snapshot()).task?.state==='ended');
+  await confirmTeachingTarget(until,app,page,sessionId,{...baseline.authority.taskScope,classRef:'A'});
+  const opening=app.waitForEvent('window');
+  await page.getByRole('button',{name:'设置',exact:true}).click();
+  const settings=await opening;
+  await settings.getByTestId('pi-settings-tab-teacher-memory').click();
+  await settings.getByTestId('history-settings-session').selectOption(alternateSession);
+  const record=settings.getByTestId('history-settings-source-'+alternateMessage);
+  await record.getByRole('button',{name:'查看来源'}).click();
+  await record.getByTestId('history-settings-allow').click();
+  await settings.getByTestId('history-settings-notice').getByText(/已允许查找/).waitFor();
+  await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
+  const request='为 A 班新建一份独立的课堂复核讲义，将我选择的 A 班口算约定逐字写在正文第一行，再给一条例题。请生成 Word《A班课堂复核讲义.docx》，等我确认保存。';
+  await page.getByTestId('office-prompt-input').fill(request);
+  await page.getByTestId('history-lookup-open').click();
+  await page.getByTestId('history-lookup-query').fill('口算约定');
+  await page.getByTestId('history-lookup-search').click();
+  await page.getByTestId('history-candidate-'+alternateMessage).click();
+  await page.getByTestId('history-lookup-preview').getByText(new RegExp(alternateRule)).waitFor();
+  await page.getByTestId('history-lookup-use').click();
+  await page.getByTestId('history-intent-pending').waitFor();
+  await app.evaluate(()=>Object.assign(globalThis.handoutExportTest,{phase:'class-a-document',index:0}));
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  const approval=page.getByTestId('pi-office-approve').last();
+  await readyApproval(approval);
+  await approval.click();
+  await until(()=>facts().length===3);
+  const wire=await settle();
+  const item=facts().find(f=>!bFiles.some(b=>b.id===f.id));
+  const written=docx(item.file_path);
+  assert(written.text.includes(alternateRule));
+  assert(baseline.authority.fileExpectations.required.every(value=>!written.text.includes(value)));
+  const aTask=(await snapshot()).task;
+  assert.notEqual(aTask.id,before.id);
+  assert(wire.requests.length && wire.requests.every(call=>call.status===200 && !call.containsOriginal));
+  assert(wire.requests.some(call=>call.containsAlternate));
+  const aRelations=await relation(aTask.id);
+  assert.deepEqual(aRelations.map(row=>row.id),[item.id]);
+  const receipts=sql('SELECT run_id,source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=?',[aTask.lastRunId]);
+  assert(receipts.length && receipts.every(r=>!baseline.authority.selectedIds.includes(r.source_id)));
+  await app.close();app=undefined;await launch(true);
+  assert.deepEqual(await relation(before.id),bRelations);
+  assert.deepEqual(await relation(aTask.id),aRelations);
+  assert.equal((await snapshot()).task.id,aTask.id);
+  for(const file of [...bFiles,item])assert.equal(sha(file.file_path),file.content_hash);
+  assert.deepEqual((await app.evaluate(()=>globalThis.handoutExportTest)).requests,[]);
+  report.sameSession={sessionId,bTask:before.id,aTask:aTask.id,bRelations,aRelations,receipts,requests:wire.requests,
+    documents:[...bFiles,item].map(file=>({id:file.id,digest:file.content_hash}))};
+  check('Two tasks in one conversation keep their class sources, approved file versions and task relations on cold reopening');
 }
 
 async function runExport(){
@@ -432,6 +516,7 @@ async function runExport(){
 
 try{
   await runExport();
+  if(sameSession)await verifyTwoClassTasks();
   report.ok=true;
 }catch(error){
   report.errors.push(String(error?.stack||error));

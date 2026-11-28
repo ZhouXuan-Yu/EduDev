@@ -350,9 +350,9 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const row=await owned(sessionId,id);
    return await checkMockExamResume(row,signal)?row.taskVersion:null;
   },
-  async context(sessionId:string,boundId?:string,refresh?:(source:LessonSource)=>Promise<unknown>){
+  async context(sessionId:string,boundId?:string,refresh?:(source:LessonSource)=>Promise<unknown>,allowedRuns?:ReadonlySet<string>){
    const all=await options.state.list(sessionId),superseded=new Set(all.map(r=>r.parentId));
-   const rows=all.filter(r=>(boundId?r.id===boundId:!superseded.has(r.id))&&['partial','interrupted','failed','conflict'].includes(r.state)).slice(-4);
+   const rows=all.filter(r=>(boundId?r.id===boundId:!superseded.has(r.id)&&(!allowedRuns||allowedRuns.has(r.runId)))&&['partial','interrupted','failed','conflict'].includes(r.state)).slice(-4);
    if(!rows.length)return '';
    const bundles=await Promise.all(rows.map(async row=>{const view=await summary(row);return {bundleId:row.id,state:row.state,
     ...(view.mockExam?{note:'模考 Word/PDF 沿原计划和该 bundleId 续做。只传 resumeBundleId，目标被占用时只为未保存成员指定同格式的新相对文件名。'}:{}),...(lessonSourceChanged(row)?{sourceRefresh:{previousLessonBundleId:row.id,...(boundId&&refresh?{currentQuestion:await refresh(row.lesson!.source)}:{}),note:'旧题源不可续写，必须本轮完整读取同一原题的当前版本，再用scienceLesson+previousLessonBundleId和新文件名前缀重编。检索别名不代表完整读取；不改成自拟题。'}}:{}),files:await Promise.all(view.files.map(async f=>({fileId:f.fileId,path:await options.sanitize(f.kind,f.path),state:f.change?.state??f.artifact?.state??'not_proposed'})))};}));
