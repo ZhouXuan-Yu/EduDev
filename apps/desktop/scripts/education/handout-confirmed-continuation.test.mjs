@@ -58,3 +58,9 @@ test('teacher can resume a handout and explicitly defer export',()=>{
   }
   assert(handouts.handoutExportRequest('请把现有讲义导出为 Word。'));
 });
+
+test('a joint instruction to defer editing and export cannot create an export capability',()=>{
+  for(const prompt of ['请继续《初中函数学案》，先核对已确认的版本，暂不更改或导出。','继续昨天的讲义，暂不修改和导出。'])
+    assert.equal(handouts.handoutExportRequest(prompt),false);
+  assert.equal(handouts.handoutExportRequest('请继续现有讲义，暂不修改，直接导出。'),true);
+});
