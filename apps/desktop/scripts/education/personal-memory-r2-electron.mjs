@@ -1,3 +1,4 @@
+import {captureTeacherAction, sizeTeacherJourney} from '../acceptance/teacher-journey-viewport.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -91,6 +92,7 @@ async function launch() {
     };
   });
   page=await app.firstWindow();
+  await sizeTeacherJourney(page);
   await page.getByTestId('office-prompt-input').waitFor();
   await assertIsolatedPiMain(app,main,profile);
 }
@@ -171,6 +173,7 @@ async function fastPath(){
   const before=(await wire()).length;
   const follow=await send('请讲解为什么凸透镜能在纸上形成太阳的像。');
   assert((await wire()).slice(before).some(r=>r.preference.some(message=>message.includes('先给提示，再给答案'))));
+  await captureTeacherAction(page,page.getByTestId('office-prompt-input'),root,'after-cross-session-use',report);
   check('a separate teaching conversation receives the committed preference',{runId:follow.id});
   await fresh();
   const narrow=await send('以后高一三班的讲义优先用表格并先给答案。请简单回应。');

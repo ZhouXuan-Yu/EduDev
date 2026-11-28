@@ -1,3 +1,5 @@
+import {confirmTeachingTarget} from '../acceptance/confirm-teaching-target.mjs';
+import {captureTeacherAction,sizeTeacherJourney} from '../acceptance/teacher-journey-viewport.mjs';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
@@ -19,6 +21,8 @@ const filePrefix=physics?'浮力与物体浮沉':'等式变形学案';
 const generatedFixture=process.argv.includes('--generated-fixture');
 const liveExport=process.argv.includes('--live-export');
 const partialEdit=process.argv.includes('--partial-then-edit');
+const classSwitch=process.argv.includes('--switch-before-export');
+if(classSwitch)assert(liveExport && baseline.authority?.confirmedVersion && baseline.authority.taskScope.classRef==='B');
 if(partialEdit)assert(baseline.authority?.confirmedVersion,'This lane requires the confirmed teacher-edited fixture');
 const apiKey=liveExport||partialEdit?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
 assert(apiKey,'A configured test model is required');
@@ -54,12 +58,12 @@ async function until(read,timeout=75000){
   }
   throw Error('Timed out while waiting for Electron or SQLite');
 }
-async function launch(cold=false){
+async function launch(cold=false,settleOnOriginal=true){
   const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{cold,liveExport,title,partialPath})=>{
+  await app.evaluate(({net},{cold,liveExport,title,partialPath,classSwitch,protectedTerms})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
     if(partialPath&&!cold){
       const disk=process.getBuiltinModule('node:fs'),link=disk.linkSync;
@@ -75,6 +79,7 @@ async function launch(cold=false){
     net.fetch=async(input,init)=>{
       const url=new URL(typeof input==='string'?input:input.url);
       if(url.origin==='https://api.deepseek.com'&&url.pathname==='/v1/models'){
+        if(classSwitch&&!cold)return remote(input,init);
         return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:32768}]}),
           {headers:{'content-type':'application/json'}});
       }
@@ -85,6 +90,7 @@ async function launch(cold=false){
         if(liveExport||state.liveEdit){
           if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
           const request={phase,index,status:0};
+          if(classSwitch && phase==='alternate')request.containsOriginal=protectedTerms.some(term=>JSON.stringify(body.messages).includes(term));
           state.requests.push(request);
           const response=await remote(input,init);
           request.status=response.status;
@@ -138,11 +144,12 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport,title,partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
+  },{cold,liveExport,title,classSwitch,protectedTerms:classSwitch?[title,baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
-  await until(async()=>await page.locator('.office-composer-container').getAttribute('data-session-id')===sessionId);
+  if(settleOnOriginal)await until(async()=>await page.locator('.office-composer-container').getAttribute('data-session-id')===sessionId);
+  else await page.getByTestId('office-prompt-input').waitFor();
 }
 const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);
 const ledger=()=>sql("SELECT relative_path,state,draft_json,result_path,artifact_id FROM xiaozhi_pi_office_drafts WHERE format='docx'");
@@ -234,6 +241,47 @@ async function verifyPartialEdit(version){
   check('A cold continuation applies the named third-question edit in the same Task without modifying the earlier DOCX or pending delivery',{task:active.id,unchangedBlocks:before.blocks.length-1,digest:saved.content_hash});
 }
 
+async function switchClassAndReopen(version){
+  const session=()=>page.locator('.office-composer-container').getAttribute('data-session-id');
+  await page.getByTestId('pi-new-session').click();
+  const alternate=await until(async()=>{const id=await session();return id?.startsWith('aisession_')&&id!==sessionId?id:null;});
+  const target=await confirmTeachingTarget(until,app,page,alternate,{...baseline.authority.taskScope,classRef:'A'});
+  assert.notEqual(target.folder,baseline.authority.teachingTarget.folderId);
+  await app.evaluate(()=>Object.assign(globalThis.handoutExportTest,{phase:'alternate',index:0}));
+  await page.getByTestId('office-prompt-input').fill('给 A 班写两句课前口算热身提示。直接在聊天里给出，不创建文件。');
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  const alternative=await until(async()=>{
+    const state=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),alternate);
+    const turn=state.projection.turns.at(-1);
+    if(!turn||state.running)return;
+    assert.equal(turn.status,'completed',turn.error);
+    return state;
+  });
+  const wire=await app.evaluate(()=>globalThis.handoutExportTest.requests);
+  assert(alternative.task?.id && alternative.memoryScope.selections.length===0);
+  assert(wire.length && wire.every(call=>call.status===200 && call.containsOriginal===false));
+  assert.equal(sql('SELECT COUNT(*) AS n FROM document_artifacts WHERE session_id=?',[alternate])[0].n,0);
+  await app.close();app=undefined;
+  await launch(false,false);
+  if(await session()!==sessionId){
+    const original=page.getByTestId('workbench-session-'+sessionId).filter({visible:true}).first();
+    if(!await original.isVisible()){
+      const folderName=await page.evaluate(async id=>(await window.omniEdu.listAiConversations()).folders.find(f=>f.id===id)?.name,
+        baseline.authority.teachingTarget.folderId);
+      assert(folderName);
+      await page.getByRole('button',{name:folderName,exact:true}).click();
+    }
+    await original.click();
+  }
+  await until(async()=>await session()===sessionId);
+  const current=await snapshot();
+  assert.deepEqual(current.memoryScope.selections.map(ref=>ref.id).sort(),[...baseline.authority.selectedIds].sort());
+  assert.equal(version.id,baseline.authority.confirmedVersion);
+  report.classSwitch={alternateSession:alternate,alternateTask:alternative.task.id,originalSession:sessionId,
+    originalTask:current.task?.id,version:version.id,sourceCount:current.memoryScope.selections.length,alternateRequests:wire};
+  check('An independent A-class task received no protected B material; cold return restores the original selected sources and version');
+}
+
 async function runExport(){
   const sources=sql('SELECT id,local_path FROM teacher_resources');
   for(const source of sources){
@@ -246,7 +294,9 @@ async function runExport(){
   const [version]=sql("SELECT id,digest FROM teaching_book_versions WHERE book_id=? AND kind='confirmed' ORDER BY revision DESC LIMIT 1",[bookId]);
   assert(version);
   await launch();
+  if(classSwitch)await switchClassAndReopen(version);
   await page.setViewportSize({width:1366,height:768});
+  await sizeTeacherJourney(page);
   await send('bundle');
   const bundle=page.getByTestId('pi-delivery-bundle').last(),approve=bundle.getByTestId('pi-delivery-approve');
   await readyApproval(approve);
@@ -262,7 +312,9 @@ async function runExport(){
     assert.equal(draft.handoutSource.audience,row.relative_path.includes('学生版')?'student':'teacher');
   }
   assert.equal(ledger().length,2,'The swapped names must not add approval rows.');
-  await page.screenshot({path:path.join(output,'pending-1366.png'),animations:'disabled'});
+  const size=page.viewportSize();
+  await page.screenshot({path:path.join(output,'pending-'+size.width+'.png'),animations:'disabled'});
+  await captureTeacherAction(page,approve,output,'confirmed-handout-export',report);
   await approve.click();
   if(partialEdit)return verifyPartialEdit(version);
   await until(()=>ledger().filter(row=>row.state==='saved').length===2);

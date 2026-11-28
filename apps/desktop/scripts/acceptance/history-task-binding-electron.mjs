@@ -1,3 +1,4 @@
+import {captureTeacherAction, sizeTeacherJourney} from './teacher-journey-viewport.mjs';
 import {confirmTeachingTarget} from './confirm-teaching-target.mjs';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -286,6 +287,7 @@ async function launch(){
     };
   },{marker,alternateMarker,spent:report.provider.length});
   page=await app.firstWindow();
+  await sizeTeacherJourney(page);
   await composer().waitFor();
   await assertIsolatedPiMain(app,main,profile);
 }
@@ -628,6 +630,8 @@ async function runHistoryJourney(){
     pass('Exact title with discovery consent alone opens the existing confirmation before admitting any Run');
     await page.getByTestId('history-lookup-search').click();
     await page.getByTestId('history-candidate-'+row.id).click();
+    await page.getByTestId('history-lookup-preview').getByText(source,{exact:true}).waitFor();
+    await captureTeacherAction(page,page.getByTestId('history-lookup-use-session'),root,'before-history-consent',report);
     await page.getByTestId('history-lookup-use-session').click();
     await page.getByTestId('history-use-selection').waitFor();
     if(receiptFailure)await app.evaluate(()=>{globalThis.failHistoryTaskAfterAcknowledgement=true;});
