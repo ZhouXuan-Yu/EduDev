@@ -69,6 +69,17 @@ try{
   }
   assert(toolbar);
   await toolbar.getByTestId('browser-address').waitFor();
+  if(process.argv.includes('--pointer')){
+    const control=toolbar.getByTestId('pi-browser-owner');
+    await toolbar.getByText('老师操作中',{exact:true}).waitFor();
+    assert.equal(await control.innerText(),'交还小智');
+    await control.click();
+    await toolbar.getByRole('button',{name:'获得控制权',exact:true}).waitFor();
+    await control.click();
+    await toolbar.getByText('老师操作中',{exact:true}).waitFor();
+    checks.push('The standalone window can hand back and retake control through the same status strip');
+  }
+
   await toolbar.getByRole('button',{name:'后退',exact:true}).click();
   await toolbar.getByRole('button',{name:'教研一',exact:true}).waitFor();
   await toolbar.getByRole('button',{name:'放回对话',exact:true}).click();

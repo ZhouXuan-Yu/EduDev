@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "206fee4ef3a5e7b403e4efb4412acd0ae79b39f51cd4102fd0f881d5a102d6cd",
+  "sourceHash": "c37f5937c258214a00397bb34cf5807618d5a0666958f055c96c45baa02f7a51",
   "sources": [
     {
       "file": "package-lock.json",
@@ -848,7 +848,11 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "fa534498918943f5ab49df81d34c85ad9d70189107deb5918cd9651227639f81"
+      "sha256": "89f98545c7fe9e5f0e35dc695f1207ed641e37913947456d83151f1737cdd1ca"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/browser-pointer.ts",
+      "sha256": "39570823914127ef81618e3bad13337b2a42dda86ae02e6bbb604bfa133c4a43"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-proxy.ts",
@@ -856,7 +860,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-surface.ts",
-      "sha256": "5a3dc12cab0ff47e30f95a48e37bf9bc3fec5f92bf23de27d7f32c4509630da8"
+      "sha256": "d147279bd5d6e6a3726b4342309e0cba28c84b2226aa96b5598830453d485d86"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-tools.ts",
@@ -964,7 +968,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "8cccad559e4dcfadfe346565d09145660cd219f61dbce66acbe6cbcb8cdfc630"
+      "sha256": "968f95a422755a6143488275f99a5ea4944ca5ed9d88954c56ef0ddead4fb332"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -2892,7 +2896,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "1f9c9bcf8c8b925e54696c44bf63135ba5864164d80371430ae8151e44b1837c"
+      "sha256": "fc54fc29388eaa69eec72172c677b993ef2d6ee25f526c84a7402aab610a278e"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2908,7 +2912,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "496d2b2341c206f9e903f9b0c5995e2a66ff1e9614ab45ee53963c5dd1ece19c"
+      "sha256": "0172e66b43ce8fadaca5c7f856f6d90dbd9967b1f0cec17f8e2b30b11df3160e"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

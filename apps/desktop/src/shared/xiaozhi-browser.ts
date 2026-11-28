@@ -1,3 +1,4 @@
+export type BrowserActivity = 'opening' | 'reading' | 'awaiting-confirmation' | 'acting' | 'verifying';
 export type BrowserChromeAction = 'new-tab' | 'navigate' | 'select-tab' | 'close-tab' | 'back' | 'forward' | 'reload' | 'stop';
 export type BrowserControlCommand = BrowserChromeAction | 'status' | 'dock' | 'cover' | 'float' | 'leave' | 'teacher' | 'agent' | 'remember' | 'forget' | 'redock';
 export type BrowserChromeResult = {ok:boolean;status?:import('./xiaozhi-agent').XiaozhiBrowserStatus;error?:string};

@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Globe,PanelRight,Plus,X} from 'lucide-react';
-import {BrowserAddress,browserTabLabel} from './components/office/BrowserChrome';
+import {BrowserAddress,BrowserControlBanner,browserTabLabel} from './components/office/BrowserChrome';
 import type {XiaozhiBrowserStatus} from '../shared/xiaozhi-agent';
 import type {BrowserChromeResult,BrowserControlCommand} from '../shared/xiaozhi-browser';
 import './ui-system/browser-workspace.css';
@@ -36,9 +36,9 @@ function FloatingBrowserToolbar(){
         </div>)}
       </div>
       <button type="button" aria-label="新建网页标签" title="新建网页标签" onClick={()=>void run('new-tab')}><Plus size={18}/></button>
-      <button type="button" onClick={()=>void run(manual?'agent':'teacher')}>{manual?'交还小智':'我来操作'}</button>
       <button type="button" title="放回对话" aria-label="放回对话" onClick={()=>void run('redock')}><PanelRight size={18}/></button>
     </div>
+    {status.open&&<BrowserControlBanner status={status} run={run}/>}
     <BrowserAddress key={tab?.tabId??'start'} tab={tab} run={async(action,value)=>{
       if(!manual&&status.open&&!(await run('teacher')))return false;
       return run(action,value);

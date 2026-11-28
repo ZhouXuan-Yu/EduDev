@@ -34,6 +34,16 @@ try{
  assert(p.text!.includes('教研资料'));assert(!p.text!.includes('synthetic-secret'));const wc=contents!;assert.deepEqual(await wc.executeJavaScript('({node:typeof process,ipc:typeof window.omniEdu})'),{node:'undefined',ipc:'undefined'});check('Actual native view renders fixture, original Hana snapshot has refs, password value omitted and Node/business IPC absent');
  const latest = () => ({tabId:p.tabId,snapshotId:p.snapshotId});
  await wc.executeJavaScript(`{
+   window.browserKeyHits=0;
+   const input=document.querySelector('#q');
+   input.addEventListener('keydown',event=>{if(event.key==='Enter')window.browserKeyHits++;});
+   input.focus();
+ }`);
+ p=page(await call({action:'key',key:'Enter',...latest()}));
+ assert.equal(await wc.executeJavaScript('window.browserKeyHits'),1);
+ check('An authorized Pi key reaches the focused page through the normal Electron dispatcher');
+
+ await wc.executeJavaScript(`{
    const button=document.createElement('button');
    button.setAttribute('aria-label','筛选年级');
    button.textContent='筛选';
@@ -78,7 +88,11 @@ try{
  const requested=Promise.withResolvers<void>(),decision=Promise.withResolvers<boolean>();
  const previous={...latest(),ref:ref(p,'处理')};
  const inFlight=host.execute(id,{action:'click',...previous},{...context,confirm:async()=>{requested.resolve();return decision.promise;}});
- await requested.promise;await host.teacher(id,'teacher');
+ await requested.promise;
+ assert.equal((await host.chromeStatus(id)).activity,'awaiting-confirmation');
+ await host.teacher(id,'teacher');
+ await until(async()=>!(await wc.executeJavaScript("document.querySelector('[data-xiaozhi-pointer]') !== null")));
+ assert.equal((await host.chromeStatus(id)).activity,undefined);
  const floating=electron.BaseWindow.getAllWindows().find(w=>w.contentView.children.some(v=>(v as electron.WebContentsView).webContents===wc))!;
  assert.match(floating.getTitle(),/老师操作中/,'Floating browser must identify the active controller');
  for(const action of ['snapshot','tabs','close','screenshot'] as const)await assert.rejects(call({action}),/teacher_control/);
@@ -168,7 +182,17 @@ try{
   const window=electron.BaseWindow.getAllWindows().find(w=>w.contentView.children.some(view=>(view as electron.WebContentsView).webContents===status))!;assert(window);
   for(const [width,height] of [[1366,768],[1920,1080]]){window.setContentSize(width,height);await until(async()=>await status.executeJavaScript('innerWidth')===width);fs.writeFileSync(path.join(output,`visible-dns-failure-${width}.png`),(await status.capturePage()).toPNG());}check('Actual HTTP virtual DNS denial shows original Pro state at two sizes; failure is not source or DOM success');
   const receipt=page(await actual.execute(id,{action:'navigate',url:'https://example.com'},{...context,dnsMode:'auto'}));assert(receipt.text!.includes('Example Domain'));check('Same existing browser group switches from explicit system to auto and loads real HTTPS');const domestic=page(await actual.execute(id,{action:'navigate',url:'https://www.moe.gov.cn'},{...context,dnsMode:'auto'}));assert(domestic.text!.includes('教育'));check('Actual domestic education site renders and returns real DOM snapshot');
-  await assert.rejects(actual.execute(id,{action:'navigate',url:'https://xiaozhi-test.invalid'},{...context,dnsMode:'auto'}),/permission_denied/);const failed=status;await until(()=>failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]')!==null"));await failed.executeJavaScript("location.href='xiaozhi-browser:unknown'");assert((await actual.status(id)).open);await failed.executeJavaScript("document.querySelector('[data-testid=browser-return-chat]').click()");await until(async()=>!(await actual.status(id)).open);assert((await host.status(id)).open);check('Trusted local return action closes only its browser; unknown action refused and independent group preserved');
+  await assert.rejects(actual.execute(id,{action:'navigate',url:'https://xiaozhi-test.invalid'},{...context,dnsMode:'auto'}),/permission_denied/);
+  await until(()=>status.executeJavaScript("document.querySelector('[data-state=permission_denied]')!==null"));
+  await status.executeJavaScript("location.href='xiaozhi-browser:close'");
+  assert((await actual.status(id)).open);
+  assert((await status.executeJavaScript('document.body.innerText')).includes('刷新当前页'));
+  const failedTab=(await actual.chromeStatus(id)).tabs?.find(tab=>tab.active);
+  assert(failedTab && failedTab.state==='failed');
+  await actual.teacher(id,'close-tab',undefined,undefined,failedTab.tabId);
+  assert(!(await actual.status(id)).open);
+  assert((await host.status(id)).open);
+  check('Failed page stays open until its trusted tab command; special scheme cannot close either group');
 
  }finally{await actual.dispose();}
  // A second active tab and a late dialog use a separate conversation so receipt checks above remain independent.

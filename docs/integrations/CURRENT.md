@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+小智浏览器通过现有 Electron 原生输入分派和宿主审批完成接管交还。[浏览器专项](../goal/BROWSER_CONTROL_R2.md)
+
 问小智右侧工作区复用 Electron 原生导航历史及既有文件读取合同，独立窗与右栏共享网页。见[浏览器专项](../goal/BROWSER_CONTROL_R2.md)。
 
 小智浏览器继续共用 Electron Chromium 和 Pi。当前模块候选在已有导航快照能唯一定位时直接使用最新节点，待批前、同意后与结果更新各有独立核对点。[浏览器专项](../goal/BROWSER_CONTROL_R2.md)

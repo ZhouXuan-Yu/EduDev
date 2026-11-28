@@ -60,3 +60,22 @@
 .browser-start h2 { margin: 0; font-weight: 600; font-size: 18px; }
 .browser-start-address { width: min(100%, 420px); }
 .browser-start-address input { padding: 9px 0; }
+
+.browser-control-banner {
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  padding:4px 9px; min-height:33px; border-bottom:1px solid var(--border,#dce4e7);
+  font-size:12px;
+}
+.browser-control-status {
+  display:inline-flex; align-items:center; gap:6px; font-weight:600;
+  color:var(--foreground,#164c76);
+}
+.browser-control-banner[data-activity='awaiting-confirmation'] .browser-control-status svg {color:#916012;}
+.browser-control-banner[data-owner='teacher'] .browser-control-status svg {color:#236e55;}
+.browser-control-switch {
+  flex:0 0 auto; border:1px solid var(--border,#b1c9da); border-radius:6px; background:var(--background,#fff);
+  color:inherit; font:inherit; font-weight:600; padding:3px 9px; cursor:pointer;
+}
+.browser-control-switch:hover {background:#5c8aa124;}
+.browser-control-switch:focus-visible {outline:2px solid #26727c;outline-offset:1px;}
+.browser-control-switch:disabled {opacity:.55;cursor:default;}

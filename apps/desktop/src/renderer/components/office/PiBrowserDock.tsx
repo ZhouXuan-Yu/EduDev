@@ -4,7 +4,7 @@ import {ExternalLink,FileText,FolderOpen,Globe,PanelRightClose,Plus,X} from 'luc
 import type {XiaozhiBrowserStatus} from '../../../shared/xiaozhi-agent';
 import type {BrowserControlCommand} from '../../../shared/xiaozhi-browser';
 import '../../ui-system/browser-workspace.css';
-import {BrowserAddress,browserTabLabel} from './BrowserChrome';
+import {BrowserAddress,BrowserControlBanner,browserTabLabel} from './BrowserChrome';
 
 export type FileTabRequest={id:string;requestId?:string;path?:string;artifactId?:string;title?:string;version?:string;workspaceVersion?:string};
 const folderTab={id:'directory',title:'对话文件'};
@@ -124,9 +124,8 @@ export function PiBrowserDock({id,initial,visible,covered,width,fileRequest,file
       {files&&<button type="button" aria-label="在右侧工作区打开对话文件" title="对话文件" onClick={()=>openFile(folderTab)}><FolderOpen size={17}/></button>}
       <button type="button" aria-label="收起" title="收起右侧工作区" onClick={onClose}><PanelRightClose size={18}/></button>
     </div>
+    {!selectedFile&&status.open&&<BrowserControlBanner status={status} run={command} busy={working}/>}
     {!selectedFile&&status.open&&<div className="pi-browser-actions">
-      <Button size="sm" variant="ghost" isDisabled={working} data-testid="pi-browser-owner" onPress={()=>void command(manual?'agent':'teacher')}>{manual?'交还小智':'我来操作'}</Button>
-      <span>{manual?'老师操作中':'小智操作中'}</span>
       <Button size="sm" variant="ghost" onPress={()=>void command(floating?'redock':'float')}><ExternalLink size={14}/>{floating?'放回对话':'独立窗口'}</Button>
       {manual&&status.siteOrigin&&!status.remembered&&active&&<Button size="sm" variant="ghost" isDisabled={working} onPress={()=>void command('remember')}>打开此站的本机登录</Button>}
       {manual&&status.siteOrigin&&<Button size="sm" variant="ghost" isDisabled={working} onPress={()=>forget?void command('forget'):setForget(true)}>{forget?'确认清除此站登录':'清除此站登录'}</Button>}

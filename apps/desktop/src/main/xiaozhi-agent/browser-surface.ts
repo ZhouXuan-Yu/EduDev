@@ -12,7 +12,7 @@ export function createBrowserLayout(floating:BaseWindow, status:WebContentsView,
   function resize() {
     if (current.isDestroyed()) return;
     const [width,height] = current.getContentSize();
-    const floatingChrome = current===floating ? 100 : 0;
+    const floatingChrome = current===floating ? 136 : 0;
     if(current===floating)toolbar.setBounds({x:0,y:0,width,height:floatingChrome});
     const box = bounds ?? {x:0,y:floatingChrome,width,height:Math.max(0,height-floatingChrome)};
     for (const view of views) view.setBounds(box);

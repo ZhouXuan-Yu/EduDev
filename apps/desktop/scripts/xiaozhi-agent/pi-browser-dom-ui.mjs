@@ -62,6 +62,26 @@ try {
   await pendingDock.waitFor({timeout:10000});
   assert(await pendingDock.getByTestId('pi-browser-owner').isVisible());
   checks.push('Right dock and teacher control are available while the first browser approval is pending');
+  if(process.argv.includes('--pointer')){
+    await pendingDock.getByText('等待老师确认',{exact:true}).waitFor();
+    const guest=app.context().pages().find(p=>p.url()===url);
+    assert(guest);
+    await guest.waitForFunction(()=>!!document.querySelector('[data-xiaozhi-pointer]'));
+    assert.equal(await guest.evaluate(()=>getComputedStyle(document.querySelector('[data-xiaozhi-pointer]')).pointerEvents),'none');
+    const box=await guest.getByRole('button',{name:'筛选年级'}).boundingBox();
+    assert(box);
+    await app.evaluate(({webContents},{url,x,y})=>{
+      const wc=webContents.getAllWebContents().find(w=>w.getURL()===url);
+      wc.focus();
+      wc.sendInputEvent({type:'mouseDown',button:'left',clickCount:1,x,y});
+      wc.sendInputEvent({type:'mouseUp',button:'left',clickCount:1,x,y});
+    },{url,x:Math.round(box.x+box.width/2),y:Math.round(box.y+box.height/2)});
+    await guest.evaluate(()=>new Promise(resolve=>setTimeout(resolve,80)));
+    assert.equal(await guest.evaluate(()=>window.count||0),0);
+    const capture=process.env.OMNI_EDU_BROWSER_POINTER_PROOF;
+    if(capture)await guest.screenshot({path:capture});
+    checks.push('Pending marker does not intercept events; raw mouse input cannot click while agent owns the guest');
+  }
   await approve.click();
   await page.getByTestId('pi-question-submit').click();
   await page.waitForFunction(text=>document.body.innerText.includes(text),resultText,{timeout:45000});
@@ -79,6 +99,11 @@ try {
   await dock.waitFor({timeout:15000});
   const owner=page.getByTestId('pi-browser-owner');
   await owner.click();await dock.getByText('老师操作中',{exact:true}).waitFor();
+  if(process.argv.includes('--pointer')){
+    await view.waitForFunction(()=>!document.querySelector('[data-xiaozhi-pointer]'));
+    assert.equal(await owner.innerText(),'交还小智');
+    checks.push('Teacher control removes the agent marker and shows the hand-back action');
+  }
   if(!process.argv.includes('--login-boundary')){
     const draft=view.getByRole('textbox',{name:'备课草稿'});
     await draft.click();assert(await draft.evaluate(el=>document.activeElement===el));
