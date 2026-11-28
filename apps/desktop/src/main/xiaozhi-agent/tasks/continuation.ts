@@ -1,9 +1,19 @@
 import {lessonRevisionRequest} from '../../education/lesson-revision-request';
 
+/** Explicit resumption points to the current Task without adding another action. */
+export function isExplicitTaskContinuation(text:string):boolean {
+  const request=text.normalize('NFKC').trim().replace(/[。!]+$/u,'').trimEnd();
+  const match=/^(?:请(?:帮我)?\s*)?(?:继续(?:完成)?|接着做|接续|恢复)\s*(?:原(?:来|先)?的?|当前的?|这个|这项|本次的?)\s*任务(.*)$/u.exec(request);
+  if(!match)return false;
+  const remaining=match[1].trim();
+  return !remaining||/^(?:中|里)?\s*(?:的\s*)?(?:(?:还|尚)?(?:未完成|没完成|没有完成|没做完)|(?:剩下|剩余|余下))\s*(?:的\s*)?(?:工作|内容|步骤|部分)?$/u.test(remaining);
+}
+
 /** A new teacher message may continue an unfinished task, never grant an old approval. */
 export function isTaskContinuation(text:string):boolean {
   const value = text.trim();
-  return /^(可以|继续|好的|好|行|没问题|接着做|继续完成|继续吧|就这样)[！!。\s]*$/u.test(value)
+  return isExplicitTaskContinuation(value)
+    || /^(可以|继续|好的|好|行|没问题|接着做|继续完成|继续吧|就这样)[！!。\s]*$/u.test(value)
     || /^(?:请)?(?:继续)?(?:向|给|在)?(?:刚才|上一个|之前|先前|原来)的?终端(?:中|里)?(?:输入|发送|执行|运行|继续|停止|结束|关闭|调整)/u.test(value);
 }
 /** Explicit revision language retains source context; latest message owns criteria. */

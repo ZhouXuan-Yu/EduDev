@@ -25,7 +25,7 @@ import {createScienceLessonSource,prepareScienceLessonRefresh} from '../educatio
 import {readQuestionContextSource} from '../education/question-context-provider';
 import {PAPER_EXPORT_RESTART_REQUIRED} from './tasks/paper-export-continuation';
 import {confirmedHandoutTeachingScope,currentClassTask,requestedHandoutResume,requestedResumeClass} from './tasks/class-resume';
-import {isTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
+import {isTaskContinuation,isExplicitTaskContinuation,isBoundTaskAmendment} from './tasks/continuation';
 import {naturalLessonDraft,type NaturalLessonRequirements} from '../education/natural-lesson-draft';
 import {lessonRevisionRequest,matchesLessonRevision,type LessonRevisionRequest} from '../education/lesson-revision-request';
 import {createLessonRevisionTools} from '../education/lesson-revision-tools';
@@ -123,7 +123,7 @@ import {publicGoal} from './goal-state';
 import {createTaskCoordinator} from './tasks/coordinator';
 import {readTeacherAnswerDigests} from './verification/teacher-input-readback';
 import {createTaskResultRecheck} from './tasks/result-recheck';
-import {validTaskResume,type TaskResumeInput} from '../../shared/xiaozhi-task';
+import {taskHasRemainingSteps,validTaskResume,type TaskResumeInput} from '../../shared/xiaozhi-task';
 import {createTaskPlanRuntime} from './tasks/plan-runtime';
 import {createTaskResources} from './tasks/resources';
 import {singleCopyWasDeclined} from './tasks/declined-copy';
@@ -2567,7 +2567,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       const oldClassTask=className?await phase(()=>tasks.committed(id)):null;
       const classProof=className?await phase(()=>currentClassTask(store.xiaozhiState.sql,id,oldClassTask,className)):undefined;
       if(className&&!classProof)return {ok:false,error:'task_context_changed'};
-      const continuation=input.continueTask??(classProof?{taskId:classProof.taskId,requirementsVersion:classProof.requirementsVersion}:undefined);
+      let continuation=input.continueTask??(classProof?{taskId:classProof.taskId,requirementsVersion:classProof.requirementsVersion}:undefined);
+      if(operation==='prompt'&&!goalId&&!taskResume&&!continuation&&isExplicitTaskContinuation(input.prompt)){
+        const current=await phase(()=>tasks.committed(id));
+        if(current?.state==='ended'&&!current.goal)return {ok:false,error:'task_ended'};
+        if(!current||current.goal||!taskHasRemainingSteps(current)||recoveryInspection?.taskId!==current.id||
+           recoveryInspection.taskRevision!==current.revision||recoveryInspection.requirementsVersion!==current.requirementsVersion)
+          return {ok:false,error:'task_context_changed'};
+        continuation={taskId:current.id,requirementsVersion:current.requirementsVersion};
+      }
       if(operation==='prompt'&&!goalId)await phase(()=>tasks.assertContinuationAllowed(id,input.prompt,continuation,taskResume,allowNaturalAmendment));
       if(classProof){
         await phase(()=>effectReconciler.recheck(id,classProof.taskId));
