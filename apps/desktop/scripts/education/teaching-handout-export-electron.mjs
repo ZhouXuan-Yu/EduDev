@@ -92,7 +92,7 @@ async function launch(cold=false,settleOnOriginal=true){
         const {phase,lane}=state,body=JSON.parse(init.body),index=state.index++;
         if(liveExport||state.liveEdit){
           if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
-          const request={phase,index,status:0};
+          const request={phase,index,status:0,model:body.model,effort:body.reasoning_effort,maxTokens:body.max_tokens};
           if(classSwitch && (phase==='alternate'||phase==='class-a-document')){
             const messages=JSON.stringify(body.messages);
             request.containsOriginal=protectedTerms.some(term=>messages.includes(term));
@@ -106,8 +106,10 @@ async function launch(cold=false,settleOnOriginal=true){
             request.containsAlternate=messages.includes(alternateRule);
           }
           state.requests.push(request);
+          const started=Date.now();
           const response=await remote(input,init);
           request.status=response.status;
+          request.responseHeadersMs=Date.now()-started;
           return response;
         }
         const raw=body.messages.findLast(message=>message.role==='tool')?.content;
@@ -354,6 +356,7 @@ async function verifyTwoClassTasks(){
   assert(baseline.authority.fileExpectations.required.every(value=>!written.text.includes(value)));
   const aTask=(await snapshot()).task;
   report.classA={taskId:aTask.id,runId:aTask.origin.runId,requests:wire.requests};
+  report.paidRequests+=wire.requests.length;
   assert.notEqual(aTask.id,before.id);
   assert(wire.requests.length && wire.requests.every(call=>call.status===200 && !call.containsOriginal));
   assert(wire.requests.some(call=>call.containsAlternate));
@@ -372,7 +375,7 @@ async function verifyTwoClassTasks(){
   await tasks.getByTestId('pi-task-filter').click();
   await page.getByRole('option',{name:'全部',exact:true}).click();
   const originalTask=tasks.locator('[data-testid="pi-task-overview-row"][data-task-id="'+before.id+'"]');
-  await originalTask.getByTestId('task-artifact-relations').locator('summary').click();
+  await originalTask.getByTestId('task-artifact-relations').getByRole('button',{name:'关联成果',exact:true}).click();
   const linked=originalTask.getByTestId('task-related-artifact');
   await until(async()=>await linked.count()>=bRelations.length);
   const displayedIds=await linked.evaluateAll(links=>links.map(link=>link.getAttribute('data-artifact-id')));
