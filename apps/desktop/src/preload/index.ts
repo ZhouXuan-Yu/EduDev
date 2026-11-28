@@ -292,8 +292,8 @@ const api = {
   correctXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskCorrectionInput)=>ipcRenderer.invoke('xiaozhi:task-correct',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
   resumeXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskResumeInput)=>ipcRenderer.invoke('xiaozhi:task-resume',input) as Promise<import('../shared/xiaozhi-agent').XiaozhiStartResult>,
   controlXiaozhiTask:(input:import('../shared/xiaozhi-task-control').TaskControlInput)=>ipcRenderer.invoke('xiaozhi:task-control',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult<import('../shared/xiaozhi-task').TaskView>>,
-  controlXiaozhiBrowser:(id:string,command:'status'|'dock'|'cover'|'float'|'leave'|'teacher'|'agent'|'remember'|'forget',rect?:{x:number;y:number;width:number;height:number})=>
-    ipcRenderer.invoke('xiaozhi:browser-control',id,command,rect) as Promise<{ok:boolean;status?:import('../shared/xiaozhi-agent').XiaozhiBrowserStatus}>,
+  controlXiaozhiBrowser:(id:string,command:import('../shared/xiaozhi-browser').BrowserControlCommand,rect?:{x:number;y:number;width:number;height:number},value?:string)=>
+    ipcRenderer.invoke('xiaozhi:browser-control',id,command,rect,value) as Promise<import('../shared/xiaozhi-browser').BrowserChromeResult>,
   onXiaozhiBrowserDock:(notify:(id:string)=>void)=>{const receive=(_event:Electron.IpcRendererEvent,id:string)=>notify(id);
     ipcRenderer.on('xiaozhi:browser-dock-request',receive);return ()=>{ipcRenderer.removeListener('xiaozhi:browser-dock-request',receive);};},
   showXiaozhiBrowser: (id:string)=>ipcRenderer.invoke('xiaozhi:browser-show',id) as Promise<XiaozhiActionResult>,

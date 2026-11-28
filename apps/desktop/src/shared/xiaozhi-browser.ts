@@ -1,3 +1,7 @@
+export type BrowserChromeAction = 'new-tab' | 'navigate' | 'select-tab' | 'close-tab' | 'back' | 'forward' | 'reload' | 'stop';
+export type BrowserControlCommand = BrowserChromeAction | 'status' | 'dock' | 'cover' | 'float' | 'leave' | 'teacher' | 'agent' | 'remember' | 'forget' | 'redock';
+export type BrowserChromeResult = {ok:boolean;status?:import('./xiaozhi-agent').XiaozhiBrowserStatus;error?:string};
+
 export const XIAOZHI_BROWSER_ACTIONS=['navigate','snapshot','extract','click','type','select','key','scroll','wait','tabs','show','close','screenshot'] as const;
 export type XiaozhiBrowserAction=typeof XIAOZHI_BROWSER_ACTIONS[number];
 export const BROWSER_TARGET_ROLES = ['button','link','textbox','searchbox','combobox','option','checkbox','radio','tab','menuitem','switch'] as const;

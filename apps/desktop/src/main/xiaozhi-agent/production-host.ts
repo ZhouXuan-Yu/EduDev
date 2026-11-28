@@ -2582,13 +2582,17 @@ export function createXiaozhiProductionHost(options: { requestBrowserDock?:(id:s
     },
     attachments,
     referenceTeachingArtifact:artifactReferences.create,
-    async browserControl(id:unknown, command:unknown, parent:import('electron').BrowserWindow, rect?:import('electron').Rectangle) {
-      if(!validId(id)||typeof command!=='string'||closing)return {ok:false} as const;
+    async browserControl(id:unknown, command:unknown, parent:import('electron').BrowserWindow, rect?:import('electron').Rectangle, value?:unknown) {
+      if(!validId(id)||typeof command!=='string'||closing||(value!==undefined&&typeof value!=='string'))return {ok:false} as const;
       try {
-        if(command==='status')return {ok:true,status:await browser.status(id)} as const;
-        await browser.teacher(id,command,parent,rect);
-        return {ok:true,status:await browser.status(id)} as const;
-      } catch {return {ok:false} as const;}
+        if(command==='new-tab'&&!(await browser.status(id)).open&&(await store.getAiConversationSession(id)).session.archivedAt)
+          throw new Error('permission_denied');
+        if(command!=='status')await browser.teacher(id,command,parent,rect,value);
+        return {ok:true,status:await browser.chromeStatus(id)} as const;
+      } catch(error) {
+        const code=error instanceof Error?error.message:'';
+        return {ok:false,error:['busy','permission_denied','invalid_input','network','timeout','cancelled'].includes(code)?code:'unavailable',status:await browser.chromeStatus(id)} as const;
+      }
     },
     async showBrowser(raw:unknown):Promise<XiaozhiActionResult>{
       if(!validId(raw))return {ok:false,error:'invalid_input'};

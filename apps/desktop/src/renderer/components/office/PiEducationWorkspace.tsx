@@ -485,9 +485,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     replyOnly={Boolean(snapshot&&!snapshot.running&&!workspaceTaskScope(snapshot))}
     workbenchVisible={workbenchOpen} onWorkbenchVisibleChange={open=>{if(open)setWorkbenchInitialTab('tasks');setWorkbenchOpen(open);}} onWorkbenchClose={closeWorkbench}
     workbench={<PiRecoveryOverview key={workbenchInitialTab} initialTab={workbenchInitialTab} activeSessionId={id} restoring={workbenchBusy} notice={workbenchNotice} onOpenSession={target=>sessionNavigation.current!.select(target)} onRestore={restoreTask} onApprovalChanged={async target=>{setHomeActivityRevision(value=>value+1);if(idRef.current===target)await hydrate(target);await refreshList();}}/>}
-    fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
+    fileRequest={fileReveal?.sessionId===id?fileReveal:undefined}
     onLeave={onLeave} onSettings={() => onSettings()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
-    files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
+    files={(close,request,openFile)=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={request?.path?{...request,id:request.requestId||request.id,path:request.path}:undefined} embeddedPreview={Boolean(request?.path||request?.artifactId)} savedRequest={request?.artifactId} onOpenInTab={openFile} onClose={close} onChoose={()=>void (async()=>{
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
     aside={<PiWorkspaceContext key={id} sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}

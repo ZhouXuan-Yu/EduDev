@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "sourceHash": "018e28723ac954b4504ec77bce073d1027744f4670cf1bf6810dff30be08077f",
+  "sourceHash": "206fee4ef3a5e7b403e4efb4412acd0ae79b39f51cd4102fd0f881d5a102d6cd",
   "sources": [
     {
       "file": "package-lock.json",
@@ -848,7 +848,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-host.ts",
-      "sha256": "124275e4c54951ea60c65f72beeb2e6d3fe029be218a152f39b6e9aba2ee8dcd"
+      "sha256": "fa534498918943f5ab49df81d34c85ad9d70189107deb5918cd9651227639f81"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-proxy.ts",
@@ -856,7 +856,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/browser-surface.ts",
-      "sha256": "62b12ae7e6cd1c96af51685a0335991916432c6f8cb8fc74b2897333ad0084e2"
+      "sha256": "5a3dc12cab0ff47e30f95a48e37bf9bc3fec5f92bf23de27d7f32c4509630da8"
     },
     {
       "file": "src/main/xiaozhi-agent/browser-tools.ts",
@@ -964,7 +964,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/core-tool-static-definitions.json",
-      "sha256": "23b151ca4a7c1a0451bb87bb93eedfdbb970d51ffdd5630aba4316b31172d4de"
+      "sha256": "8cccad559e4dcfadfe346565d09145660cd219f61dbce66acbe6cbcb8cdfc630"
     },
     {
       "file": "src/main/xiaozhi-agent/capabilities/generated/native-stat-manifest.json",
@@ -1812,7 +1812,7 @@
     },
     {
       "file": "src/main/xiaozhi-agent/production-host.ts",
-      "sha256": "fdd3adcdcc6245bdf9522cde5b7d6d87af468d9c5d2c8efc75b98f0cbf9ed279"
+      "sha256": "102afff036b449d16db220d001ecadd6c42a0cf956b088e6711fc46db88eb48d"
     },
     {
       "file": "src/main/xiaozhi-agent/provider-cooldown-store.ts",
@@ -2892,7 +2892,7 @@
     },
     {
       "file": "src/shared/xiaozhi-agent.ts",
-      "sha256": "d977d358109db0618440f1c8b6515b1eca41c0c7b0560b84a818c9085874a1fb"
+      "sha256": "1f9c9bcf8c8b925e54696c44bf63135ba5864164d80371430ae8151e44b1837c"
     },
     {
       "file": "src/shared/xiaozhi-attachment-read.ts",
@@ -2908,7 +2908,7 @@
     },
     {
       "file": "src/shared/xiaozhi-browser.ts",
-      "sha256": "9ca4d21a5e0d215fcfd559a0de45fbd86780da81bbc67ee28656562440f7eb89"
+      "sha256": "496d2b2341c206f9e903f9b0c5995e2a66ff1e9614ab45ee53963c5dd1ece19c"
     },
     {
       "file": "src/shared/xiaozhi-computation.ts",

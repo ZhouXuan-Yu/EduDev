@@ -1,3 +1,4 @@
+import type {FileTabRequest} from './PiBrowserDock';
 import styles from '../../ui-system/delivery-layout.module.css';
 import { DisclosureCard } from '../ui/DisclosureCard';
 import {PiDeliveryCheck} from './PiDeliveryCheck';
@@ -32,14 +33,14 @@ function markdownOutline(text:string){
 }
 
 /** Local-only data from typed main. No paths/bytes are sent to the model or persisted. */
-export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],officeArtifacts=[]}:{sessionId:string;onChoose?:()=>void;onClose:()=>void;reveal?:{id:string;path:string;version?:string;workspaceVersion?:string};changes?:XiaozhiChangeSummary[];officeArtifacts?:OfficeArtifactSummary[]}) {
+export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],officeArtifacts=[],savedRequest,onOpenInTab,embeddedPreview=false}:{embeddedPreview?:boolean;savedRequest?:string;onOpenInTab?:(request:FileTabRequest)=>void;sessionId:string;onChoose?:()=>void;onClose:()=>void;reveal?:{id:string;path:string;version?:string;workspaceVersion?:string};changes?:XiaozhiChangeSummary[];officeArtifacts?:OfficeArtifactSummary[]}) {
   const [directories,setDirectories]=useState<Record<string,XiaozhiFileEntry[]>>({});
   const [expanded,setExpanded]=useState(new Set<string>()),[label,setLabel]=useState('教学工作目录'),[query,setQuery]=useState('');
   const [tabs,setTabs]=useState<XiaozhiFileEntry[]>([]),[selected,setSelected]=useState(''),[preview,setPreview]=useState<XiaozhiFilePreview>();
   const [explorerOpen,setExplorerOpen]=useState(true),[outlineNotice,setOutlineNotice]=useState('');
   const [treeLocation,setTreeLocation]=useState<{path:string}>();
   const saved=useConversationSavedFiles(sessionId,[...changes,...officeArtifacts].map(row=>`${row.id}:${row.revision}:${row.state}`).join('|'));
-  const [savedId,setSavedId]=useState('');const savedSelection=saved.rows.find(row=>row.id===savedId);
+  const [savedId,setSavedId]=useState(savedRequest||'');const savedSelection=saved.rows.find(row=>row.id===savedId);
   const [error,setError]=useState(''),[previewError,setPreviewError]=useState(''),[partial,setPartial]=useState(false),[loading,setLoading]=useState(false),[reading,setReading]=useState(false);
   const authority=useRef(''),epoch=useRef(0),previewEpoch=useRef(0),requests=useRef(new Set<string>()),loadedCount=useRef(0);
   const toolbar=useRef<HTMLDivElement>(null),panel=useRef<HTMLElement>(null),previewRoot=useRef<HTMLDivElement>(null);
@@ -92,7 +93,8 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
   }
   function closeTab(target:string){cancelAll();++previewEpoch.current;setReading(false);setPreview(undefined);setPreviewError('');const next=tabs.filter(tab=>tab.path!==target);setTabs(next);if(selected===target){setSelected('');if(next.length)void openFile(next.at(-1)!);}}
   function refresh(){cancelAll();++epoch.current;++previewEpoch.current;loadedCount.current=0;authority.current='';setDirectories({});setExpanded(new Set());setPartial(false);setPreview(undefined);setPreviewError('');setReading(false);setSavedId('');saved.refresh();void list();}
-  function selectSaved(id:string){if(!saved.rows.some(row=>row.id===id))return;cancelAll();++previewEpoch.current;setReading(false);setPreviewError('');setSelected('');setSavedId(id);if((panel.current?.clientWidth??Infinity)<=760)setExplorerOpen(false);}
+  function selectSaved(id:string){const row=saved.rows.find(row=>row.id===id);if(!row)return;
+    if(onOpenInTab){onOpenInTab({id:'saved:'+id,artifactId:id,title:row.fileName});return;}cancelAll();++previewEpoch.current;setReading(false);setPreviewError('');setSelected('');setSavedId(id);if((panel.current?.clientWidth??Infinity)<=760)setExplorerOpen(false);}
   function closeSaved(){const id=savedId,life=epoch.current;setSavedId('');setExplorerOpen(true);requestAnimationFrame(()=>{if(life===epoch.current)[...panel.current?.querySelectorAll<HTMLElement>('[data-testid="conversation-saved-file"]')??[]].find(el=>el.dataset.artifactId===id)?.focus({preventScroll:true});});}
   async function openSavedPath(relative:string){const stamp=++previewEpoch.current,life=epoch.current,parent=relative.includes('/')?relative.slice(0,relative.lastIndexOf('/')):'.';setPreviewError('');const entries=await list(parent);if(stamp!==previewEpoch.current||life!==epoch.current)return;const entry=entries?.find(row=>row.path===relative&&row.kind==='file');if(entry)await openFile(entry);else setPreviewError('当前工作目录没有该文件；请在教学文件页核对原保存位置。');}
   async function locateInTree(){
@@ -159,21 +161,21 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
   </FileTree.Item>);}
   return <section ref={panel} className="pi-file-panel" data-edu-domain="" data-has-preview={Boolean(selected||savedSelection)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
     <div className="pi-file-toolbar" ref={toolbar}>
-        {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
+        {!embeddedPreview&&(!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
-        </Tabs>:<span className="pi-file-toolbar-empty"><FileText size={16}/>本地文件</span>}
-      {onChoose&&<Button variant="ghost" isIconOnly size="sm" aria-label="选择教学工作目录" onPress={onChoose} data-testid="pi-files-choose"><Folder size={16}/></Button>}
-      <Button variant="ghost" isIconOnly size="sm" aria-label="刷新文件目录" onPress={refresh} data-testid="pi-files-refresh"><RefreshCw size={16}/></Button>
+        </Tabs>:<span className="pi-file-toolbar-empty"><FileText size={16}/>本地文件</span>)}
+      {!embeddedPreview&&onChoose&&<Button variant="ghost" isIconOnly size="sm" aria-label="选择教学工作目录" onPress={onChoose} data-testid="pi-files-choose"><Folder size={16}/></Button>}
+      {!embeddedPreview&&<Button variant="ghost" isIconOnly size="sm" aria-label="刷新文件目录" onPress={refresh} data-testid="pi-files-refresh"><RefreshCw size={16}/></Button>}
       <Button className="pi-file-explorer-toggle" variant="ghost" size="sm"
         aria-label={explorerOpen?'收起文件列表，扩大正文':'显示文件列表'} aria-pressed={explorerOpen}
         onPress={()=>setExplorerOpen(value=>!value)} data-testid="pi-files-explorer-toggle"><PanelRight size={16}/><span>{explorerOpen?'收起列表':'文件列表'}</span></Button>
-      <Button variant="ghost" isIconOnly size="sm" aria-label="关闭文件面板" onPress={onClose} data-testid="pi-files-close"><X size={16}/></Button>
+      {!embeddedPreview&&<Button variant="ghost" isIconOnly size="sm" aria-label="关闭文件面板" onPress={onClose} data-testid="pi-files-close"><X size={16}/></Button>}
     </div>
     <div className="pi-file-body">
       <div className="pi-file-reading">
         {selected&&<div className="pi-file-breadcrumb"><span title={selected}>{selected.split('/').join(' / ')}</span>
           {workspaceVersion&&activeVersion&&isArtifactFileName(selected)&&<ArtifactFileActions key={`${sessionId}:${workspaceVersion}:${selected}:${activeVersion}`} target={{kind:'workspace',sessionId,path:selected,workspaceVersion,version:activeVersion}} onLocate={locateInTree}/>}
-          <Button variant="ghost" size="sm" isIconOnly aria-label="关闭当前文件" onPress={()=>closeTab(selected)} data-testid="pi-file-tab-close"><X size={14}/></Button></div>}
+          {!embeddedPreview&&<Button variant="ghost" size="sm" isIconOnly aria-label="关闭当前文件" onPress={()=>closeTab(selected)} data-testid="pi-file-tab-close"><X size={14}/></Button>}</div>}
         {preview?.format==='markdown'&&outline.length>1&&<DisclosureCard className="pi-file-outline" data-testid="pi-file-outline" key={preview.path+preview.version} title={<>文章目录 · {outline.length} 节</>}>
 
           <div className={`pi-file-outline-list ${styles.outline}`}>{outline.map((item,index)=><Button key={`${item.level}:${index}:${item.title}`} size="sm" variant="ghost"
@@ -194,7 +196,8 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         {error&&<div role="alert" data-testid="pi-file-error"><p>{error}</p><Button size="sm" variant="ghost" onPress={refresh}>重试</Button></div>}
         {loading&&<p role="status">正在读取目录…</p>}
         {directories['.']?.length?<FileTree aria-label="教学工作目录文件" reduceMotion expandedKeys={expanded} onExpandedChange={keys=>setExpanded(new Set([...keys].map(String)))}
-          onAction={key=>{const entry=Object.values(directories).flat().find(item=>item.path===key);if(!entry)return;if(entry.kind==='directory'){if(!directories[entry.path])void list(entry.path);else setExpanded(previous=>{const next=new Set(previous);next.has(entry.path)?next.delete(entry.path):next.add(entry.path);return next;});}else void openFile(entry);}}>{tree('.')}</FileTree>:
+          onAction={key=>{const entry=Object.values(directories).flat().find(item=>item.path===key);if(!entry)return;if(entry.kind==='directory'){if(!directories[entry.path])void list(entry.path);else setExpanded(previous=>{const next=new Set(previous);next.has(entry.path)?next.delete(entry.path):next.add(entry.path);return next;});}else if(onOpenInTab)onOpenInTab({id:'file:'+entry.path,path:entry.path,title:entry.name,version:entry.version,workspaceVersion:authority.current});
+            else void openFile(entry);}}>{tree('.')}</FileTree>:
           !loading&&!error&&<p>此目录没有可显示的文件。</p>}
         {partial&&<p role="status">目录较大，只显示本次读取范围内的文件。</p>}
       </aside>

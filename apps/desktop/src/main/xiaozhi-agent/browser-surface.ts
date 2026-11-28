@@ -1,17 +1,20 @@
 import type {BaseWindow, BrowserWindow, Rectangle, WebContentsView} from 'electron';
 
 export type BrowserLayout = ReturnType<typeof createBrowserLayout>;
-export function createBrowserLayout(floating:BaseWindow, status:WebContentsView) {
+export function createBrowserLayout(floating:BaseWindow, status:WebContentsView, toolbar:WebContentsView) {
   const views = new Set<WebContentsView>([status]);
   let current:BaseWindow = floating;
   let bounds:Rectangle | undefined;
   let wasDocked=false;
   let presentation:'initial'|'docked'|'floating'|'parked'='initial';
   floating.contentView.addChildView(status);
+  floating.contentView.addChildView(toolbar);
   function resize() {
     if (current.isDestroyed()) return;
     const [width,height] = current.getContentSize();
-    const box = bounds ?? {x:0,y:0,width,height};
+    const floatingChrome = current===floating ? 100 : 0;
+    if(current===floating)toolbar.setBounds({x:0,y:0,width,height:floatingChrome});
+    const box = bounds ?? {x:0,y:floatingChrome,width,height:Math.max(0,height-floatingChrome)};
     for (const view of views) view.setBounds(box);
   }
   function move(parent:BaseWindow, rect?:Rectangle) {

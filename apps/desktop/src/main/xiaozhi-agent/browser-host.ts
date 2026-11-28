@@ -16,8 +16,8 @@ import {readBrowserCapture} from './browser-capture-reader';
 import {browserExtractScript} from './browser-extract-script';
 
 type NavigationProof = {runId:string; callId:string; revision:number; url:string};
-type Tab={requestedOrigin?:string;profileOrigin?:string;navigation?:NavigationProof;id:string;view:WebContentsView;session:Session;state:'loading'|'ready'|'failed';error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
-type Group={layout:BrowserLayout;needsObservation?:boolean;owner:'teacher'|'agent';control:AbortController;window:BaseWindow;status:WebContentsView;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;profileChange?:Promise<void>;busy:boolean;closing:boolean};
+type Tab={requestedOrigin?:string;profileOrigin?:string;navigation?:NavigationProof;id:string;view:WebContentsView;session:Session;state:'blank'|'loading'|'ready'|'failed';lastAddress?:string;error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
+type Group={layout:BrowserLayout;needsObservation?:boolean;owner:'teacher'|'agent';control:AbortController;window:BaseWindow;status:WebContentsView;toolbar:WebContentsView;loadToolbar:()=>void;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;profileChange?:Promise<void>;busy:boolean;closing:boolean};
 const denyDownload=(event:{preventDefault():void})=>event.preventDefault();
 const sensitive=/sk-[\w-]{20,}|(?:api[-_]?key|token|secret|password|authorization)=/i;
 let nativeRuntime:typeof import('electron')|undefined;
@@ -56,7 +56,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   }
   function setOwner(g:Group, owner:Group['owner']) {
     if (g.owner===owner || (owner==='agent' && g.profileChange)) return;
-    g.owner=owner;g.needsObservation=true;updateWindowTitle(g);
+    g.owner=owner;g.needsObservation=[...g.tabs.values()].some(tab=>tab.state==='ready');updateWindowTitle(g);
     g.control.abort();
     g.control=new AbortController();
     for(const tab of g.tabs.values()) {tab.refs.clear();tab.snapshotId=undefined;tab.write=undefined;}
@@ -80,7 +80,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   const checkScope=(id:string,url:string)=>{if(networkScopes.has(id)&&!networkScopes.get(id)!(url))throw new Error('permission_denied');};
   const safeUrl=async(raw:string)=>{const url=officeWebUrl(raw).href;let decoded:string;try{decoded=decodeURIComponent(url);}catch{throw new Error('permission_denied');}if(sensitive.test(decoded)||(await options.sanitize(decoded))!==decoded)throw new Error('permission_denied');return url;};
   function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.layout.raiseStatus();void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});updateWindowTitle(g);}
-  function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready'){g.status.setVisible(false);updateWindowTitle(g);}else showStatus(g,tab.error||'loading');}
+  function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready'||tab.state==='blank'&&g.layout.presentation!=='floating'){g.status.setVisible(false);updateWindowTitle(g);}else showStatus(g,tab.error||tab.state);}
   async function closeGroup(id:string){const group=groups.get(id);if(!group)return;
     group.closing=true;group.control.abort();
     if(group.profileChange){
@@ -88,31 +88,54 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       await group.profileChange;
     }
     if(groups.get(id)!==group)return;
-    groups.delete(id);for(const tab of group.tabs.values())releaseTab(group,tab);group.layout.remove(group.status);if(!group.status.webContents.isDestroyed())group.status.webContents.close({waitForBeforeUnload:false});if(!group.window.isDestroyed())group.window.destroy();await group.proxy.close();}
-  async function group(id:string,dnsMode:OfficeDnsMode){
+    groups.delete(id);for(const tab of group.tabs.values())releaseTab(group,tab);group.layout.remove(group.status);if(!group.toolbar.webContents.isDestroyed())group.toolbar.webContents.close({waitForBeforeUnload:false});if(!group.status.webContents.isDestroyed())group.status.webContents.close({waitForBeforeUnload:false});if(!group.window.isDestroyed())group.window.destroy();await group.proxy.close();}
+  async function group(id:string,dnsMode:OfficeDnsMode,autoDock=true){
     if(disposed||!/^aisession_[a-f0-9-]{36}$/i.test(id))throw new Error('permission_denied');
     const existing=groups.get(id);if(existing){if(existing.closing)throw new Error('cancelled');if(!existing.busy&&existing.proxy.setDnsMode(dnsMode))await Promise.all([...existing.tabs.values()].map(t=>t.session.closeAllConnections()));return existing;}const started=pending.get(id);if(started)return started;
     const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode,url=>{checkScope(id,url);return true;});if(disposed){await proxy.close();throw new Error('cancelled');}
       const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智浏览器 · 小智操作中',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
       const status=new electron.WebContentsView({webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
       status.webContents.setWindowOpenHandler(()=>({action:'deny'}));
-      // Only this main-owned local status view may close its own browser group.
-      // It exposes no preload or general navigation/IPC authority to web pages.
-      status.webContents.on('will-navigate',(event,url)=>{event.preventDefault();if(url==='xiaozhi-browser:close')void closeGroup(id);});
-      const value:Group={layout:createBrowserLayout(window,status),owner:'agent',control:new AbortController(),window,status,tabs:new Map(),active:'',proxy,busy:false,closing:false};
-      try{if(process.env.ELECTRON_RENDERER_URL&&!options.statusFile){const url=new URL('browser-status.html',process.env.ELECTRON_RENDERER_URL+'/');url.hash='loading';await status.webContents.loadURL(url.href);}else await status.webContents.loadFile(options.statusFile||path.resolve(import.meta.dirname,'../renderer/browser-status.html'),{hash:'loading'});}catch(error){status.webContents.close();window.destroy();await proxy.close();throw error;}
-      if(disposed){status.webContents.close();window.destroy();await proxy.close();throw new Error('cancelled');}
+      status.webContents.on('will-navigate',event=>event.preventDefault());
+      const toolbar=new electron.WebContentsView({webPreferences:{preload:path.resolve(import.meta.dirname,'../preload/browser-toolbar.cjs'),nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
+      toolbar.webContents.setWindowOpenHandler(()=>({action:'deny'}));
+      toolbar.webContents.on('will-navigate',event=>event.preventDefault());
+      let toolbarLoaded=false;
+      const loadToolbar=()=>{
+        if(toolbarLoaded||options.statusFile)return;
+        toolbarLoaded=true;
+        const dev=process.env.ELECTRON_RENDERER_URL;
+        const loading=dev?toolbar.webContents.loadURL(new URL('browser-toolbar.html',dev+'/').href):
+          toolbar.webContents.loadFile(path.resolve(import.meta.dirname,'../renderer/browser-toolbar.html'));
+        void loading.catch(()=>{toolbarLoaded=false;});
+      };
+      const value:Group={toolbar,loadToolbar,layout:createBrowserLayout(window,status,toolbar),owner:'agent',control:new AbortController(),window,status,tabs:new Map(),active:'',proxy,busy:false,closing:false};
+      try{if(process.env.ELECTRON_RENDERER_URL&&!options.statusFile){const url=new URL('browser-status.html',process.env.ELECTRON_RENDERER_URL+'/');url.hash='loading';await status.webContents.loadURL(url.href);}else await status.webContents.loadFile(options.statusFile||path.resolve(import.meta.dirname,'../renderer/browser-status.html'),{hash:'loading'});}catch(error){toolbar.webContents.close();status.webContents.close();window.destroy();await proxy.close();throw error;}
+      if(disposed){toolbar.webContents.close();status.webContents.close();window.destroy();await proxy.close();throw new Error('cancelled');}
+      // This renderer belongs to the floating chrome. Only its main frame can send its group commands.
+      toolbar.webContents.on('ipc-message',(event,channel,request,operation,input)=>{
+        if(event.senderFrame!==toolbar.webContents.mainFrame||channel!=='xiaozhi:float-toolbar'||!Number.isSafeInteger(request)||
+          typeof operation!=='string'||(input!==undefined&&typeof input!=='string')||value.layout.presentation!=='floating')return;
+        const supported=['status','new-tab','navigate','select-tab','close-tab','back','forward','reload','stop','teacher','agent','redock'];
+        if(!supported.includes(operation))return;
+        void(async()=>{
+          let ok=true;
+          try{if(operation!=='status')await api.teacher(id,operation,undefined,undefined,input);}catch{ok=false;}
+          if(!toolbar.webContents.isDestroyed())toolbar.webContents.send('xiaozhi:float-result',request,{ok,status:await chromeStatus(id)});
+        })().catch(()=>{});
+      });
+
       groups.set(id,value);
       window.setMenu(electron.Menu.buildFromTemplate([{label:'浏览器控制',submenu:[
-        {label:'放回对话',click:()=>options.requestDock?.(id)},
+        {label:'放回对话',click:()=>{value.layout.park();options.requestDock?.(id);}},
         {label:'我来操作',click:()=>setOwner(value,'teacher')},
         {label:'交还小智',click:()=>setOwner(value,'agent')},
       ]}]));
       window.on('close',event=>{if(!value.closing && value.layout.wasDocked && options.requestDock){event.preventDefault();value.layout.park();options.requestDock(id);}});
       window.on('closed',()=>{void closeGroup(id);});
-      if(options.requestDock){
+      if(autoDock&&options.requestDock){
         options.requestDock(id);
-        const fallback=setTimeout(()=>{if(!value.closing && value.layout.presentation==='initial')value.layout.float();},1800);
+        const fallback=setTimeout(()=>{if(!value.closing && value.layout.presentation==='initial'){value.loadToolbar();value.layout.float();}},1800);
         fallback.unref();
       }
       return value;})();pending.set(id,job);try{return await job;}finally{pending.delete(id);}
@@ -138,7 +161,11 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     const view=new electron.WebContentsView({webPreferences:{session:partition,nodeIntegration:false,contextIsolation:true,sandbox:true,webSecurity:true,allowRunningInsecureContent:false,devTools:false,spellcheck:false}});
     created=view;
     const tab:Tab={profileOrigin,id:tabId,view,session:partition,refs:new Map(),revision:0,state:'loading'};
-    const wc=view.webContents;wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');wc.setWindowOpenHandler(()=>({action:'deny'}));
+    const wc=view.webContents;wc.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');wc.setWindowOpenHandler(({url,disposition})=>{
+      if(g.owner==='teacher'&&!g.busy&&g.active===tab.id&&['foreground-tab','background-tab','new-window','default'].includes(disposition))
+        void openManualTab(id,g,url,disposition!=='background-tab').catch(()=>{});
+      return {action:'deny'};
+    });
     wc.on('will-attach-webview',event=>event.preventDefault());
     wc.on('login',(event,details,authInfo,callback)=>{event.preventDefault();if(authInfo.isProxy&&authInfo.host==='127.0.0.1'&&authInfo.port===g.proxy.port)callback(g.proxy.username,g.proxy.password);else callback();});
     wc.on('did-start-navigation',()=>{tab.revision++;tab.snapshotId=undefined;tab.refs.clear();tab.write=undefined;});
@@ -162,6 +189,57 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     g.tabs.set(tab.id,tab);g.active=tab.id;g.layout.add(view);showTab(g,tab);return tab;
     } catch(error) {if(created && !created.webContents.isDestroyed())created.webContents.close({waitForBeforeUnload:false});if(profileOrigin&&profileOwners.get(profileOrigin)===tabId)profileOwners.delete(profileOrigin);throw error;}
   }
+  async function manualAddress(id:string,g:Group,tab:Tab,raw:string) {
+    const control=g.control;
+    const url=await safeUrl(raw);
+    checkScope(id,url);
+    if(g.closing||g.owner!=='teacher'||control.signal.aborted||g.tabs.get(tab.id)!==tab)throw new Error('cancelled');
+    if(tab.profileOrigin&&new URL(url).origin!==tab.profileOrigin)throw new Error('permission_denied');
+    tab.lastAddress=url;tab.requestedOrigin=new URL(url).origin;
+    void tab.view.webContents.loadURL(url).catch(()=>{
+      if(!g.closing&&!tab.view.webContents.isDestroyed()&&tab.state==='loading'){
+        tab.state='failed';tab.error=g.proxy.failureFor(url)||'network';
+        if(g.active===tab.id)showStatus(g,tab.error);
+      }
+    });
+  }
+  async function openManualTab(id:string,g:Group,url?:string,foreground=true) {
+    if(g.busy)throw new Error('busy');
+    if(g.tabs.size>=16)throw new Error('busy');
+    g.busy=true;
+    const previous=g.tabs.get(g.active);
+    let tab:Tab|undefined;
+    try {
+      const safe=url&&await safeUrl(url);
+      if(safe)checkScope(id,safe);
+      if(g.owner!=='teacher'||g.closing)throw new Error('permission_denied');
+      tab=await createTab(id,g);
+      tab.state='blank';showTab(g,tab);
+      if(safe)await manualAddress(id,g,tab,safe);
+      if(!foreground&&previous)showTab(g,previous);
+    }catch(error){
+      if(tab)releaseTab(g,tab);
+      if(previous&&g.tabs.has(previous.id))showTab(g,previous);
+      throw error;
+    }finally{g.busy=false;}
+  }
+  async function chromeStatus(id:string):Promise<import('../../shared/xiaozhi-agent').XiaozhiBrowserStatus>{
+    const g=groups.get(id);
+    if(!g||g.closing)return {open:false};
+    const tabs=await Promise.all([...g.tabs.values()].map(async tab=>{
+      const wc=tab.view.webContents;
+      const state=tab.state;
+      if(!wc||wc.isDestroyed())return null;
+      const raw=state==='failed'||state==='loading'?tab.lastAddress||wc.getURL():wc.getURL();
+      const title=state==='ready'?wc.getTitle().slice(0,200):'';
+      const history=wc.navigationHistory;
+      const canBack=history.canGoBack(),canForward=history.canGoForward();
+      let url='';
+      try{url=tab.profileOrigin||await safeUrl(raw);}catch{/* Non-public and sensitive addresses stay out of the toolbar. */}
+      return {tabId:tab.id,title:title&&await options.sanitize(title),url,state,canBack,canForward,active:tab.id===g.active};
+    }));
+    return {open:true,tabs:tabs.filter(t=>t!==null).filter(t=>g.tabs.has(t.tabId)),owner:g.owner,presentation:g.layout.presentation,siteOrigin:siteOrigin(g.tabs.get(g.active)),remembered:!!g.tabs.get(g.active)?.profileOrigin};
+  }
   async function snapshot(tab:Tab,signal:AbortSignal):Promise<XiaozhiBrowserReceipt>{
     signal=AbortSignal.any([signal,AbortSignal.timeout(15000)]);
     signal.throwIfAborted();if(tab.state!=='ready')throw new Error(tab.error||'network');const wc=tab.view.webContents,revision=tab.revision;await safeUrl(wc.getURL());
@@ -182,7 +260,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     const receipt={tabId:tab.id,title:(await options.sanitize(result.title)).slice(0,200),url:await safeUrl(result.currentUrl),observedAt:new Date().toISOString(),snapshotId:'pisnapshot_'+randomUUID(),text:(await options.sanitize(result.text)).slice(0,30000),untrusted:true as const};
     signal.throwIfAborted();if(tab.revision!==revision||wc.isDestroyed())throw new Error('attachment_changed');tab.refs=new Map(refs.filter(([_ref,html])=>!!html));tab.snapshotId=receipt.snapshotId;return receipt;
   }
-  return {
+  const api = {
     hasLiveNavigation(sessionId:string, runId:string, callId:string) {
       const group = groups.get(sessionId);
       if (!group || group.closing) return false;
@@ -194,8 +272,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       }
       return false;
     },
-    async teacher(id:string,operation:string, parent?:BrowserWindow, rect?:Rectangle){
-      const g=groups.get(id);
+    async teacher(id:string,operation:string, parent?:BrowserWindow, rect?:Rectangle, value?:string){
+      const g=groups.get(id)??(operation==='new-tab'?await group(id,'auto',false):undefined);
       if(disposed||!g||g.closing)throw new Error('permission_denied');
       if(operation==='teacher'||operation==='agent'){if(operation==='agent'&&g.profileChange)throw new Error('busy');setOwner(g,operation);return;}
       if(operation==='dock' && parent && rect){
@@ -203,11 +281,44 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         if(![rect.x,rect.y,rect.width,rect.height].every(Number.isFinite)||rect.x<0||rect.y<0||rect.width<1||rect.height<1||rect.x+rect.width>w+1||rect.y+rect.height>h+1)throw new Error('invalid_input');
         g.layout.dock(parent,rect);return;
       }
-      if(operation==='float'){g.layout.float();return;}
+      if(operation==='float'){g.loadToolbar();g.layout.float();const tab=g.tabs.get(g.active);if(tab)showTab(g,tab);return;}
+      if(operation==='redock'){g.layout.park();options.requestDock?.(id);return;}
       if(operation==='cover'){if(g.layout.docked||g.layout.presentation==='initial')g.layout.park();return;}
       if(operation==='leave'){setOwner(g,'teacher');g.layout.park();return;}
+      if (operation==='new-tab') {setOwner(g,'teacher');await openManualTab(id,g);return;}
+      if (operation==='select-tab'||operation==='close-tab') {
+        const tab=value&&g.tabs.get(value);
+        if(!tab||g.busy)throw new Error(g.busy?'busy':'invalid_input');
+        setOwner(g,'teacher');
+        if(operation==='select-tab')showTab(g,tab);
+        else {
+          const wasActive=g.active===tab.id;
+          const ordered=[...g.tabs.values()],index=ordered.indexOf(tab);
+          releaseTab(g,tab);
+          const neighbor=ordered[index+1]||ordered[index-1];
+          if(wasActive&&neighbor)showTab(g,neighbor);
+          if(!neighbor)await closeGroup(id);
+        }
+        return;
+      }
       const current=g.tabs.get(g.active);
       if(!current || g.owner!=='teacher' || g.busy)throw new Error('permission_denied');
+      if(operation==='navigate'){
+        if(!value)throw new Error('invalid_input');
+        await manualAddress(id,g,current,value);
+        return;
+      }
+      if(operation==='back'||operation==='forward'||operation==='reload'||operation==='stop'){
+        const wc=current.view.webContents,history=wc.navigationHistory;
+        if(operation==='stop')wc.stop();
+        if(operation==='back'&&history.canGoBack())history.goBack();
+        if(operation==='forward'&&history.canGoForward())history.goForward();
+        if(operation==='reload'){
+          if(current.state==='failed'&&current.lastAddress)await manualAddress(id,g,current,current.lastAddress);
+          else if(current.state!=='blank')wc.reload();
+        }
+        return;
+      }
       const origin=siteOrigin(current);if(!origin)throw new Error('permission_denied');
       const url=new URL(await safeUrl(origin));
       if(disposed||g.closing||url.protocol!=='https:'||groups.get(id)!==g||g.active!==current.id||g.owner!=='teacher'||g.busy)throw new Error('permission_denied');
@@ -250,8 +361,9 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
       }
       throw new Error('invalid_input');
     },
+    chromeStatus,
     async status(id:string){const g=groups.get(id);if(!g||g.closing)return {open:false};const tabs=[];for(const tab of g.tabs.values()){if(tab.state!=='ready'||!tab.view.webContents||tab.view.webContents.isDestroyed())continue;try{tabs.push({tabId:tab.id,title:g.owner==='teacher'?'老师操作中':(await options.sanitize(tab.view.webContents.getTitle())).slice(0,200),url:g.owner==='teacher'?new URL(tab.view.webContents.getURL()).origin:await safeUrl(tab.view.webContents.getURL()),active:tab.id===g.active});}catch{/* Blank/blocked pages are not a source. */}}return {open:true,tabs,owner:g.owner,siteOrigin:siteOrigin(g.tabs.get(g.active)),remembered:!!g.tabs.get(g.active)?.profileOrigin};},
-    show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.layout.float();g.window.focus();},
+    show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.loadToolbar();g.layout.float();g.window.focus();},
     setNetworkScope(id:string,scope:(url:string)=>boolean,resetConnections=false){if(networkScopes.get(id)===scope&&!resetConnections)return;networkScopes.set(id,scope);groups.get(id)?.proxy.stopConnections();},
     async execute(id:string,input:XiaozhiBrowserInput,context:{invocation?:{runId:string;callId:string};signal:AbortSignal;dnsMode:OfficeDnsMode;current:()=>boolean;confirm:(question:string,signal:AbortSignal)=>Promise<boolean>}):Promise<XiaozhiBrowserReceipt|{tabs:{tabId:string;title:string;url:string;active:boolean}[]}|{closed:true}> {
       if(!validBrowserInput(input)||disposed)throw new Error('invalid_input');const check=()=>{context.signal.throwIfAborted();if(!context.current())throw new Error('cancelled');};check();
@@ -290,8 +402,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           }
           return receipt;
         }
-        const activate=()=>{showTab(g,tab!);if(g.layout.presentation==='floating'||(!options.requestDock&&g.layout.presentation==='initial'))g.layout.float();};
-        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.requestedOrigin=new URL(url).origin;tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
+        const activate=()=>{showTab(g,tab!);if(g.layout.presentation==='floating'||(!options.requestDock&&g.layout.presentation==='initial')){g.loadToolbar();g.layout.float();}};
+        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.requestedOrigin=new URL(url).origin;tab!.lastAddress=url;tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
         const withRef = async (body: string) => {
           if (input.snapshotId !== tab!.snapshotId) throw new Error('attachment_changed');
           const expected = tab!.refs.get(input.ref!);
@@ -418,4 +530,5 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     cancel(id:string){const g=groups.get(id);if(g&&g.owner==='agent'){for(const tab of g.tabs.values()){tab.write=undefined;stopPage(tab);}g.proxy.stopConnections();}},
     async dispose(){disposed=true;await Promise.allSettled([...pending.values()]);await Promise.all([...groups.keys()].map(closeGroup));},
   };
+  return api;
 }
