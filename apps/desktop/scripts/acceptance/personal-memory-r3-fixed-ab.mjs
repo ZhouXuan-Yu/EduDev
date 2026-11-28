@@ -784,6 +784,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         output:next.items.filter(item=>item.role==='assistant').map(item=>item.text)};
     }
     result.cost='UNKNOWN';
+    if(continuationCase){
+      assert(result.continuation.sameOriginTask,'The continued task must have the original handout Task ID');
+      assert(result.continuation.hostReceiptDelivered,'The confirmed handout version must be verified by the host');
+    }
     if(semesterSource){
       if(result.historyAccess.state==='confirmed_for_comparison'){
         result.selectedForSemester=read(data,"SELECT source_id FROM xiaozhi_memory_reference_deliveries WHERE run_id=? AND reason='turn'",result.terminal.runId).map(row=>row.source_id);
