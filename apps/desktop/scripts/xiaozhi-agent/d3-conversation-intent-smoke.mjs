@@ -12,8 +12,8 @@ for(const prompt of tasks)assert(!isStandaloneAnswer({prompt}),prompt);
 const prompt=answers[1];
 for(const options of [{attachments:[{id:'attachment',revision:1}]},{presentation:{}},{continueTask:{}},{classroomPlan:{}},
     {paperExportIntent:{}},{resumeDeliveryId:'delivery-id'}])assert(!isStandaloneAnswer({prompt,...options}),JSON.stringify(options));
-const amendments=['请把刚才的讲义改为八年级，其他要求照旧。','改为两道练习。','请在这份教案增加板书。'];
-const newRequests=['新建一份讲义把题型改为计算','为什么之前的讲义删去了过程？','修改另一份教案','继续'];
+const amendments=['继续当前任务，只把《某一讲义》第三题的题干改为口头练习。','请接着这个任务，仅将最后一段改为小结。','请把刚才的讲义改为八年级，其他要求照旧。','改为两道练习。','请在这份教案增加板书。'];
+const newRequests=['同事说要继续当前任务，新建另一份讲义。','继续当前任务，是否需要换教材？','新建一份讲义把题型改为计算','为什么之前的讲义删去了过程？','修改另一份教案','继续'];
 for(const prompt of amendments)assert(isBoundTaskAmendment(prompt),prompt);
 for(const prompt of newRequests)assert(!isBoundTaskAmendment(prompt),prompt);
 console.log(JSON.stringify({passed:answers.length+tasks.length+6+amendments.length+newRequests.length,

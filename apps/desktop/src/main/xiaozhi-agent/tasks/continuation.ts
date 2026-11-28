@@ -16,6 +16,8 @@ export function isTaskAmendment(text:string):boolean {
 export function isBoundTaskAmendment(text:string):boolean {
   const value=text.trim();
   if(/新任务|另起|新建|换个话题|另外一件/u.test(value)||/^(?:请问[，,]?\s*)?(?:为什么|为何|怎么回事|什么|是否|有没有)/u.test(value))return false;
+  const currentChange=value.match(/^(?:请)?(?:继续|接着|接续)(?:当前|这个|本次)的?任务[，,。]\s*(.+)$/su)?.[1];
+  if(currentChange&&/^(?:请)?(?:只|仅)?(?:把|将|改为|改成|修改|调整|修订|替换|删去|增加)/u.test(currentChange))return true;
   // Production admission separately verifies that the exact lesson belongs to the current task.
   if(value.includes('《')&&lessonRevisionRequest(value)?.title)return true;
   const target=/(?:刚才|之前|原来|这份|原版|目前的|当前的|在此基础上|其他.{0,12}照旧)/u.test(value);

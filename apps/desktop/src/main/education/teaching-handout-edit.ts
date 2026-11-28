@@ -111,7 +111,8 @@ export function createHandoutEditCoordinator(options:{state:State;versions:Versi
     const preserved=protectedExerciseNumbers(run.prompt);
     const titles=[...run.prompt.matchAll(/《([^《》]+)》/gu)].map(match=>match[1]);
     const titlePrefix=run.prompt.slice(0,run.prompt.indexOf('《')).trim();
-    const directTarget=titles.length===1&&/^(?:请(?:你|帮我)?|帮我)?(?:继续|再次|现在|本次|这次)?(?:修改|修订|调整|编辑|将|把|给|对)\s*(?:这份|讲义|学案)?$/u.test(titlePrefix);
+    const commandPrefix=titlePrefix.replace(/^(?:请)?(?:继续|接着|接续)(?:当前|这个|本次|上次)的?任务[，,。]\s*/u,'');
+    const directTarget=titles.length===1&&/^(?:请(?:你|帮我)?|帮我)?(?:继续|再次|现在|本次|这次)?(?:只|仅)?(?:修改|修订|调整|编辑|将|把|给|对)\s*(?:这份|讲义|学案)?$/u.test(commandPrefix);
     const implicitBook=!directTarget;
     let observed:{clarification?:string;protectedBlocks:Set<string>;exerciseTargets?:Set<string>;bookId:string;digest:string;title:string;chapters:Set<string>;blocks:Set<string>}|undefined;
     const fence=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!run.current())throw Error('cancelled');};

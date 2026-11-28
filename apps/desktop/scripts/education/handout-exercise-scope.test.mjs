@@ -143,3 +143,19 @@ test('a quoted old request cannot designate an unbound handout for a new task',a
   assert.equal(reads[0].chapter,undefined);
   assert(queries.every(query=>query.taskOnly));
 });
+
+for(const prompt of ['继续当前任务，只把《教学讲义》第三题改成口头练习。','请接着上次的任务，仅将《教学讲义》第三题改成基础。']){
+  test('a direct teacher designation can follow the instruction to continue a task: '+prompt,async()=>{
+    const {queries,reads}=await exerciseTools(prompt,[3],undefined,false);
+    assert.equal(queries[0]?.title,'教学讲义');
+    assert.equal(queries[0]?.taskOnly,false);
+    assert.equal(reads[0].chapter.blocks.length,1);
+  });
+}
+for(const prompt of ['同事说：“继续当前任务，只把《教学讲义》第三题改成口头练习。”','继续当前任务，不要修改《教学讲义》。']){
+  test('an attributed or negated continuation cannot select another book: '+prompt,async()=>{
+    const {queries,reads}=await exerciseTools(prompt,[3],undefined,false);
+    assert.equal(reads[0].error,'book_selection_required');
+    assert.equal(queries.length,0);
+  });
+}

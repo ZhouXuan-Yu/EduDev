@@ -18,7 +18,9 @@ const physics=title===physicsHandout.title;
 const filePrefix=physics?'浮力与物体浮沉':'等式变形学案';
 const generatedFixture=process.argv.includes('--generated-fixture');
 const liveExport=process.argv.includes('--live-export');
-const apiKey=liveExport?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
+const partialEdit=process.argv.includes('--partial-then-edit');
+if(partialEdit)assert(baseline.authority?.confirmedVersion,'This lane requires the confirmed teacher-edited fixture');
+const apiKey=liveExport||partialEdit?process.env.DEEPSEEK_API_KEY:'synthetic-teaching-handout-export';
 assert(apiKey,'A configured test model is required');
 const output=fs.mkdtempSync(path.join(root,'handout-export-')),data=path.join(output,'data'),profile=path.join(output,'profile');
 const oldData=path.join(fixture,'data'),wal=path.join(oldData,'app.db-wal');
@@ -57,8 +59,18 @@ async function launch(cold=false){
     OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_SKIP_DOTENV:'1',DEEPSEEK_API_KEY:apiKey,DEEPSEEK_MODEL:'deepseek-flash'};
   for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
   app=await electron.launch({args:[main,'--user-data-dir='+profile],env,cwd:desktop,timeout:60000});
-  await app.evaluate(({net},{cold,liveExport,title})=>{
+  await app.evaluate(({net},{cold,liveExport,title,partialPath})=>{
     globalThis.handoutExportTest={cold,requests:[],errors:[]};
+    if(partialPath&&!cold){
+      const disk=process.getBuiltinModule('node:fs'),link=disk.linkSync;
+      disk.linkSync=(temporary,target)=>{
+        if(!globalThis.handoutExportTest.collision&&String(target).endsWith(partialPath)){
+          disk.writeFileSync(target,'合成目标占用文件',{flag:'wx'});
+          globalThis.handoutExportTest.collision=true;
+        }
+        return link(temporary,target);
+      };
+    }
     const remote=net.fetch.bind(net);
     net.fetch=async(input,init)=>{
       const url=new URL(typeof input==='string'?input:input.url);
@@ -68,9 +80,9 @@ async function launch(cold=false){
       }
       const state=globalThis.handoutExportTest;
       try{
-        if(cold||url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')throw Error('Unexpected external dispatch');
+        if((cold&&!state.liveEdit)||url.origin!=='https://api.deepseek.com'||url.pathname!=='/v1/chat/completions')throw Error('Unexpected external dispatch');
         const {phase,lane}=state,body=JSON.parse(init.body),index=state.index++;
-        if(liveExport){
+        if(liveExport||state.liveEdit){
           if(state.requests.length>=10)throw Error('Live handout export exceeds the synthetic fixture limit');
           const request={phase,index,status:0};
           state.requests.push(request);
@@ -126,7 +138,7 @@ async function launch(cold=false){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport,title});
+  },{cold,liveExport,title,partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -167,7 +179,62 @@ with zipfile.ZipFile(sys.argv[1]) as z:
   return JSON.parse(result.stdout);
 }
 
-try{
+async function verifyPartialEdit(version){
+  const bundles=()=>sql('SELECT value_json FROM xiaozhi_delivery_bundles WHERE session_id=? ORDER BY rowid',[sessionId]).map(row=>JSON.parse(row.value_json));
+  const partial=await until(()=>bundles().find(row=>row.state==='partial'));
+  const initial=await settle();
+  assert(initial.collision);
+  const [saved]=facts();assert.equal(facts().length,1);
+  const savedAt=fs.statSync(saved.file_path).mtimeMs;
+  assert.equal(sha(saved.file_path),saved.content_hash);
+  const oldVersion=baseline.authority;
+  assert.equal(version.id,oldVersion.confirmedVersion);
+  const savedText=docx(saved.file_path).text;
+  for(const expected of oldVersion.fileExpectations.required)assert(savedText.includes(expected));
+  for(const old of oldVersion.fileExpectations.excluded)assert(!savedText.includes(old));
+  const effects=()=>sql('SELECT effect_id,revision,state FROM xiaozhi_effects_v1 WHERE run_id=? ORDER BY effect_id',[partial.runId]);
+  const exportEffects=effects();assert(exportEffects.length>0);
+  const active=(await snapshot()).task;
+  assert.equal(partial.taskVersion,active.id+':'+active.requirementsVersion);
+  const occupied=path.join(path.dirname(saved.file_path),lanes.bundle.outputs[1].path);
+  assert.equal(fs.readFileSync(occupied,'utf8'),'合成目标占用文件');
+  check('The second destination collision preserves a real partial bundle; its one saved DOCX contains the confirmed manual revision',{version:version.id,task:active.id,bundle:partial.id,digest:saved.content_hash});
+  await app.close();app=undefined;await launch(true);
+  assert.deepEqual(facts(),[saved]);
+  const task=(await snapshot()).task;
+  assert.equal(task.id,active.id);
+  const content=()=>page.evaluate(id=>window.omniEdu.getTeachingBook(id),bookId);
+  const before=await content();
+  const third=before.blocks.find(b=>b.metadata.handoutRole==='exercise'&&b.title.startsWith('练习 3'));
+  assert(third);
+  const newStem='在数轴上标出负三与正三，写出它们到原点的距离。';
+  assert(!JSON.stringify(before.blocks).includes(newStem));
+  await app.evaluate(()=>Object.assign(globalThis.handoutExportTest,{liveEdit:true,phase:'edit',index:0}));
+  await page.getByTestId('office-prompt-input').fill('继续当前任务，只把《'+title+'》第3题的题干改为「'+newStem+'」。保持难度、答案、解析和其他块原样。已保存的文件保留原样，这次无需导出。请给我修改预览。');
+  await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  const card=page.getByTestId('pi-handout-edit').last(),approve=card.getByTestId('pi-handout-edit-approve');
+  await readyApproval(approve);
+  await approve.click();
+  const edited=await until(async()=>{const value=await content();return value.blocks.some(b=>b.id===third.id&&b.payload.text.includes(newStem))?value:null;});
+  const wire=await settle();
+  report.paidRequests=wire.requests.length;
+  assert(wire.requests.length&&wire.requests.every(request=>request.status===200));
+  assert.deepEqual(edited.blocks.filter(b=>b.id!==third.id),before.blocks.filter(b=>b.id!==third.id));
+  assert.equal(edited.blocks.find(b=>b.id===third.id).title,third.title);
+  assert.equal((await snapshot()).task.id,active.id);
+  assert.deepEqual(facts(),[saved]);assert.equal(sha(saved.file_path),saved.content_hash);assert.equal(fs.statSync(saved.file_path).mtimeMs,savedAt);
+  assert.equal(fs.readFileSync(occupied,'utf8'),'合成目标占用文件');
+  assert.deepEqual(bundles(),[partial]);
+  assert.deepEqual(effects(),exportEffects);
+  const latest=sql('SELECT id FROM ai_agent_runs WHERE session_id=? ORDER BY rowid DESC LIMIT 1',[sessionId])[0].id;
+  const actions=sql('SELECT tool FROM xiaozhi_tool_receipts WHERE run_id=?',[latest]).map(row=>row.tool);
+  assert(actions.includes('education_propose_handout_edit'));
+  assert(actions.every(tool=>!['education_export_teaching_handout','office_deliver_files','office_create_document'].includes(tool)));
+  report.exportEffects=exportEffects;
+  check('A cold continuation applies the named third-question edit in the same Task without modifying the earlier DOCX or pending delivery',{task:active.id,unchangedBlocks:before.blocks.length-1,digest:saved.content_hash});
+}
+
+async function runExport(){
   const sources=sql('SELECT id,local_path FROM teacher_resources');
   for(const source of sources){
     const location=path.relative(oldData,source.local_path);
@@ -197,6 +264,7 @@ try{
   assert.equal(ledger().length,2,'The swapped names must not add approval rows.');
   await page.screenshot({path:path.join(output,'pending-1366.png'),animations:'disabled'});
   await approve.click();
+  if(partialEdit)return verifyPartialEdit(version);
   await until(()=>ledger().filter(row=>row.state==='saved').length===2);
   const bundleWire=await settle();
   if(!liveExport)report.authorities={artifact:{category:bundleWire.artifactCategory,...bundleWire.ref},task:bundleWire.requirements};
@@ -308,11 +376,15 @@ try{
   assert.deepEqual((await app.evaluate(()=>globalThis.handoutExportTest)).requests,[]);
   assert.deepEqual(report.errors,[]);
   check('Cold data readback preserves file identities and the exact bytes without replay');
+}
+
+try{
+  await runExport();
   report.ok=true;
 }catch(error){
   report.errors.push(String(error?.stack||error));
   if(app)report.wire=await app.evaluate(()=>globalThis.handoutExportTest).catch(()=>null);
-  if(liveExport)report.paidRequests||=report.wire?.requests.length||0;
+  if(liveExport||report.wire?.liveEdit)report.paidRequests||=report.wire?.requests.length||0;
   report.ledger=ledger().map(({draft_json,...row})=>row);
   if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>undefined);
   console.error(error);
