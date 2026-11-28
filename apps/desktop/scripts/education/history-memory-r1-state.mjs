@@ -72,6 +72,30 @@ try{
     assert.equal(historyId({...ref,sourceVersion:hash('changed')}),grant.sourceId)
     assert.notEqual(historyId({...ref,recordId:'other'}),grant.sourceId)
   })
+  await check('permitted history distinguishes the recording time from attributed statements and unknown event times',async()=>{
+    const inputs=[
+      ['同事说：“我一般先布置拓展题。”','third_party'],
+      ['教材原文：「可用图示比较。」','third_party'],
+      ['模型建议：“可在课堂采用表格。”','ai_inferred'],
+      ['我通常先用图示讲解。',undefined],
+      ['同事说：“先用图示。”但我习惯先写板书。',undefined]
+    ];
+    for(const [i,[content,kind]] of inputs.entries()){
+      const messages=[{id:'quote-origin-'+i,role:'user',content,metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'quote-run-'+i}}];
+      persistRequests(messages);
+      const [source]=teacherRequestSources(messages,[]),ref={kind:'history_request',sessionId:old,recordId:source.sourceId,sourceVersion:source.sourceVersion};
+      if(i===1)await sql.run("UPDATE ai_conversation_messages SET created_at='' WHERE id=?",[ref.recordId]);
+      const service=createHistoryMemory({xiaozhiState:{sql},sanitizeProblemText:async text=>({sanitizedText:text})});
+      const saved=await memory.change(ref,0,'allow');
+      const preview=await service.preview(ref,0,true);
+      assert.equal(preview.text,content);
+      assert.equal(preview.origin.evidence,'teacher_explicit');
+      assert.equal(preview.origin.recordedAt,i===1?null:'2026-11-25T10:00:00Z');
+      assert.deepEqual(preview.origin.attributedContent,kind?{evidence:kind,sourceOccurredAt:null}:undefined);
+      await memory.change(ref,saved.revision,'revoke');
+      await assert.rejects(service.preview(ref,0,true),/permission_denied/);
+    }
+  })
   await check('the final discovery response excludes a permission revoked during candidate assembly',async()=>{
     const messages=['algebra exercise worksheet','exercise'].map((content,i)=>({id:'race-record-'+i,role:'user',content,
       metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'run_'+i}}));

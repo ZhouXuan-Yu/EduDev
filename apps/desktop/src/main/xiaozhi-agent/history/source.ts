@@ -1,4 +1,4 @@
-import type { HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
+import type { AttributedHistoryContent, HistorySourceRef } from '../../../shared/xiaozhi-history-memory';
 import { createPiControlState } from '../control-state';
 import { validMemorySession } from '../memory-selection';
 import { teacherRequestSourceVersion } from '../request-sources';
@@ -6,6 +6,14 @@ import type { Sql } from '../session-state';
 
 const versionPattern = /^[a-f0-9]{64}$/;
 export const historyRecordId = /^[a-z0-9_-]{1,180}$/i;
+
+/** Identify only a whole, explicitly attributed quotation. The recording time belongs to
+ * the teacher's message; it does not date the event or authenticate the quoted speaker. */
+function attributedContent(teacherText: string): AttributedHistoryContent | undefined {
+  const match=teacherText.trim().match(/^(同事|其他老师|家长|学生|教材|资料|模型|AI|助手)(?:说|表示|建议|写道|原文|中写道)?\s*[：:]\s*(?:“[^“”]+”|「[^「」]+」|『[^『』]+』|"[^"]+")[。！？.!?]?$/iu);
+  if (!match) return;
+  return {evidence:/^(?:AI|模型|助手)$/iu.test(match[1])?'ai_inferred':'third_party',sourceOccurredAt:null};
+}
 
 export function validHistoryRef(value: unknown): value is HistorySourceRef {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -54,6 +62,6 @@ export async function readHistorySource(db: Sql, ref: HistorySourceRef) {
   const occurredAt = control
     ? (await db.all('SELECT updated_at FROM xiaozhi_pi_controls WHERE id=?',[control.id]))[0]?.updated_at
     : anchor.created_at;
-  return {ref, title:String(anchor.title ?? '新对话').slice(0,80), label, text, teacherText, runId,
+  return {ref, title:String(anchor.title ?? '新对话').slice(0,80), label, text, teacherText, runId, attributedContent:attributedContent(teacherText),
     occurredAt:typeof occurredAt === 'string' && Number.isFinite(Date.parse(occurredAt)) ? occurredAt : null};
 }

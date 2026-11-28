@@ -1,3 +1,4 @@
+import {historyAttributionLabel} from '../../../shared/xiaozhi-history-memory';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
 import type { HistoryAccessAction, HistoryIndexStatus, HistoryPreview, HistorySource } from '../../../shared/xiaozhi-history-memory';
@@ -122,6 +123,7 @@ export function PiHistoryMemorySettings() {
           <Button size="sm" variant="ghost" onPress={()=>setConfirm('')}>取消</Button>
         </SettingsInline></>}
         {preview?.source.sourceId===item.sourceId&&<section aria-label="脱敏原文" data-testid="history-settings-preview">
+          {preview.origin?.attributedContent&&<p>{historyAttributionLabel(preview.origin.attributedContent)} · 原文未核实发生时间</p>}
           <p>{preview.text}</p>
           {preview.nextOffset!==null&&<Button size="sm" variant="ghost" isDisabled={busy}
             onPress={()=>void read(item,preview.nextOffset??0)}>阅读后续原文</Button>}

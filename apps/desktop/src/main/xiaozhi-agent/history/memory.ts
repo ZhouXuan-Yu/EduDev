@@ -92,8 +92,8 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
     return {title:detail.session.title,sources:teacherRequestSources(detail.messages,controls).filter(item=>historyRecordId.test(item.sourceId))};
   }
   async function original(ref: HistorySourceRef) {
-    const {title,label,text,occurredAt} = await readHistorySource(sql,ref);
-    return {ref,title,label,text,recordedAt:occurredAt};
+    const {title,label,text,occurredAt,attributedContent} = await readHistorySource(sql,ref);
+    return {ref,title,label,text,recordedAt:occurredAt,...(attributedContent?{attributedContent}:{})};
   }
   async function sanitizedOriginal(ref: HistorySourceRef) {
     const source = await original(ref);
@@ -264,7 +264,7 @@ export function createHistoryMemory(store: OmniEduStore, dataRoot?: string) {
         if(!view.allowed||view.generation!==own.selection.version)throw Error('source_changed');
         if(offset===0)own.previewed=true;
       }
-      return {source:view,text:text.slice(offset,end),offset,nextOffset:end<text.length?end:null};
+      return {origin:{evidence:'teacher_explicit',recordedAt:source.recordedAt,...(source.attributedContent?{attributedContent:source.attributedContent}:{})},source:view,text:text.slice(offset,end),offset,nextOffset:end<text.length?end:null};
     },
     async selected(selection: HistorySelection) {
       const saved = await access.get(selection.id);

@@ -1,3 +1,4 @@
+import {historyAttributionLabel} from '../../../shared/xiaozhi-history-memory';
 import { useRef, useState } from 'react';
 import { Button, Input } from '@heroui/react';
 import type { HistoryCandidate, HistoryDiscovery, HistoryPreview, PendingHistoryReference } from '../../../shared/xiaozhi-history-memory';
@@ -90,7 +91,8 @@ export function PiHistoryLookup({sessionId,scope,query,pending,includeSelected=f
     </li>)}</ul>
     {preview&&<section data-testid="history-lookup-preview" aria-label="来源预览">
       <p>{preview.source.sessionTitle} · {preview.source.label}</p>
-      <p>{preview.text}</p>
+      {preview.origin?.attributedContent&&<p>{historyAttributionLabel(preview.origin.attributedContent)} · 原文未核实发生时间</p>}
+          <p>{preview.text}</p>
       {preview.nextOffset!==null&&<Button size="sm" variant="ghost" isDisabled={busy}
         onPress={()=>void show(preview.candidate,preview.nextOffset??0)}>查阅下一段</Button>}
       <Button size="sm" variant="secondary" isDisabled={busy} data-testid="history-lookup-use" onPress={()=>void confirm('task')}>{preview.candidate.comparisonTerm?'仅用于本次比较':'随任务引用'}</Button>

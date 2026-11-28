@@ -167,6 +167,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
         const normalized=source.text.normalize('NFKC').toLowerCase();
         const score=terms.reduce((sum,term)=>sum+(normalized.includes(term)?term.length:0),0);
         const row={sourceId:pin.id,version:pin.version,sourceVersion:pin.sourceVersion,
+          ...(source.attributedContent?{attributedContent:source.attributedContent}:{}),
           ...(source.temporal.comparisonTargetTerm?{用途:'教师已确认的同班上学期历史对比。上学期以当前任务的 comparisonTargetTerm 为准。'}:{}),
           excerpt,excerptOnly:excerpt.length<source.text.length,temporal:source.temporal};
         const receipt:ReceivedReference={id:pin.id,version:pin.version,fingerprint:pin.fingerprint,
@@ -224,7 +225,8 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       signal?.throwIfAborted();
       if(!final.valid||final.fingerprint!==expectedAuthority)throw Error('memory_scope_changed');
       return {sourceId:pin.id,sourceVersion:pin.sourceVersion,version:pin.version,offset:request.offset,
-        nextOffset:end<characters.length?end:null,text:characters.slice(request.offset,end).join(''),temporal:source.temporal};
+        nextOffset:end<characters.length?end:null,text:characters.slice(request.offset,end).join(''),
+        ...(source.attributedContent?{attributedContent:source.attributedContent}:{}),temporal:source.temporal};
     },
     /** Main-only model payload. Never expose this method or authority hash through preload. */
     async readSelected(id: string, expectedAuthority: string, signal?: AbortSignal, personalIds?:readonly string[], policy?:RunMemoryPolicy) {
@@ -235,7 +237,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
       const payload: Array<{ reference: string; layer: 'L2' | 'L3' | 'history' | 'personal'; source: string; version: number; text: string;
         provenance: XiaozhiMemoryPreview['provenance'] | 'teacher_history' | 'teacher_confirmed'; sourceDocuments: string[];
         refs: Array<{ kind: 'run' | 'event'; label: string }>;
-        history?: {sourceId:string; sourceVersion:string; truncated:boolean; nextOffset:number|null; temporal:{teachingTerm:string|null;recordedAt:string|null;comparisonTargetTerm?:string}};
+        history?: {sourceId:string; sourceVersion:string; attributedContent?:import('../../shared/xiaozhi-history-memory').AttributedHistoryContent; truncated:boolean; nextOffset:number|null; temporal:{teachingTerm:string|null;recordedAt:string|null;comparisonTargetTerm?:string}};
         personal?:{sourceId:string; sourceVersion:string; scope:string; term:string; occurredAt:string|null} }> = [];
       if (saved.enabled) for (const item of inRequestOrder(saved.selections,personalIds)) {
         signal?.throwIfAborted();
@@ -255,7 +257,7 @@ export function createPiMemoryScope(store: OmniEduStore, options: { modelAccess?
           const truncated=text.length<source.text.length;
           payload.push({reference:`记忆${payload.length+1}`,layer:'history',source:source.label,version:item.version,
             text,provenance:'teacher_history',sourceDocuments:[],refs:[],
-            history:{sourceId:item.id,sourceVersion:item.sourceVersion,truncated,nextOffset:truncated?Array.from(text).length:null,temporal:source.temporal}});
+            history:{sourceId:item.id,sourceVersion:item.sourceVersion,...(source.attributedContent?{attributedContent:source.attributedContent}:{}),truncated,nextOffset:truncated?Array.from(text).length:null,temporal:source.temporal}});
           continue;
         }
         const fact = (await facts(item)).find(entry => entry.id === item.id);

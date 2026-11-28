@@ -13,7 +13,12 @@ export type HistorySource = {
   cleanup: 'none' | 'pending' | 'done';
 };
 export type HistorySelection = { layer: 'history'; source: 'history'; id: string; version: number; sourceVersion: string };
-export type HistoryPreview = { source: HistorySource; text: string; offset: number; nextOffset: number | null };
+export type AttributedHistoryContent = {evidence:'third_party'|'ai_inferred';sourceOccurredAt:null};
+export type HistoryOrigin = {evidence:'teacher_explicit';recordedAt:string|null;attributedContent?:AttributedHistoryContent};
+export function historyAttributionLabel(attribution:AttributedHistoryContent) {
+  return attribution.evidence==='third_party'?'教师转述的第三方引文':'教师转述的 AI 建议';
+}
+export type HistoryPreview = { origin:HistoryOrigin; source: HistorySource; text: string; offset: number; nextOffset: number | null };
 export type HistoryCandidate = HistorySource & {ticket:string;comparisonTerm?:string};
 export type HistoryDiscovery = { candidates: HistoryCandidate[]; mode: 'local' | 'hindsight'; reason?: 'empty_scope' | 'service_unavailable'; elapsedMs: number };
 export type HistoryAccessAction = 'allow' | 'revoke' | 'disable' | 'restore' | 'forget';
