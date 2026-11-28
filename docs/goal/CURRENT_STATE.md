@@ -1,6 +1,6 @@
 # 当前状态与恢复入口
 
-2026-11-28　浏览器工作线保留独立模块提交，已核对五个真实 DeepSeek 场景。教师实站签认和最终 main 各自登记。[专项进度](BROWSER_CONTROL_R2.md)
+2026-11-28　浏览器模块 C8 已通过完整性能对照（热会话 P50 改善 33.31%）和五个真实 DeepSeek 场景。教师实站签认和最终 main 各自登记。[专项进度](BROWSER_CONTROL_R2.md)
 
 浏览器的三个教师场景已在真实 DeepSeek 对话中通过，保留教师人工复核。见[教师复核与实测记录](BROWSER_TEACHER_ACCEPTANCE.md)
 
