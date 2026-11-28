@@ -18,6 +18,6 @@ const timeout = setTimeout(() => child.kill(), 240000);
 const code = await new Promise((resolve, reject) => {child.once('error', reject); child.once('exit', resolve);});
 clearTimeout(timeout); await new Promise(resolve => log.end(resolve));
 let report; try {report = JSON.parse(fs.readFileSync(path.join(output, 'report.json'), 'utf8'));} catch {}
-const success = code === 0 && report?.success === true && report.checks.length === 9 && report.checks.every(check => check.pass);
+const success = code === 0 && report?.success === true && report.checks.length === 10 && report.checks.every(check => check.pass);
 if (!success) process.exitCode = 1;
 console.log(JSON.stringify({success, exitCode: code, passed: report?.checks.length, output, root: report?.root, error: report?.error}));

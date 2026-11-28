@@ -180,7 +180,7 @@ import {createSkillGovernance} from './skills/service';
 import {createSkillTeamService} from './skills/teams';
 import {createLegacySkillAdapter} from './skills/legacy';
 import {createGovernedSkillSource} from './skills/runtime';
-import {createSkillCreatorTools} from './skills/tools';
+import {createSkillCreatorTools,methodReviewOnly} from './skills/tools';
 import {captureSkillPrivateContext, createSkillPrivateContext, type SkillPrivateContext} from './skills/private-context';
 import {captureRetiredPrivateHistory} from './skills/private-history';
 import {persistNativeSessionReplacement} from './tasks/native-session-replacement';
@@ -1092,6 +1092,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     budget:PiXiaozhiOptions['budget'],cleanPrompt='',owner?:Active,admittedPrompt?:string):Promise<PiXiaozhiOptions & {thinkingBaseline:PreparedAgentConfig['thinking']}> {
     await skillsReady;
     const skillOwner = owner?.publisher && owner.task ? {...owner.publisher.owner, taskId: owner.task.id} : undefined;
+    const reviewingMethod=Boolean(skillOwner && (methodReviewOnly(admittedPrompt??'') ||
+      owner?.task?.criteria.some(criterion=>methodReviewOnly(criterion.text))));
     await skillGovernance.activatePending(skillOwner);
     await approvals.migrateLegacy(id);
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
@@ -1251,7 +1253,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         () => skillGovernance.isCurrent(skillOwner))
         : {resources: async signal => managedSkills.resourcesForItems((await governedLegacySkills.catalog()).skills.filter(item => item.enabled && !item.archived), signal),
           sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText},
-      skillCreatorTools: skillOwner ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
+      methodReviewOnly:reviewingMethod,
+      skillCreatorTools: skillOwner && !reviewingMethod ? createSkillCreatorTools(skillGovernance, () => skillOwner) : undefined,
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
       boundMockExamBundleId:owner?.mockExamDeliveryResume?owner.resumeDeliveryId:undefined,
       officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters,owner?.resumeDeliveryId,createScienceLessonSource(store,observedQuestions)),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,

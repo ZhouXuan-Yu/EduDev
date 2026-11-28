@@ -4,6 +4,14 @@ import type {SkillGovernance} from './service';
 import {unwrapTaskArguments} from '../tasks/tool-envelope';
 import {SKILL_GOVERNANCE_ERRORS} from '../../../shared/xiaozhi-skill-governance';
 
+/** A teacher may inspect a workflow without publishing a personal Skill. This can only restrict tools. */
+export function methodReviewOnly(request:string) {
+  const text=request.normalize('NFKC');
+  if (/(?:不要|不能|不得|别|禁止|不必|不需要|暂不|暂缓|不)(?:再|直接|自动|立即|马上|先|进行|将其|把它|把这个流程)*(?:发布|创建|安装|启用|激活|采用|晋升|保存为|转为|转成|建成)[^，。；！？\\n]{0,12}(?:技能|流程|方法|skill)/iu.test(text)) return true;
+  if (!/(?:技能|流程|方法|skill)/iu.test(text)) return false;
+  return /(?:作为|当作|列为|留作|保留为|记为|只做|只是|仅做|仅作为)(?:一个|一项|一条)?候选|候选(?:工作)?(?:方法|流程|技能)|(?:只|仅|先)(?:验证|评估|评审|审阅|试用|检查适用范围)|暂不(?:发布|采用|启用)/u.test(text);
+}
+
 export function createSkillCreatorTools(service: SkillGovernance, owner: () => PermissionOwner): ToolDefinition[] {
   return [{name: 'skill_create', label: '保存个人工作方法',
     description: '仅在教师要求保存可复用方法或流程已稳定验证时调用。自动验证并发布纯说明型个人技能，下个安全Run激活。只写通用工作流程，不写学生信息、私有原文、秘密、脚本或外链。依赖使用已有稳定Capability ID，权限需求只是说明。',

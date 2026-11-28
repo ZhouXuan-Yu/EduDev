@@ -192,13 +192,41 @@ try {
     scenario = [{name: 'read', input: readSkill},
       {name: 'exec_command', input: {cmd: "Set-Content must-not-write.txt 'NEVER'", timeout: 10}}]; step = 0;
     const started = await host!.start({sessionId, commandId: 'xicmd_' + randomUUID(), prompt: '按已选方法尝试未授写入，必须由宿主实际阻断。'});
-    assert(started.ok, JSON.stringify(started)); await host!.waitForRun(sessionId, started.runId);
+    assert(started.ok, JSON.stringify(started));
+    const pending=async()=>(await host!.permissions.view(sessionId)).approvals.find(approval=>
+      approval.state==='pending' && approval.request.action==='exec_command' && approval.request.owner.runId===started.runId);
+    await until(async()=>Boolean(await pending()));
+    assert(!fs.existsSync(path.join(workspace, 'must-not-write.txt')));
+    const approval=(await pending())!;
+    const denied=await host!.permissions.decide({sessionId,approvalId:approval.id,revision:approval.revision,decision:'reject',scope:'operation'});
+    assert.equal(denied.state,'rejected');
+    await host!.waitForRun(sessionId,started.runId);
     assert(!fs.existsSync(path.join(workspace, 'must-not-write.txt')));
     const permissions = await host!.permissions.view(sessionId);
     assert(permissions.approvals.some(approval => approval.request.action === 'exec_command' && approval.request.owner.runId === started.runId));
     assert(permissions.grants.every(grant => grant.scope.kind === 'filesystem' && grant.scope.actions.join(',') === 'read'));
     const rows = await store.xiaozhiState.sql.all("SELECT count(*) AS n FROM xiaozhi_permission_audit_v1 WHERE kind='sandbox_execution_prepared'");
     assert.equal(Number(rows[0].n), 0);
+  });
+  await check('Reviewing a candidate method cannot publish a Skill or add execution grants', async () => {
+    const reviewSession=sessionId;
+    const currentGrants=()=>store.xiaozhiState.sql.all('SELECT * FROM xiaozhi_permission_grants_v1 ORDER BY rowid');
+    const grants=await currentGrants();
+    const before=await host!.skillGovernanceView();
+    const offered:string[][]=[];
+    scenario=[{name:'skill_create',input:body=>{
+      offered.push((body.tools as Array<{function:{name:string}}>).map(tool=>tool.function.name));
+      return {...draft(),name:'review-only-method'};
+    }}]; step=0;
+    const started=await host!.start({sessionId:reviewSession,commandId:'xicmd_'+randomUUID(),
+      prompt:'请评估这个工作流程作为候选方法，先验证适用范围，不要发布技能。'});
+    assert(started.ok);
+    await host!.waitForRun(reviewSession,started.runId);
+    const after=await host!.skillGovernanceView();
+    assert.equal(offered.length,1);
+    assert.deepEqual(after.versions.map(v=>[v.skillId,v.version,v.state]),before.versions.map(v=>[v.skillId,v.version,v.state]));
+    assert(!offered[0].includes('skill_create'));
+    assert.deepEqual(await currentGrants(),grants);
   });
   report.success = true;
 } catch (error) {report.error = error instanceof Error ? error.stack : String(error); process.exitCode = 1; console.error(error);}
