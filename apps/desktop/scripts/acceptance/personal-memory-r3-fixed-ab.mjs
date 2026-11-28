@@ -102,12 +102,14 @@ const arms=[
   {id:'B',desktop,main:testMain(desktop),source:bSource},
 ];
 assert.equal(hash(arms[1].main),bBuild,'The B arm must use the recorded product build');
+// Keep the complete case bounded by the product's default model-call allowance.
+const caseRequestCap=16;
 const selectedArm=process.env.OMNI_EDU_R3_EVAL_ARM;
 assert(selectedArm===undefined||selectedArm==='A'||selectedArm==='B');
 if(namedHandoutControl)assert.equal(selectedArm,'B','A named control is not a frozen A/B datum');
 const report={
   caseId:namedHandoutControl?'R3-CONTROL-HANDOUT-ORIGIN':task.caseId,fixtureHash,caseCount:namedHandoutControl?1:contract.tasks.length,target:task.expectedObservableResult,
-  results:[],model:'deepseek-flash',harnessCheckout:git(desktop),scope:namedHandoutControl?'Named handout, no date constraint. Separate product control.':'One frozen synthetic case per invocation.',
+  results:[],model:'deepseek-flash',harnessCheckout:git(desktop),harnessFileSha256:hash(new URL(import.meta.url)),caseRequestCap,scope:namedHandoutControl?'Named handout, no date constraint. Separate product control.':'One frozen synthetic case per invocation.',
 };
 function read(data,sql,...args){
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
@@ -372,13 +374,16 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     const launch=async(previousRequests=[])=>{
     app=await electron.launch({args:[arm.main,'--user-data-dir='+profile],cwd:arm.desktop,env,timeout:60000,
       executablePath:path.join(arm.desktop,'node_modules/electron/dist/electron.exe')});
-    await app.evaluate(({net},{prompt,protectedSource,untrustedText,classValue,otherCourseText,protectedClasses,confirmedVersion,confirmedDigest,previousRequests,coldCase})=>{
+    await app.evaluate(({net},{prompt,protectedSource,untrustedText,classValue,otherCourseText,protectedClasses,confirmedVersion,confirmedDigest,previousRequests,coldCase,caseRequestCap})=>{
       const original=net.fetch.bind(net),records=globalThis.r3FixedABRequests=previousRequests;
       globalThis.r3FixedABStage='setup';
       net.fetch=async(input,init)=>{
         const url=new URL(typeof input==='string'?input:input.url);
         if(url.origin!=='https://api.deepseek.com'||!url.pathname.endsWith('/chat/completions'))return original(input,init);
-        if(records.length>=6)throw Error('Fixed evaluation case request cap reached');
+        if(records.length>=caseRequestCap){
+          globalThis.r3FixedABRequestCapReached=true;
+          throw Error('Fixed evaluation case request cap reached');
+        }
         const payload=JSON.parse(init.body);
         const observation={phase:globalThis.r3FixedABStage,model:payload.model,reasoning:payload.reasoning_effort??null,maxTokens:payload.max_tokens,
           hasSubmittedPrompt:payload.messages.some(m=>m.role==='user'&&JSON.stringify(m.content).includes(prompt)),
@@ -410,7 +415,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         }).catch(()=>{});
         return response;
       };
-    },{previousRequests,coldCase,prompt:teacherPrompt,confirmedVersion:artifactFixture?.authority.confirmedVersion,confirmedDigest:artifactFixture?.authority.verifiedDigest,protectedClasses:ambiguousCase?classRecords:undefined,otherCourseText:courseCase?otherCourseText:undefined,classValue:classPreference?.value,protectedSource:semesterCase?priorHandout:source?.content,untrustedText:attachment?attachmentText:undefined});
+    },{previousRequests,coldCase,caseRequestCap,prompt:teacherPrompt,confirmedVersion:artifactFixture?.authority.confirmedVersion,confirmedDigest:artifactFixture?.authority.verifiedDigest,protectedClasses:ambiguousCase?classRecords:undefined,otherCourseText:courseCase?otherCourseText:undefined,classValue:classPreference?.value,protectedSource:semesterCase?priorHandout:source?.content,untrustedText:attachment?attachmentText:undefined});
     page=await app.firstWindow();
     await assertIsolatedPiMain(app,arm.main,profile);
     };
@@ -594,9 +599,15 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       const answered=(await snapshot()).controls.find(item=>item.id===result.teacherClarification.controlId);
       assert.equal(answered?.state,'answered');
       assert.equal(answered.answer,answer);
-    }else if(editCase && answer && !state.review && state.last.status==='completed'){
+    }else if((editCase||exportCase) && answer && !state.review && !state.officeApproval && state.last.status==='completed'){
       const originalRun=state.last.id;
       result.firstAttempt={runId:originalRun,output:state.last.items.filter(item=>item.role==='assistant').map(item=>item.text)};
+      if(exportCase){
+        const createdBeforeStart=read(data,'SELECT id FROM document_artifacts WHERE session_id=?',sessionId)
+          .filter(row=>!filesBefore.includes(row.id)).map(row=>row.id);
+        result.firstAttempt.createdBeforeStart=createdBeforeStart;
+        assert.deepEqual(createdBeforeStart,[],'Ordering a task must not bypass the specified start');
+      }
       result.teacherFollowup=answer;
       await input.fill(answer);
       await page.getByRole('button',{name:'发送消息',exact:true}).click();
@@ -664,6 +675,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     if(!artifact&&!semesterCase)assert(result.realModel.every(item=>!item.memoryProjection));
     if(coldCase){
       result.restore.targetTask=last.task?.id;
+      result.restore.sameOriginTask=result.restore.targetTask===result.restore.sourceTask;
       result.restore.rightSourceDelivered=result.realModel.some(item=>item.status===200&&item.sawColdSource);
       assert(result.realModel.every(item=>!item.sawOtherClass),'Unrelated class leaked after restart');
     }
@@ -790,6 +802,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         output:next.items.filter(item=>item.role==='assistant').map(item=>item.text)};
     }
     result.cost='UNKNOWN';
+    if(exportCase){
+      assert(result.exportApproval,'The teacher must approve the Word artifact before it is saved');
+      assert.equal(result.exportReadback.length,1,'Exactly one student Word file must be found and read back');
+    }
     if(continuationCase){
       assert(result.continuation.sameOriginTask,'The continued task must have the original handout Task ID');
       assert(result.continuation.hostReceiptDelivered,'The confirmed handout version must be verified by the host');
@@ -798,6 +814,10 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       assert.equal(result.continuation.afterDigest,result.continuation.confirmedDigest,'The book content and sources must be unchanged');
       assert.deepEqual(result.continuation.effects,[],'Resuming the confirmed version must not replay writes');
       if(namedHandoutControl)for(const item of result.realModel)assert.deepEqual(item.offeredTools,['education_read_teaching_handout']);
+    }
+    if(coldCase){
+      assert(result.restore.sameOriginTask,'Cold restart must resume the original class Task');
+      assert(result.restore.rightSourceDelivered,'The original class requirements must reach the resumed task');
     }
     if(semesterSource){
       if(result.historyAccess.state==='confirmed_for_comparison'){
@@ -820,6 +840,7 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     await page?.screenshot({path:path.join(root,'failure-'+arm.id+'.png')}).catch(()=>{});
     process.exitCode=1;
   }finally{
+    if(app)result.harnessRequestCapReached=await app.evaluate(()=>Boolean(globalThis.r3FixedABRequestCapReached)).catch(()=>null);
     await app?.close().catch(()=>{});
     fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));
   }
