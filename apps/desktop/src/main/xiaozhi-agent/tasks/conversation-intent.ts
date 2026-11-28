@@ -8,6 +8,23 @@ const delivery = /(?:帮我|替我|给我|请|先|然后|再|并)(?:\s|一下)*(
 const requestedArtifact = /(?:给|替|帮|为)我[一两几三四五六七八九十0-9]+\s*(?:份|套|篇|张)\s*(?:试卷|教案|讲义|课件|文件|练习|报告)/u;
 const suppliedSource = /(?:刚才|之前|当前|以上|上面的|这[个份道张]|我(?:的|上传的|提供的|给的)|从)的?\s*(?:资料库|知识库|题库|附件|文件|会话|试卷|教案|讲义|课件|任务|成果|记录|学生|题目)|\bhttps?:\/\//iu;
 
+/** The teacher asks to resolve an ambiguous historical source before using it. */
+export function requestsHistoryClarification(prompt:string){
+  const text=prompt.normalize('NFKC').trim();
+  if(text.length>240||/[“”「」"'《》\n]/u.test(text))return false;
+  const clauses=text.replace(/[。！？!?]+$/u,'').split(/[，,；;。]/u);
+  if(clauses.length!==2)return false;
+  const [sources,request]=clauses.map(clause=>clause.trim());
+  return /(?:历史(?:对话|资料|来源|记录)|班级记录)/u.test(sources)&&/(?:同名|重名|名字相同|名称相同)/u.test(sources)&&
+    /^(?:请)?(?:先)?(?:给我确认|让我(?:先)?选|问我(?:要)?用|我先选|跟我确认|向我确认)(?:一下)?(?:目标|哪一份|哪个班级|哪个班|哪份|一份|哪段对话)$/u.test(request);
+}
+
+export function sourceClarificationQuestion(kind:'history'|'handout'){
+  return kind==='handout'
+    ?{question:'请填写要继续的讲义完整书名，例如“请继续《完整书名》”。',options:['先到讲义编辑器核对','暂不继续']}
+    :{question:'请填写要参考的班级及记录。选定后可在聊天的历史引用入口预览来源。',options:['先核对原对话','暂不使用历史']};
+}
+
 /** Only clear requests for an answer may enter the tool-free conversation path. */
 export function isStandaloneAnswer(input: Pick<XiaozhiStartInput,'prompt'|'attachments'|'presentation'|'continueTask'|'classroomPlan'|'resumeDeliveryId'|'paperExportIntent'|'mockExamExportIntent'>) {
     if(input.attachments?.length||input.presentation||input.continueTask||input.classroomPlan||input.resumeDeliveryId||input.paperExportIntent||input.mockExamExportIntent)return false;

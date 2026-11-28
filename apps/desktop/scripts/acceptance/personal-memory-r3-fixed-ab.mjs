@@ -418,12 +418,13 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
       result.sameTitleSources=[];
       for(const [i,cls] of ['A','B'].entries()){
         await seedClass(app,page,sessionId,{...task.taskScope,classRef:cls});
-        await seedPrompt(page,input,snapshot,classRecords[i]);
+        const record=classRecords[i]+' 本条只作课堂记录，请简单回复收到。';
+        await seedPrompt(page,input,snapshot,record);
         const title='随堂讲义工作记录';
         await page.evaluate(([session,title])=>window.omniEdu.renameAiConversationSession(session,{title}),[sessionId,title]);
         const stored=read(data,'SELECT title FROM ai_conversation_sessions WHERE id=?',sessionId);
         assert.equal(stored[0]?.title,title);
-        const source=await allowHistoryDiscovery(app,page,data,sessionId,classRecords[i]);
+        const source=await allowHistoryDiscovery(app,page,data,sessionId,record);
         result.sameTitleSources.push({title,cls,sessionId,id:source.source_id,generation:source.generation});
         await page.getByTestId('pi-new-session').click();
         sessionId=await until(async()=>{
