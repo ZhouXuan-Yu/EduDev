@@ -161,12 +161,23 @@ async function seedPreferences(page,input,snapshot){
   return versions;
 }
 
-async function chooseHistory(app,page,data,input,source,snapshot,query=localQuery){
+async function chooseHistory(app,page,data,input,source,snapshot,query=localQuery,observeDenial=false){
   await input.fill(query);
   await page.getByTestId('history-lookup-open').click();
   await page.getByTestId('history-lookup-search').click();
   const finder=page.getByTestId('history-lookup');
-  await finder.getByTestId('history-candidate-'+source.record_id).click();
+  const candidate=finder.getByTestId('history-candidate-'+source.record_id);
+  if(observeDenial){
+    const empty=finder.getByText(/当前没有更多获准查找的来源|没有找到相符的历史/u);
+    await candidate.or(empty).first().waitFor();
+    if(await empty.isVisible()){
+      assert.equal(await candidate.count(),0);
+      await finder.getByRole('button',{name:'不再查找',exact:true}).click();
+      assert.deepEqual((await snapshot()).memoryScope.selections,[]);
+      return {state:'excluded_by_host'};
+    }
+  }
+  await candidate.click();
   await finder.getByTestId('history-lookup-preview').getByText(source.content,{exact:true}).waitFor();
   const explicitSession=finder.getByTestId('history-lookup-use-session');
   if(await explicitSession.isVisible())await explicitSession.click();
@@ -519,9 +530,8 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
     result.scope={classRef:task.taskScope.classRef,term:classState.term,...classState.profile,selections:now.memoryScope.selections.length};
     if(examChoice)result.paperChoices=await prepareSameTitlePapers(page,data,sessionId);
     if(semesterSource){
-      result.historyAccess=await chooseHistory(app,page,data,input,semesterSource,snapshot,task.userPrompt);
-      const selected=(await snapshot()).memoryScope.selections;
-      assert.deepEqual(selected.map(item=>item.id),[semesterSource.source_id]);
+      result.historyAccess=await chooseHistory(app,page,data,input,semesterSource,snapshot,task.userPrompt,true);
+      result.selectedForSemester=(await snapshot()).memoryScope.selections.map(item=>item.id);
     }
     if(source)result.historyAccess=await chooseHistory(app,page,data,input,source,snapshot);
     if(preferenceCase)result.preferenceVersions=await seedPreferences(page,input,snapshot);
@@ -807,6 +817,15 @@ for(const arm of arms.filter(arm=>!selectedArm||arm.id===selectedArm)){
         output:next.items.filter(item=>item.role==='assistant').map(item=>item.text)};
     }
     result.cost='UNKNOWN';
+    if(semesterSource){
+      if(result.historyAccess.state==='excluded_by_host'){
+        assert(result.realModel.some(item=>item.status===200&&item.hasSubmittedPrompt));
+        assert(result.realModel.every(item=>!item.includesProtectedSource));
+      }
+      // Score the original comparison precondition even if the host excluded the source.
+      assert.deepEqual(result.selectedForSemester,[semesterSource.source_id]);
+      assert.equal(result.historicalComparisonDelivered,true);
+    }
     console.log(arm.id+' '+result.status);
   }catch(error){
     result.status='FAIL';
