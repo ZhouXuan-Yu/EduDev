@@ -36,3 +36,28 @@ test('a scope change after the Task, a moved source and a student session fail c
     const {read,db}=fixture();try{db.exec(mutation);assert.equal(await read(),undefined);}finally{db.close();}
   }
 });
+
+test('confirmed handout resume identifies an explicit class and its local calendar day',()=>{
+  const now=new Date(2026,10,28,13,10);
+  const request=resume.requestedHandoutResume('继续昨天确认过的 B 班讲义。',now);
+  assert.deepEqual(request,{className:'B 班',from:new Date(2026,10,27).toISOString(),until:new Date(2026,10,28).toISOString()});
+  assert.equal(resume.requestedHandoutResume('请恢复昨日已确认的八年级 A 班的学案！',now).className,'八年级 A 班');
+  for(const prompt of ['不要继续昨天已确认的B班讲义','“继续昨天已确认的B班讲义”','继续昨天确认过的B班讲义并导出','继续昨天确认过的B班或A班讲义？'])
+    assert.equal(resume.requestedHandoutResume(prompt,now),undefined);
+});
+test('confirmed handout teaching context cannot use a partial class code or a later scope',async()=>{
+  const {db}=fixture();
+  try{
+    const sql={all:async(q,args=[])=>db.prepare(q).all(...args)};
+    const read=(name='B 班')=>resume.confirmedHandoutTeachingScope(sql,task.sessionId,name);
+    db.exec("UPDATE ai_conversation_folders SET name='八年级 B 班数学（合成）'");
+    assert.deepEqual(await read(),{folderId:'aifolder_22222222-2222-4222-8222-222222222222',term:'2026-fall',version:2,updatedAt:'2026-11-27T11:00:00.000Z'});
+    for(const name of ['A 班','AB 班','八年级'])assert.equal(await read(name),undefined);
+    db.exec("UPDATE ai_conversation_folders SET name='八年级 AB 班数学（合成）'");
+    assert.equal(await read(),undefined);
+    db.exec("UPDATE ai_conversation_folders SET name='B 班和 C 班'");
+    assert.equal(await read(),undefined);
+    db.exec("UPDATE ai_conversation_folders SET name='B 班'; UPDATE ai_conversation_sessions SET folder_id='elsewhere'");
+    assert.equal(await read(),undefined);
+  }finally{db.close();}
+});
