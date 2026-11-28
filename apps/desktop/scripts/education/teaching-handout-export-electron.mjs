@@ -22,6 +22,7 @@ const generatedFixture=process.argv.includes('--generated-fixture');
 const liveExport=process.argv.includes('--live-export');
 const partialEdit=process.argv.includes('--partial-then-edit');
 const sameSession=process.argv.includes('--two-class-tasks');
+const sameTitle=sameSession&&process.argv.includes('--same-title');
 const classSwitch=sameSession||process.argv.includes('--switch-before-export');
 const alternateRule='青杉复核先圈后算';
 if(classSwitch)assert(liveExport && baseline.authority?.confirmedVersion && baseline.authority.taskScope.classRef==='B');
@@ -157,7 +158,7 @@ async function launch(cold=false,settleOnOriginal=true){
           {headers:{'content-type':'text/event-stream'}});
       }catch(error){state.errors.push(String(error));throw error;}
     };
-  },{cold,liveExport,title,classSwitch,alternateRule,protectedTerms:classSwitch?[title,baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
+  },{cold,liveExport,title,classSwitch,alternateRule,protectedTerms:classSwitch?[...(sameTitle?[]:[title]),baseline.authority.sourceRef,...baseline.authority.selectedIds,...baseline.authority.fileExpectations.required]:[],partialPath:partialEdit?lanes.bundle.outputs[1].path:null});
   page=await app.firstWindow();
   page.on('pageerror',error=>report.errors.push(String(error)));
   await assertIsolatedPiMain(app,main,profile);
@@ -327,7 +328,7 @@ async function verifyTwoClassTasks(){
   await record.getByTestId('history-settings-allow').click();
   await settings.getByTestId('history-settings-notice').getByText(/已允许查找/).waitFor();
   await Promise.all([settings.waitForEvent('close'),settings.getByTestId('settings-window-close').click()]);
-  const request='为 A 班新建一份独立的课堂复核讲义，将我选择的 A 班口算约定逐字写在正文第一行，再给一条例题。请生成 Word《A班课堂复核讲义.docx》，等我确认保存。';
+  const request='为 A 班新建一份独立的课堂复核讲义，将我选择的 A 班口算约定逐字写在正文第一行，再给一条例题。请生成 Word《A班课堂复核讲义.docx》，等我确认保存。'+(sameTitle?'文档内部标题必须是《'+title+'》。':'');
   await page.getByTestId('office-prompt-input').fill(request);
   await page.getByTestId('history-lookup-open').click();
   await page.getByTestId('history-lookup-query').fill('口算约定');
@@ -346,6 +347,10 @@ async function verifyTwoClassTasks(){
   const item=facts().find(f=>!bFiles.some(b=>b.id===f.id));
   const written=docx(item.file_path);
   assert(written.text.includes(alternateRule));
+  if(sameTitle){
+    assert(bFiles.some(file=>docx(file.file_path).text.includes(title)));
+    assert(written.text.includes(title));
+  }
   assert(baseline.authority.fileExpectations.required.every(value=>!written.text.includes(value)));
   const aTask=(await snapshot()).task;
   report.classA={taskId:aTask.id,runId:aTask.origin.runId,requests:wire.requests};
@@ -364,7 +369,8 @@ async function verifyTwoClassTasks(){
   assert.equal((await snapshot()).task.id,aTask.id);
   await page.locator('[data-testid="edu-navigation"]:visible').getByTestId('nav-my_tasks').click();
   const tasks=page.getByTestId('my-tasks-workspace');
-  await tasks.getByTestId('pi-task-filter').selectOption('all');
+  await tasks.getByTestId('pi-task-filter').click();
+  await page.getByRole('option',{name:'全部',exact:true}).click();
   const originalTask=tasks.locator('[data-testid="pi-task-overview-row"][data-task-id="'+before.id+'"]');
   await originalTask.getByTestId('task-artifact-relations').locator('summary').click();
   const linked=originalTask.getByTestId('task-related-artifact');
@@ -376,7 +382,7 @@ async function verifyTwoClassTasks(){
   await page.screenshot({path:path.join(output,'cold-original-task-relations.png')});
   for(const file of [...bFiles,item])assert.equal(sha(file.file_path),file.content_hash);
   assert.deepEqual((await app.evaluate(()=>globalThis.handoutExportTest)).requests,[]);
-  report.sameSession={sessionId,bTask:before.id,aTask:aTask.id,bRelations,aRelations,receipts,requests:wire.requests,
+  report.sameSession={sessionId,sameTitle:sameTitle?title:null,bTask:before.id,aTask:aTask.id,bRelations,aRelations,receipts,requests:wire.requests,
     documents:[...bFiles,item].map(file=>({id:file.id,digest:file.content_hash}))};
   check('Two tasks in one conversation keep their class sources, approved file versions and task relations on cold reopening');
 }
